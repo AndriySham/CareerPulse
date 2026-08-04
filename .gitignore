@@ -1,0 +1,20 @@
+# Dependencies & Build Outputs
+node_modules/
+dist/
+bin/
+obj/
+
+# Environment Variables
+.env
+.env.local
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.suo
+
+# AI Agent Local Files (Do NOT commit to GitHub)
+MEMORY.md
+.agents/
+
+storage/ 
