@@ -23,6 +23,8 @@ public static class InfrastructureServiceExtensions
                 configuration.GetConnectionString("DefaultConnection"),
                 npgsql => npgsql.MigrationsAssembly(typeof(CareerPulseDbContext).Assembly.FullName)));
 
+        services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<CareerPulseDbContext>());
+
         // ADR 003: Storage abstraction — switch provider via appsettings.json
         var storageProvider = configuration["Storage:Provider"] ?? "Local";
         if (storageProvider == "Local")

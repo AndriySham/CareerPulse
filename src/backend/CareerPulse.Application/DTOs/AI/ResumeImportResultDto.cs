@@ -40,13 +40,6 @@ public sealed class ScoredSkillDto
     public SkillResolutionStatus ResolutionStatus { get; init; }
 }
 
-public enum SkillResolutionStatus
-{
-    AutoResolved,    // Matched via MasterSkill.Name or Alias
-    NeedsUserInput,  // No match found — requires HITL decision
-    Ignored          // User dismissed this skill
-}
-
 /// <summary>Ephemeral personal info extracted from PDF.</summary>
 public sealed class PersonalInfoDto
 {

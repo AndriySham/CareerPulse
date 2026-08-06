@@ -3,6 +3,8 @@ using CareerPulse.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using CareerPulse.Application.Interfaces;
+
 namespace CareerPulse.Infrastructure.Persistence;
 
 /// <summary>
@@ -11,7 +13,7 @@ namespace CareerPulse.Infrastructure.Persistence;
 /// ADR 002: PostgreSQL is the sole SSOT — no JSON files on disk.
 /// Configurations are in Configurations/ folder (IEntityTypeConfiguration pattern).
 /// </summary>
-public sealed class CareerPulseDbContext : DbContext
+public sealed class CareerPulseDbContext : DbContext, IApplicationDbContext
 {
     public CareerPulseDbContext(DbContextOptions<CareerPulseDbContext> options) : base(options) { }
 
