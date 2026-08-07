@@ -127,7 +127,8 @@ Use specialized subagents whenever they are better suited for a task:
 
 - `@architect` — domain architecture blueprint and C# project/folder layout (`ARCHITECTURE.md`)
 - `@security-reviewer` — security auditing, input sanitization, and dependency vulnerabilities
-- `@unit-tester` — generating and executing Vitest and xUnit test suites
+- `@dotnet-tester` — generating and executing C# .NET 9 xUnit test suites
+- `@react-tester` — generating and executing React 19 Vitest test suites
 
 The main agent remains responsible for the final implementation, integration, and verification.
 
