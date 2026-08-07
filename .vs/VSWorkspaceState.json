@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\backend",
+    "\\src\\backend\\CareerPulse.Application",
+    "\\src\\backend\\CareerPulse.Application\\Behaviors",
+    "\\src\\backend\\CareerPulse.Application\\DTOs",
+    "\\src\\backend\\CareerPulse.Application\\DTOs\\AI",
+    "\\src\\backend\\CareerPulse.Application\\DTOs\\MasterSkills",
+    "\\src\\backend\\CareerPulse.Infrastructure",
+    "\\src\\backend\\CareerPulse.Infrastructure\\Persistence\\Configurations"
+  ],
+  "SelectedNode": "\\src\\backend\\CareerPulse.Application\\Behaviors\\ValidationBehavior.cs",
+  "PreviewInSolutionExplorer": false
+}
