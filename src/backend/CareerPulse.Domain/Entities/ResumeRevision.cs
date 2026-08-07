@@ -49,6 +49,11 @@ public sealed class ResumeRevision
     /// </summary>
     public ResumeRevision SpawnNewVersion()
     {
+        if (Status != RevisionStatus.Applied)
+        {
+            throw new DomainException("Only an Applied ResumeRevision can spawn a new version.");
+        }
+
         return new ResumeRevision
         {
             Id = Guid.NewGuid(),
