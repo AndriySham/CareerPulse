@@ -47,13 +47,30 @@ Do not expand the task into unrelated features.
 
 Do not introduce a new architectural pattern when an existing project pattern already applies.
 
-Testing is a separate task.
-Do not create or modify test files as part of this feature implementation.
-Only run existing tests to verify that the solution remains green.
+## Testing Boundary
+
+Testing is a separate task and is explicitly OUT OF SCOPE for this task.
+
+Do NOT:
+
+- create any test files;
+- modify any existing test files;
+- add test projects;
+- add test classes or test methods;
+- generate unit, integration, API, or domain tests;
+- delegate testing work to @dotnet-tester or any other testing subagent;
+- refactor existing tests.
+
+Do not perform any testing implementation even if new domain logic, validators, handlers, or other testable code is created.
+
+You may only run the existing test suite as part of verification, without modifying any test-related files.
+
 
 ## Verification
 
 Verify that the implementation integrates correctly with the existing solution.
+
+Run the existing test suite if appropriate to confirm that the solution remains green, but do not create or modify tests.
 
 ## Completion Report
 

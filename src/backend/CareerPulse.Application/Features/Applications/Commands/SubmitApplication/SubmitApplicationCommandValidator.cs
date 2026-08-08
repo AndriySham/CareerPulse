@@ -12,17 +12,20 @@ public sealed class SubmitApplicationCommandValidator : AbstractValidator<Submit
         RuleFor(x => x.Dto)
             .NotNull().WithMessage("SubmitApplicationDto is required.");
 
-        RuleFor(x => x.Dto.CompanyId)
-            .NotEmpty().WithMessage("CompanyId is required.");
+        When(x => x.Dto != null, () =>
+        {
+            RuleFor(x => x.Dto.CompanyId)
+                .NotEmpty().WithMessage("CompanyId is required.");
 
-        RuleFor(x => x.Dto.ResumeRevisionId)
-            .NotEmpty().WithMessage("ResumeRevisionId is required.");
+            RuleFor(x => x.Dto.ResumeRevisionId)
+                .NotEmpty().WithMessage("ResumeRevisionId is required.");
 
-        RuleFor(x => x.Dto.JobSource)
-            .NotEmpty().WithMessage("JobSource is required.")
-            .MaximumLength(200).WithMessage("JobSource cannot exceed 200 characters.");
+            RuleFor(x => x.Dto.JobSource)
+                .NotEmpty().WithMessage("JobSource is required.")
+                .MaximumLength(200).WithMessage("JobSource cannot exceed 200 characters.");
 
-        RuleFor(x => x.Dto.Notes)
-            .MaximumLength(4000).WithMessage("Notes cannot exceed 4000 characters.");
+            RuleFor(x => x.Dto.Notes)
+                .MaximumLength(4000).WithMessage("Notes cannot exceed 4000 characters.");
+        });
     }
 }

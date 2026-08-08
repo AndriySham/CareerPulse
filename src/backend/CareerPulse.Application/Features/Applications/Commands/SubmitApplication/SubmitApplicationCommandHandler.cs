@@ -86,7 +86,7 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
         return MapToDto(created);
     }
 
-    internal static ApplicationDto MapToDto(Domain.Entities.Application app) => new()
+    public static ApplicationDto MapToDto(Domain.Entities.Application app) => new()
     {
         Id = app.Id,
         CompanyId = app.CompanyId,
