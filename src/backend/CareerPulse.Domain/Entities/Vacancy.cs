@@ -22,7 +22,7 @@ public sealed class Vacancy
 
     private Vacancy() { }
 
-    public static Vacancy Create(Guid companyId, string title, string? url = null, DateTime? postedAt = null)
+    public static Vacancy Create(Guid companyId, string title, string? description = null, string? url = null, DateTime? postedAt = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new DomainException("Vacancy title is required.");
@@ -32,6 +32,7 @@ public sealed class Vacancy
             Id = Guid.NewGuid(),
             CompanyId = companyId,
             Title = title.Trim(),
+            Description = description,
             Url = url?.Trim(),
             PostedAt = postedAt,
             CreatedAt = DateTime.UtcNow,
