@@ -47,7 +47,7 @@ export const Modal: React.FC<ModalProps> = ({
   }[maxWidth];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 sm:p-6 overflow-y-auto py-8 sm:py-12">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
@@ -57,7 +57,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Dialog container */}
       <div
-        className={`relative w-full ${maxWidthClasses} rounded-xl border border-border bg-card p-6 shadow-xl transition-all animate-in zoom-in-95 duration-200 z-10 my-8`}
+        className={`relative w-full ${maxWidthClasses} rounded-xl border border-border bg-card p-6 shadow-xl transition-all animate-in zoom-in-95 duration-200 z-10 my-auto max-h-[85vh] overflow-y-auto`}
         role="dialog"
         aria-modal="true"
       >

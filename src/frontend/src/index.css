@@ -233,3 +233,42 @@ html:not(.dark) textarea:focus {
   background-color: hsl(226 25% 94%) !important;
   color: hsl(222 47% 11%) !important;
 }
+
+/* Custom Scrollbars for Dark and Light Themes */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: hsl(232 14% 35%);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(265 89% 72%);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background-color: hsl(220 13% 75%);
+  border-radius: 4px;
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(263 70% 50%);
+}
+
+/* Firefox & Modern Browser Scrollbar Standard Properties */
+.dark, .dark * {
+  scrollbar-color: hsl(232 14% 35%) transparent;
+  scrollbar-width: thin;
+}
+
+html:not(.dark), html:not(.dark) * {
+  scrollbar-color: hsl(220 13% 75%) transparent;
+  scrollbar-width: thin;
+}
