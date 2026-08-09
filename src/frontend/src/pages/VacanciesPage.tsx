@@ -4,6 +4,7 @@ import { useCompanies } from '@/api/companies';
 import VacancyCard from '@/components/vacancies/VacancyCard';
 import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
 import VacancyDetailModal from '@/components/vacancies/VacancyDetailModal';
+import CustomSelect from '@/components/ui/CustomSelect';
 import type { VacancyDto } from '@/types';
 import { Briefcase, Search, Plus, Building2, Filter } from 'lucide-react';
 
@@ -129,18 +130,15 @@ export const VacanciesPage: React.FC = () => {
 
         <div className="flex items-center gap-2 text-sm">
           <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
-          <select
+          <CustomSelect
             value={selectedCompanyId}
-            onChange={(e) => setSelectedCompanyId(e.target.value)}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="all">All Employers ({companies.length})</option>
-            {companies.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setSelectedCompanyId(val)}
+            options={[
+              { value: 'all', label: `All Employers (${companies.length})` },
+              ...companies.map((c) => ({ value: c.id, label: c.name })),
+            ]}
+            className="w-48"
+          />
         </div>
       </div>
 

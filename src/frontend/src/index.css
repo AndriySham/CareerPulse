@@ -125,6 +125,42 @@ select:-webkit-autofill:focus {
   color: hsl(60 30% 96%) !important;
 }
 
+/* Custom Select Dropdown Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23929ec4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.25rem !important;
+  cursor: pointer;
+}
+
+html:not(.dark) select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select option {
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+}
+
+.dark select option {
+  background-color: hsl(235 14% 15%) !important;
+  color: hsl(60 30% 96%) !important;
+}
+
+html:not(.dark) select option {
+  background-color: hsl(0 0% 100%) !important;
+  color: hsl(222 47% 11%) !important;
+}
+
 /* Custom Checkbox Styling for Dark and Light modes */
 input[type="checkbox"] {
   appearance: none;

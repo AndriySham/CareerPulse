@@ -80,7 +80,7 @@ export const CompanyFormModal: React.FC<CompanyFormModalProps> = ({
           : 'Create a target employer record for your career applications.'
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
         {activeMutation.error && <ErrorAlert error={activeMutation.error} />}
 
         <div>
