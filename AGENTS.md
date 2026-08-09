@@ -76,6 +76,29 @@ AI is strictly an advisory component, not an autonomous decision maker. AI never
 - Avoid duplicate business logic.
 - Ensure future integrations (Google Drive, Google Calendar, AI Cover Letters) are added without modifying the core domain model.
 
+### Frontend Rules
+- Use TanStack Query for server state, API fetching, caching, and mutations.
+- Use Zustand only for shared client/UI state. Do not duplicate server state in Zustand.
+- Use the existing Axios API client for backend communication. Do not create additional API clients.
+- Keep API communication separate from presentation components. API calls must not be implemented directly inside page components.
+- Reuse existing Shadcn UI components, design tokens, and Lucide icons before creating custom UI primitives.
+- Reuse existing components and utilities whenever possible.
+- New feature pages must use the existing React Router configuration and App Shell.
+- Do not introduce a new routing system, state-management library, UI library, or API client unless explicitly required.
+
+### Frontend API Integration
+- Handle loading, empty, success, and error states explicitly.
+- Backend errors use RFC 7807 ProblemDetails and the existing frontend error-handling mechanism.
+- Invalidate or update relevant TanStack Query caches after successful mutations.
+
+### Frontend UI & Forms
+- Follow the existing Dracula dark theme and Alabaster light theme defined in `index.css`.
+- Reuse existing CSS variables and design tokens. Do not introduce a separate color palette or theme system.
+- Preserve the existing responsive App Shell and visual style.
+- Reuse existing Shadcn UI components and Lucide icons before creating custom UI primitives.
+- Follow existing form, validation, dialog, and modal patterns.
+- Do not introduce a new form library unless explicitly required.
+
 ### Code Style
 - Use TypeScript with strict typing.
 - Never use `any`.

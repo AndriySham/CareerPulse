@@ -82,9 +82,118 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle transitions for interactive components */
-button, a, input, select, textarea {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+/* Custom input background & Chrome autofill overrides */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-foreground) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-background) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+  -webkit-text-fill-color: hsl(60 30% 96%) !important;
+  -webkit-box-shadow: 0 0 0px 1000px hsl(235 14% 15%) inset !important;
+}
+
+/* Dark Mode Input & Textarea styling */
+.dark input[type="text"],
+.dark input[type="url"],
+.dark input[type="search"],
+.dark input[type="email"],
+.dark select,
+.dark textarea {
+  background-color: hsl(235 14% 15%) !important;
+  color: hsl(60 30% 96%) !important;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="url"]:focus,
+.dark input[type="search"]:focus,
+.dark input[type="email"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+  background-color: hsl(231 15% 22%) !important;
+  color: hsl(60 30% 96%) !important;
+}
+
+/* Custom Checkbox Styling for Dark and Light modes */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: all 0.15s ease-in-out;
+  vertical-align: middle;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.dark input[type="checkbox"] {
+  background-color: hsl(235 14% 15%) !important;
+  border: 1px solid hsl(232 14% 35%) !important;
+}
+
+.dark input[type="checkbox"]:checked {
+  background-color: hsl(265 89% 72%) !important;
+  border-color: hsl(265 89% 72%) !important;
+}
+
+.dark input[type="checkbox"]:checked::before {
+  box-shadow: inset 1em 1em hsl(235 14% 12%) !important;
+}
+
+html:not(.dark) input[type="checkbox"] {
+  background-color: hsl(228 33% 97%) !important;
+  border: 1px solid hsl(220 13% 75%) !important;
+}
+
+html:not(.dark) input[type="checkbox"]:checked {
+  background-color: hsl(263 70% 50%) !important;
+  border-color: hsl(263 70% 50%) !important;
+}
+
+/* Light Mode Input & Textarea styling (ONLY when NOT in dark mode) */
+html:not(.dark) input[type="text"],
+html:not(.dark) input[type="url"],
+html:not(.dark) input[type="search"],
+html:not(.dark) input[type="email"],
+html:not(.dark) select,
+html:not(.dark) textarea {
+  background-color: hsl(228 33% 97%) !important;
+  color: hsl(222 47% 11%) !important;
+}
+
+html:not(.dark) input[type="text"]:focus,
+html:not(.dark) input[type="url"]:focus,
+html:not(.dark) input[type="search"]:focus,
+html:not(.dark) input[type="email"]:focus,
+html:not(.dark) select:focus,
+html:not(.dark) textarea:focus {
+  background-color: hsl(226 25% 94%) !important;
+  color: hsl(222 47% 11%) !important;
 }
