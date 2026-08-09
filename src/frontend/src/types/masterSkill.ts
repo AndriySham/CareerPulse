@@ -19,3 +19,9 @@ export interface MasterSkillDto {
   createdAt: string;
   aliases: string[];
 }
+
+export interface CreateMasterSkillDto {
+  name: string;
+  category: SkillCategory;
+  aliases?: string[];
+}
