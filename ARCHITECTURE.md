@@ -1,7 +1,7 @@
 # CareerPulse — Architecture Document
 
-> **Version:** 1.0
-> **Date:** 2026-08-03
+> **Version:** 1.2
+> **Date:** 2026-08-10
 > **Status:** Accepted
 > **Authors:** Architect Subagent (Google Antigravity)
 
@@ -82,16 +82,22 @@ Future integrations (Google Drive Phase 2, Google Calendar, AI Cover Letters) ar
 
 | Bounded Context | Responsibility | Key Entities |
 |---|---|---|
-| **Career Profile Context** | Manages the user identity, global skill catalog, and resume templates | `CareerProfile`, `MasterSkill`, `MasterSkillAlias`, `ResumeTemplate` |
-| **Job Application Context** | Manages the full job search lifecycle | `Company`, `Vacancy`, `ResumeRevision`, `Application`, `Interview` |
+| **Resume & Skills Context** | Manages resume profiles, revision snapshots, and the global skill catalog | `Resume`, `ResumeRevision`, `MasterSkill`, `MasterSkillAlias` |
+| **Job Application Context** | Manages the full job search lifecycle | `Company`, `Vacancy`, `Application`, `Interview` |
 | **AI Advisory Context** | Stateless context handling AI interactions. Returns temporary DTOs for HITL confirmation. **Never writes to the database.** | `ResumeImportResultDto`, `ScoredField<T>` |
 | **Storage & Backup Context** | Infrastructure concerns for file persistence | `IFileStorage`, `LocalFileStorage`, `GoogleDriveStorage` |
 
 ### 2.2 Aggregate Roots & Invariants
 
-#### `CareerProfile` (Aggregate Root)
-- **Invariants:** Owns the global `MasterSkill` catalog. There is exactly one profile per installation.
-- **Lifecycle:** Singleton — created once, never deleted.
+#### `Resume` (Aggregate Root)
+- **Identity Properties (Immutable after creation):** `Track` (`ResumeTrack`: `Backend`, `Frontend`, `FullStack`), `CareerLevel` (`CareerLevel`: `Intern`, `Junior`, `Middle`, `Senior`, `Lead`), `TargetRole` (string).
+- **Mutable Properties:** `Name` (string — user-facing label).
+- **Invariants:**
+  - A `Resume` profile's `Track`, `CareerLevel`, and `TargetRole` are **immutable after creation**.
+  - Changing career track, level, or target role requires creating a **new `Resume` aggregate root**, not spawning a new `ResumeRevision`.
+  - Owns the version lineage of its child `ResumeRevision` snapshots.
+- **Child Entities:** `ResumeRevision` (1:N — owned snapshot collection).
+- **Lifecycle:** Created when a developer defines a new career positioning persona. May coexist with other `Resume` profiles targeting different tracks/levels.
 
 #### `Company` (Aggregate Root)
 - **Invariants:** A `Company` owns its `Vacancy` collection. Vacancies cannot exist without a parent company.
@@ -105,20 +111,37 @@ Future integrations (Google Drive Phase 2, Google Calendar, AI Cover Letters) ar
   - Status transitions are strictly controlled by the state machine (see Section 5).
 - **Lifecycle:** Created in `Draft`, terminates at `Offer`, `Rejected`, or `NoResponse`.
 
-#### `ResumeRevision` (Aggregate / Snapshot)
+#### `ResumeRevision` (Child Snapshot Entity — owned by `Resume`)
 - **Invariants (ADR 005 — Draft Immutability):**
   - A `ResumeRevision` is editable **only** in `Draft` state.
-  - Once linked to an `Application` and the application advances to `Applied`, the revision becomes **Read-Only**.
-  - Subsequent edits to an applied revision **spawn a new revision** (Copy-on-Write pattern). The original is never modified.
-- **Lifecycle:** Draft to Applied (terminal, Read-Only).
+  - Once linked to an `Application` and the application advances to `Applied`, the revision becomes **Read-Only** (terminal).
+  - Subsequent edits to an applied revision **spawn a new revision** via `SpawnNewVersion()` (Copy-on-Write pattern). The original is never modified.
+  - `SpawnNewVersion()` deep-copies `PersonalInfo`, `ProfessionalSummary`, `WorkExperiences`, `Educations`, `Projects`, `Languages`, and `Skills`. `FileReference` is reset to `null`.
+- **Owned Snapshot Collections:** `WorkExperience`, `Education`, `Project`, `Language` — deep-copied per revision to guarantee snapshot self-containment.
+- **Snapshot Isolation:** `WorkExperience` stores `CompanyName` as a plain string snapshot (not a FK to `Company`). Work experience dates use month/year precision only.
+- **PDF Ownership:** `FileReference` belongs to `ResumeRevision`, not to `Resume`.
+- **Lifecycle:** Draft → Applied (terminal, Read-Only).
 
 ### 2.3 Domain Relationship Diagram
 
 ```mermaid
 classDiagram
-    class CareerProfile {
+    class Resume {
         +Guid Id
-        +String DisplayName
+        +String Name
+        +ResumeTrack Track
+        +CareerLevel CareerLevel
+        +String TargetRole
+    }
+    class ResumeRevision {
+        +Guid Id
+        +Guid ResumeId
+        +RevisionStatus Status
+        +String ProfessionalSummary
+        +PersonalInfo PersonalInfo
+        +String FileReference
+        +int Version
+        +Guid ParentRevisionId
     }
     class MasterSkill {
         +Guid Id
@@ -141,28 +164,46 @@ classDiagram
     }
     class Application {
         +Guid Id
+        +Guid ResumeRevisionId
         +ApplicationStatus Status
-        +DateTime? SubmissionDate
-    }
-    class ResumeRevision {
-        +Guid Id
-        +RevisionStatus Status
-        +String ProfessionalSummary
+        +DateTime SubmissionDate
     }
     class Interview {
         +Guid Id
         +Guid ApplicationId
         +InterviewType Type
     }
+    class WorkExperience {
+        +String CompanyName
+        +String PositionTitle
+        +int StartMonth
+        +int StartYear
+    }
+    class Education {
+        +String InstitutionName
+        +String Degree
+    }
+    class Project {
+        +String ProjectName
+        +String Description
+    }
+    class Language {
+        +String LanguageName
+        +String Proficiency
+    }
 
-    CareerProfile "1" --> "*" MasterSkill : owns catalog
+    Resume "1" --> "*" ResumeRevision : owns revision chain
+    ResumeRevision "1" --> "*" WorkExperience : snapshot-owns
+    ResumeRevision "1" --> "*" Education : snapshot-owns
+    ResumeRevision "1" --> "*" Project : snapshot-owns
+    ResumeRevision "1" --> "*" Language : snapshot-owns
+    ResumeRevision "*" --> "*" MasterSkill : references via ResumeRevisionSkill
     MasterSkill "1" --> "*" MasterSkillAlias : normalized via
     Company "1" --> "*" Vacancy : owns
     Application "*" --> "1" Company : targets
     Application "*" --> "0..1" Vacancy : targets
-    Application "1" --> "1" ResumeRevision : uses (immutable once applied)
+    Application "1" --> "1" ResumeRevision : uses (immutable FK)
     Application "1" --> "*" Interview : generates
-    ResumeRevision "*" --> "*" MasterSkill : references via ResumeRevisionSkill
 ```
 
 ---
@@ -195,6 +236,16 @@ public enum InterviewType
 {
     PhoneScreen, HRInterview, TechnicalInterview, SystemDesign, CodingChallenge, FinalRound
 }
+
+public enum ResumeTrack
+{
+    Backend, Frontend, FullStack
+}
+
+public enum CareerLevel
+{
+    Intern, Junior, Middle, Senior, Lead
+}
 ```
 
 ### 3.2 Domain Entities
@@ -208,7 +259,13 @@ public sealed class Application
     public Guid Id { get; private set; }
     public Guid CompanyId { get; private set; }
     public Guid? VacancyId { get; private set; }
+
+    /// <summary>
+    /// Immutable after creation. There is no domain operation that changes
+    /// ResumeRevisionId once the Application has been created.
+    /// </summary>
     public Guid ResumeRevisionId { get; private set; }
+
     public ApplicationStatus Status { get; private set; }
     public DateTime? SubmissionDate { get; private set; }
     public string JobSource { get; private set; } = string.Empty;
@@ -238,13 +295,22 @@ public sealed class Application
             UpdatedAt = DateTime.UtcNow
         };
 
+    /// <summary>
+    /// Transitions the Application to a new status.
+    /// When transitioning to Applied, the linked ResumeRevision is explicitly
+    /// marked as Applied (read-only terminal state) via ResumeRevision.MarkAsApplied().
+    /// This ensures the snapshot is locked and can no longer be modified directly.
+    /// </summary>
     public void TransitionTo(ApplicationStatus newStatus)
     {
         ApplicationStatusMachine.ValidateTransition(Status, newStatus);
         Status = newStatus;
         UpdatedAt = DateTime.UtcNow;
         if (newStatus == ApplicationStatus.Applied)
+        {
             SubmissionDate = DateTime.UtcNow;
+            ResumeRevision.MarkAsApplied();
+        }
     }
 }
 
@@ -260,10 +326,61 @@ public sealed record PersonalInfo(
     string? Country = null
 );
 
-// ResumeRevision (Snapshot - Copy-on-Write)
+// Resume (Aggregate Root — Career Profile Container)
+public sealed class Resume
+{
+    public Guid Id { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public ResumeTrack Track { get; private set; }
+    public CareerLevel CareerLevel { get; private set; }
+    public string TargetRole { get; private set; } = string.Empty;
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
+
+    private readonly List<ResumeRevision> _revisions = new();
+    public IReadOnlyCollection<ResumeRevision> Revisions => _revisions.AsReadOnly();
+
+    private Resume() { }
+
+    public static Resume Create(string name, ResumeTrack track, CareerLevel careerLevel, string targetRole) => new()
+    {
+        Id = Guid.NewGuid(),
+        Name = name,
+        Track = track,
+        CareerLevel = careerLevel,
+        TargetRole = targetRole,
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow
+    };
+
+    public void UpdateName(string name)
+    {
+        Name = name;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Creates the first ResumeRevision (v1) under this Resume aggregate.
+    /// Must be called as a separate explicit operation after Resume.Create().
+    /// The resulting revision has Version = 1, Status = Draft, ParentRevisionId = null.
+    /// </summary>
+    public ResumeRevision CreateFirstRevision(string professionalSummary, PersonalInfo personalInfo)
+    {
+        if (_revisions.Count > 0)
+            throw new DomainException("First revision already exists. Use SpawnNewVersion() on an existing revision.");
+
+        var revision = ResumeRevision.CreateDraft(Id, professionalSummary, personalInfo);
+        _revisions.Add(revision);
+        UpdatedAt = DateTime.UtcNow;
+        return revision;
+    }
+}
+
+// ResumeRevision (Snapshot — Child Entity of Resume, Copy-on-Write)
 public sealed class ResumeRevision
 {
     public Guid Id { get; private set; }
+    public Guid ResumeId { get; private set; }
     public RevisionStatus Status { get; private set; }
     public string ProfessionalSummary { get; private set; } = string.Empty;
     public PersonalInfo PersonalInfo { get; private set; } = null!;
@@ -276,31 +393,87 @@ public sealed class ResumeRevision
     private readonly List<ResumeRevisionSkill> _skills = new();
     public IReadOnlyCollection<ResumeRevisionSkill> Skills => _skills.AsReadOnly();
 
+    private readonly List<WorkExperience> _workExperiences = new();
+    public IReadOnlyCollection<WorkExperience> WorkExperiences => _workExperiences.AsReadOnly();
+
+    private readonly List<Education> _educations = new();
+    public IReadOnlyCollection<Education> Educations => _educations.AsReadOnly();
+
+    private readonly List<Project> _projects = new();
+    public IReadOnlyCollection<Project> Projects => _projects.AsReadOnly();
+
+    private readonly List<Language> _languages = new();
+    public IReadOnlyCollection<Language> Languages => _languages.AsReadOnly();
+
     private ResumeRevision() { }
 
-    public static ResumeRevision CreateDraft(string summary, PersonalInfo personalInfo) => new()
+    /// <summary>
+    /// Internal factory for creating a first Draft revision.
+    /// Called exclusively by Resume.CreateFirstRevision() to ensure aggregate root ownership.
+    /// Version = 1, Status = Draft, ParentRevisionId = null, ResumeId = owning Resume.
+    /// </summary>
+    internal static ResumeRevision CreateDraft(Guid resumeId, string summary, PersonalInfo personalInfo) => new()
     {
         Id = Guid.NewGuid(),
+        ResumeId = resumeId,
         Status = RevisionStatus.Draft,
         ProfessionalSummary = summary,
         PersonalInfo = personalInfo,
         Version = 1,
+        ParentRevisionId = null,
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow
     };
 
-    /// <summary>Creates a new Draft copied from this one (Copy-on-Write).</summary>
-    public ResumeRevision SpawnNewVersion() => new()
+    /// <summary>
+    /// Copy-on-Write: creates a new Draft revision from this one.
+    ///
+    /// Required behavior — the new revision MUST:
+    ///   - Receive a new Id (Guid.NewGuid())
+    ///   - Remain under the same ResumeId
+    ///   - Have Status = Draft
+    ///   - Increment Version (Version + 1)
+    ///   - Set ParentRevisionId to this revision's Id
+    ///   - Set FileReference = null (PDF is NOT carried over)
+    ///
+    /// The implementation MUST deep-copy all owned snapshot collections:
+    ///   - PersonalInfo           (value object — copied by value)
+    ///   - ProfessionalSummary    (string — copied by value)
+    ///   - WorkExperience         (owned child entities — each entry deep-copied with new Id)
+    ///   - Education              (owned child entities — each entry deep-copied with new Id)
+    ///   - Project                (owned child entities — each entry deep-copied with new Id)
+    ///   - Language               (owned child entities — each entry deep-copied with new Id)
+    ///   - ResumeRevisionSkill    (join entities — each entry deep-copied with new ResumeRevisionId)
+    ///
+    /// Each deep-copied child entity receives a new Id and the new revision's ResumeRevisionId.
+    /// The original revision and its owned data remain completely unchanged.
+    /// </summary>
+    public ResumeRevision SpawnNewVersion()
     {
-        Id = Guid.NewGuid(),
-        Status = RevisionStatus.Draft,
-        ProfessionalSummary = ProfessionalSummary,
-        PersonalInfo = PersonalInfo,
-        Version = Version + 1,
-        ParentRevisionId = Id,
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow
-    };
+        var copy = new ResumeRevision
+        {
+            Id = Guid.NewGuid(),
+            ResumeId = ResumeId,
+            Status = RevisionStatus.Draft,
+            ProfessionalSummary = ProfessionalSummary,
+            PersonalInfo = PersonalInfo,
+            FileReference = null,
+            Version = Version + 1,
+            ParentRevisionId = Id,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        // Deep-copy owned child entities — each receives a new Id + new ResumeRevisionId.
+        // Implementation must iterate each collection and copy every entry.
+        // WorkExperiences  → copy._workExperiences
+        // Educations       → copy._educations
+        // Projects         → copy._projects
+        // Languages        → copy._languages
+        // Skills           → copy._skills (with new ResumeRevisionId)
+
+        return copy;
+    }
 
     public void UpdateContent(string summary, PersonalInfo personalInfo)
     {
@@ -413,6 +586,67 @@ public sealed class ResumeRevisionSkill
     private ResumeRevisionSkill() { }
 }
 
+// Owned Child Entities (owned by ResumeRevision, deep-copied per SpawnNewVersion)
+
+public sealed class WorkExperience
+{
+    public Guid Id { get; private set; }
+    public Guid ResumeRevisionId { get; private set; }
+    public string CompanyName { get; private set; } = string.Empty; // String snapshot, NOT FK to Company
+    public string PositionTitle { get; private set; } = string.Empty;
+    public int StartMonth { get; private set; }
+    public int StartYear { get; private set; }
+    public int? EndMonth { get; private set; }
+    public int? EndYear { get; private set; }
+    public bool IsCurrentJob { get; private set; }
+    public string? Description { get; private set; }
+    public string? Achievements { get; private set; }
+    public string? TechStack { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private WorkExperience() { }
+}
+
+public sealed class Education
+{
+    public Guid Id { get; private set; }
+    public Guid ResumeRevisionId { get; private set; }
+    public string InstitutionName { get; private set; } = string.Empty;
+    public string? Degree { get; private set; }
+    public string? FieldOfStudy { get; private set; }
+    public int? StartYear { get; private set; }
+    public int? EndYear { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private Education() { }
+}
+
+public sealed class Project
+{
+    public Guid Id { get; private set; }
+    public Guid ResumeRevisionId { get; private set; }
+    public string ProjectName { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
+    public string? Role { get; private set; }
+    public string? RepositoryUrl { get; private set; }
+    public string? LiveDemoUrl { get; private set; }
+    public string? TechStack { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private Project() { }
+}
+
+public sealed class Language
+{
+    public Guid Id { get; private set; }
+    public Guid ResumeRevisionId { get; private set; }
+    public string LanguageName { get; private set; } = string.Empty;
+    public string? Proficiency { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private Language() { }
+}
+
 // Domain Exception
 public sealed class DomainException : Exception
 {
@@ -446,6 +680,24 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
     }
 }
 
+public class ResumeConfiguration : IEntityTypeConfiguration<Resume>
+{
+    public void Configure(EntityTypeBuilder<Resume> builder)
+    {
+        builder.ToTable("Resumes");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Name).HasMaxLength(300).IsRequired();
+        builder.Property(x => x.Track).HasConversion<string>().IsRequired();
+        builder.Property(x => x.CareerLevel).HasConversion<string>().IsRequired();
+        builder.Property(x => x.TargetRole).HasMaxLength(300).IsRequired();
+
+        builder.HasMany(x => x.Revisions).WithOne().HasForeignKey(x => x.ResumeId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.Track);
+        builder.HasIndex(x => x.CareerLevel);
+    }
+}
+
 public class ResumeRevisionConfiguration : IEntityTypeConfiguration<ResumeRevision>
 {
     public void Configure(EntityTypeBuilder<ResumeRevision> builder)
@@ -454,7 +706,7 @@ public class ResumeRevisionConfiguration : IEntityTypeConfiguration<ResumeRevisi
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Status).HasConversion<string>().IsRequired();
         builder.Property(x => x.ProfessionalSummary).HasColumnType("text");
-        // EF Core Owned Entity for PersonalInfo
+
         builder.OwnsOne(x => x.PersonalInfo, info =>
         {
             info.Property(p => p.FirstName).HasMaxLength(100).IsRequired();
@@ -466,9 +718,35 @@ public class ResumeRevisionConfiguration : IEntityTypeConfiguration<ResumeRevisi
             info.Property(p => p.City).HasMaxLength(100);
             info.Property(p => p.Country).HasMaxLength(100);
         });
+
         builder.Property(x => x.FileReference).HasMaxLength(1000);
 
-        builder.HasMany(x => x.Skills).WithOne().HasForeignKey(x => x.ResumeRevisionId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(x => x.Skills)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.WorkExperiences)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Educations)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Projects)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Languages)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.ResumeId);
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.ParentRevisionId);
     }
@@ -479,9 +757,12 @@ public class ResumeRevisionSkillConfiguration : IEntityTypeConfiguration<ResumeR
     public void Configure(EntityTypeBuilder<ResumeRevisionSkill> builder)
     {
         builder.ToTable("ResumeRevisionSkills");
-        builder.HasKey(x => new { x.ResumeRevisionId, x.MasterSkillId }); // Composite PK
+        builder.HasKey(x => new { x.ResumeRevisionId, x.MasterSkillId });
         builder.Property(x => x.ProficiencyLevel).HasDefaultValue(3);
-        builder.HasOne(x => x.MasterSkill).WithMany().HasForeignKey(x => x.MasterSkillId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.MasterSkill)
+            .WithMany()
+            .HasForeignKey(x => x.MasterSkillId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 ```
@@ -663,7 +944,7 @@ public static class ApplicationStatusMachine
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Draft : CreateDraft()
+    [*] --> Draft : Resume.CreateFirstRevision()
     Draft --> Applied : MarkAsApplied() - system-triggered only
     Draft --> Draft : SpawnNewVersion() returns NEW Draft (original unchanged)
     Applied --> [*] : Read-Only Terminal State
@@ -1024,15 +1305,22 @@ CareerPulse.sln
 |   |   +-- Entities/
 |   |   |   +-- Application.cs
 |   |   |   +-- Company.cs
+|   |   |   +-- Education.cs
 |   |   |   +-- Interview.cs
+|   |   |   +-- Language.cs
 |   |   |   +-- MasterSkill.cs
 |   |   |   +-- MasterSkillAlias.cs
+|   |   |   +-- Project.cs
+|   |   |   +-- Resume.cs
 |   |   |   +-- ResumeRevision.cs
 |   |   |   +-- ResumeRevisionSkill.cs
 |   |   |   +-- Vacancy.cs
+|   |   |   +-- WorkExperience.cs
 |   |   +-- Enums/
 |   |   |   +-- ApplicationStatus.cs
+|   |   |   +-- CareerLevel.cs
 |   |   |   +-- InterviewType.cs
+|   |   |   +-- ResumeTrack.cs
 |   |   |   +-- RevisionStatus.cs
 |   |   |   +-- SkillCategory.cs
 |   |   +-- Exceptions/
@@ -1088,6 +1376,7 @@ CareerPulse.sln
 |   |   |   |   +-- CompanyConfiguration.cs
 |   |   |   |   +-- MasterSkillAliasConfiguration.cs
 |   |   |   |   +-- MasterSkillConfiguration.cs
+|   |   |   |   +-- ResumeConfiguration.cs
 |   |   |   |   +-- ResumeRevisionConfiguration.cs
 |   |   |   |   +-- ResumeRevisionSkillConfiguration.cs
 |   |   |   +-- Repositories/
@@ -1152,7 +1441,7 @@ CareerPulse.Infrastructure  CareerPulse.AI   [both reference Application]
 | **EF Core migration conflicts** during rapid development | Medium | Convention: all schema changes via explicit migrations only. Never use `EnsureCreated()` in production. |
 | **IFileStorage local path misconfiguration** | Low | Default to `AppContext.BaseDirectory/storage` with directory creation guard in constructor. |
 | **MediatR overhead** for simple CRUD operations | Low | Accepted trade-off for architectural clarity and handler testability. |
-| **JSONB schema evolution** for `PersonalInfoJson` | Medium | Document expected schema. Plan migration to EF Core owned entity type when structure stabilizes. |
+| **Owned collection deep-copy consistency** | Medium | `SpawnNewVersion()` must deep-copy all owned snapshot collections (`WorkExperiences`, `Educations`, `Projects`, `Languages`, `Skills`). Unit tests validate completeness. |
 
 ### 10.2 Assumptions
 
@@ -1170,7 +1459,7 @@ CareerPulse.Infrastructure  CareerPulse.AI   [both reference Application]
 | **1** | **Gemini API Credentials** | **MVP:** Store in `.env` / .NET User Secrets. **Future:** UI Settings page for API Keys & Google Drive OAuth. | ACCEPTED |
 | **2** | **Google Drive Backup Retry Strategy** | Retry upload up to 3 times. If all fail: store backup locally, notify user, allow manual retry later. | ACCEPTED |
 | **3** | **Multiple Interview Records** | One `Application` supports a list of `Interview` records (HR, Tech #1, Tech #2, Live Coding, System Design, Final). | ACCEPTED |
-| **4** | **ResumeTemplate Naming** | Renamed `ResumeTemplate` → **`ResumeProfile`** to avoid confusion with future visual PDF templates. | ACCEPTED |
+| **4** | **Resume Aggregate Naming** | Renamed `ResumeTemplate` → **`Resume`** as the aggregate root per approved Resume Ownership and Snapshot Semantics Design. `Resume` owns `ResumeRevision` snapshots with immutable identity properties (`Track`, `CareerLevel`, `TargetRole`). | ACCEPTED |
 | **5** | **NoResponse Status Transition** | **MVP:** User changes status manually. **Future:** Configurable auto-timeout (e.g. 30 days). | ACCEPTED |
 | **6** | **Company Deletion Behavior** | **Soft-Delete / Archiving**. Applications never lose company references. | ACCEPTED |
 | **7** | **PersonalInfo Modeling** | Promoted from `jsonb` column to a proper EF Core **Owned Entity Value Object (`PersonalInfo`)** with typed properties. | ACCEPTED |
@@ -1178,4 +1467,4 @@ CareerPulse.Infrastructure  CareerPulse.AI   [both reference Application]
 
 ---
 
-*End of CareerPulse Architecture Document — v1.1*
+*End of CareerPulse Architecture Document — v1.2*

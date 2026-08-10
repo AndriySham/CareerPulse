@@ -13,6 +13,7 @@
 | [ADR 007](#adr-007-temporary-ai-import-dtos--field-level-confidence-scoring) | Temporary AI Import DTOs & Confidence Scoring | Accepted |
 | [ADR 008](#adr-008-ai-responsibility-boundary--human-in-the-loop-enforcement) | AI Responsibility Boundary & Human-in-the-Loop | Accepted |
 | [ADR 009](#adr-009-technology-stack-selection--backend-net-9--frontend-ecosystem) | Technology Stack Selection — Backend & Frontend Ecosystem | Accepted |
+| [ADR 010](#adr-010-resume-profile-and-revision-architecture) | Resume Profile and Revision Architecture | Accepted |
 
 ---
 
@@ -210,4 +211,57 @@ To build a production-grade Personal Career CRM that reflects modern 2026 enterp
 - Aligns 100% with current commercial market expectations for Senior Full-Stack React + .NET developers.
 - Eliminates legacy boilerplate (no outdated Redux or manual fetch state loops).
 - High UI aesthetics and rapid development velocity using Shadcn UI + Tailwind CSS primitives.
+
+---
+
+## ADR 010: Resume Profile and Revision Architecture
+
+**Status:** Accepted
+
+### Context
+CareerPulse requires a formal architectural decision for candidate resume profiles, versioned snapshots, ownership boundaries, and job application linking. Explicit rules are necessary to guarantee snapshot immutability, historical auditability, and clear separation between stable candidate profiles and iterative revisions.
+
+### Decision
+
+1. **Resume Profile Aggregate Root & Identity:**
+   - `Resume` is the Aggregate Root representing a developer's stable career positioning profile.
+   - `Resume` identity consists of `Track` (`ResumeTrack`: `Backend`, `Frontend`, `FullStack`), `CareerLevel` (`CareerLevel`), and `TargetRole` (string). These properties are **immutable after Resume creation**. `ResumeTrack` currently contains strictly `Backend`, `Frontend`, and `FullStack` (no additional tracks are added).
+   - `Name` (user-facing display label) is mutable on `Resume`.
+
+2. **ResumeRevision & Copy-on-Write Lifecycle:**
+   - `ResumeRevision` is a child snapshot entity owned by `Resume`.
+   - `ResumeRevision` is editable **only while in `Draft` status**. When a revision is `Applied`, it becomes **terminal and read-only**.
+   - `SpawnNewVersion()` creates a new `Draft` revision under the same `Resume` using Copy-on-Write.
+   - `SpawnNewVersion()` deep-copies all revision snapshot data and resets `FileReference` to `null`.
+
+3. **Owned Snapshot Data & Attributes:**
+   - `WorkExperience`, `Education`, `Project`, and `Language` are owned child snapshot data of `ResumeRevision`.
+   - `WorkExperience` stores `CompanyName` as a historical string snapshot, not a foreign key to `Company`.
+   - Work experience dates use **month and year precision only**; no specific day is required.
+   - `FileReference` belongs strictly to `ResumeRevision`.
+
+4. **Skill Catalog & Revision Proficiency:**
+   - `MasterSkill` is an independent shared catalog aggregate root.
+   - `ResumeRevisionSkill` stores the skill reference (`MasterSkillId`) and proficiency level for a specific revision.
+
+5. **Application Linkage & Tailored Revisions:**
+   - `Application` stores an immutable `ResumeRevisionId` pointing to the exact revision submitted to the employer.
+   - A tailored revision may be created for a specific application or vacancy while another revision of the same `Resume` can remain the standard version.
+   - Tailoring a revision must **NOT change `Resume` identity** (`Track`, `CareerLevel`, `TargetRole`).
+
+### Alternatives Considered
+
+- **Linking `Application` to `Resume` instead of `ResumeRevision`:**
+  *Rejected:* Pointing to `Resume` would allow subsequent resume updates to alter historical application records, breaking application submission auditability.
+- **Shared Global `WorkExperience` Entities across Revisions:**
+  *Rejected:* Shared entities would cause edits in a new revision to mutate historical `Applied` revisions. Owned snapshot child entities ensure complete snapshot isolation.
+- **Foreign Key from `WorkExperience` to `Company` Aggregate Root:**
+  *Rejected:* Foreign keys would couple past employment history to target companies in the CRM and risk data corruption if a CRM `Company` is renamed or deleted.
+
+### Consequences
+- Guarantees 100% historical accuracy and auditability of submitted job applications.
+- Enforces strict aggregate boundaries between candidate positioning profiles (`Resume`) and versioned snapshots (`ResumeRevision`).
+- Shared `MasterSkill` catalog remains clean while skill proficiencies and owned experiences remain contained within each revision snapshot.
+
+
 
