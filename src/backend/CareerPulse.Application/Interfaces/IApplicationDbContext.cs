@@ -10,6 +10,7 @@ namespace CareerPulse.Application.Interfaces;
 public interface IApplicationDbContext
 {
     DbSet<Domain.Entities.Application> Applications { get; }
+    DbSet<Resume> Resumes { get; }
     DbSet<ResumeRevision> ResumeRevisions { get; }
     DbSet<ResumeRevisionSkill> ResumeRevisionSkills { get; }
     DbSet<Company> Companies { get; }

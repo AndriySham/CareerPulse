@@ -24,4 +24,9 @@ public sealed class ResumeRevisionSkill
         MasterSkillId = masterSkillId;
         ProficiencyLevel = proficiencyLevel;
     }
+
+    internal ResumeRevisionSkill DeepCopy(Guid newRevisionId)
+    {
+        return new ResumeRevisionSkill(newRevisionId, MasterSkillId, ProficiencyLevel);
+    }
 }

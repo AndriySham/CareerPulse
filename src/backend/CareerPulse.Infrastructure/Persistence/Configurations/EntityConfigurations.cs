@@ -47,6 +47,28 @@ public sealed class ApplicationConfiguration : IEntityTypeConfiguration<Domain.E
     }
 }
 
+public sealed class ResumeConfiguration : IEntityTypeConfiguration<Resume>
+{
+    public void Configure(EntityTypeBuilder<Resume> builder)
+    {
+        builder.ToTable("Resumes");
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        builder.Property(x => x.Track).HasConversion<string>().HasMaxLength(50).IsRequired();
+        builder.Property(x => x.CareerLevel).HasConversion<string>().HasMaxLength(50).IsRequired();
+        builder.Property(x => x.TargetRole).HasMaxLength(200).IsRequired();
+
+        builder.HasMany(x => x.Revisions)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.Track);
+        builder.HasIndex(x => x.CareerLevel);
+    }
+}
+
 public sealed class ResumeRevisionConfiguration : IEntityTypeConfiguration<ResumeRevision>
 {
     public void Configure(EntityTypeBuilder<ResumeRevision> builder)
@@ -78,8 +100,89 @@ public sealed class ResumeRevisionConfiguration : IEntityTypeConfiguration<Resum
             .HasForeignKey(x => x.ResumeRevisionId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(x => x.WorkExperiences)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Educations)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Projects)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Languages)
+            .WithOne()
+            .HasForeignKey(x => x.ResumeRevisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.ResumeId);
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.ParentRevisionId);
+    }
+}
+
+public sealed class WorkExperienceConfiguration : IEntityTypeConfiguration<WorkExperience>
+{
+    public void Configure(EntityTypeBuilder<WorkExperience> builder)
+    {
+        builder.ToTable("WorkExperiences");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.CompanyName).HasMaxLength(300).IsRequired();
+        builder.Property(x => x.PositionTitle).HasMaxLength(300).IsRequired();
+        builder.Property(x => x.Description).HasColumnType("text");
+        builder.Property(x => x.Achievements).HasColumnType("text");
+        builder.Property(x => x.TechStack).HasMaxLength(1000);
+
+        builder.HasIndex(x => x.ResumeRevisionId);
+    }
+}
+
+public sealed class EducationConfiguration : IEntityTypeConfiguration<Education>
+{
+    public void Configure(EntityTypeBuilder<Education> builder)
+    {
+        builder.ToTable("Educations");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.InstitutionName).HasMaxLength(300).IsRequired();
+        builder.Property(x => x.Degree).HasMaxLength(200);
+        builder.Property(x => x.FieldOfStudy).HasMaxLength(200);
+
+        builder.HasIndex(x => x.ResumeRevisionId);
+    }
+}
+
+public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
+{
+    public void Configure(EntityTypeBuilder<Project> builder)
+    {
+        builder.ToTable("Projects");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.ProjectName).HasMaxLength(300).IsRequired();
+        builder.Property(x => x.Description).HasColumnType("text");
+        builder.Property(x => x.Role).HasMaxLength(200);
+        builder.Property(x => x.RepositoryUrl).HasMaxLength(1000);
+        builder.Property(x => x.LiveDemoUrl).HasMaxLength(1000);
+        builder.Property(x => x.TechStack).HasMaxLength(1000);
+
+        builder.HasIndex(x => x.ResumeRevisionId);
+    }
+}
+
+public sealed class LanguageConfiguration : IEntityTypeConfiguration<Language>
+{
+    public void Configure(EntityTypeBuilder<Language> builder)
+    {
+        builder.ToTable("Languages");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.LanguageName).HasMaxLength(100).IsRequired();
+        builder.Property(x => x.Proficiency).HasMaxLength(100);
+
+        builder.HasIndex(x => x.ResumeRevisionId);
     }
 }
 

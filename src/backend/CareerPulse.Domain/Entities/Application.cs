@@ -67,7 +67,10 @@ public sealed class Application
         UpdatedAt = DateTime.UtcNow;
 
         if (newStatus == ApplicationStatus.Applied)
+        {
             SubmissionDate = DateTime.UtcNow;
+            ResumeRevision?.MarkAsApplied();
+        }
     }
 
     public void UpdateNotes(string? notes)
