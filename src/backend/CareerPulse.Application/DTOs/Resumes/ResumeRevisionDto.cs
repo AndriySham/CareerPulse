@@ -10,6 +10,7 @@ namespace CareerPulse.Application.DTOs.Resumes;
 public sealed class ResumeRevisionDto
 {
     public Guid Id { get; init; }
+    public Guid ResumeId { get; init; }
     public RevisionStatus Status { get; init; }
     public PersonalInfo PersonalInfo { get; init; } = null!;
     public string ProfessionalSummary { get; init; } = string.Empty;

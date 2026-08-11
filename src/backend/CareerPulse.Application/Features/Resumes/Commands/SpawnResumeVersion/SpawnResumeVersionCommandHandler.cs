@@ -23,6 +23,10 @@ public sealed class SpawnResumeVersionCommandHandler
     {
         var parentRevision = await _context.ResumeRevisions
             .Include(r => r.Skills)
+            .Include(r => r.WorkExperiences)
+            .Include(r => r.Educations)
+            .Include(r => r.Projects)
+            .Include(r => r.Languages)
             .FirstOrDefaultAsync(r => r.Id == request.ParentRevisionId, cancellationToken);
 
         if (parentRevision == null)
@@ -30,16 +34,17 @@ public sealed class SpawnResumeVersionCommandHandler
             throw new DomainException($"Parent ResumeRevision with ID '{request.ParentRevisionId}' was not found.");
         }
 
-        // Copy-on-Write: Spawns new version with Version = parent.Version + 1, Status = Draft
-        var newRevision = parentRevision.SpawnNewVersion();
+        var resume = await _context.Resumes
+            .FirstOrDefaultAsync(r => r.Id == parentRevision.ResumeId, cancellationToken);
 
-        // Clone parent skills
-        foreach (var skill in parentRevision.Skills)
+        if (resume == null)
         {
-            newRevision.AddSkill(skill.MasterSkillId, skill.ProficiencyLevel);
+            throw new DomainException($"Resume with ID '{parentRevision.ResumeId}' was not found.");
         }
 
-        _context.ResumeRevisions.Add(newRevision);
+        // Copy-on-Write: Spawns new version via Resume aggregate root
+        var newRevision = resume.SpawnRevision(parentRevision);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         var created = await _context.ResumeRevisions

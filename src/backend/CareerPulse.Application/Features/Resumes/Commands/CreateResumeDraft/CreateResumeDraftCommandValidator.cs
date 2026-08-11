@@ -10,6 +10,26 @@ public sealed class CreateResumeDraftCommandValidator : AbstractValidator<Create
             .NotNull()
             .WithMessage("Request body cannot be null.");
 
+        RuleFor(x => x.Dto.Name)
+            .NotEmpty()
+            .WithMessage("Resume Name is required.")
+            .MaximumLength(200)
+            .WithMessage("Resume Name cannot exceed 200 characters.");
+
+        RuleFor(x => x.Dto.Track)
+            .IsInEnum()
+            .WithMessage("Valid ResumeTrack is required.");
+
+        RuleFor(x => x.Dto.CareerLevel)
+            .IsInEnum()
+            .WithMessage("Valid CareerLevel is required.");
+
+        RuleFor(x => x.Dto.TargetRole)
+            .NotEmpty()
+            .WithMessage("TargetRole is required.")
+            .MaximumLength(200)
+            .WithMessage("TargetRole cannot exceed 200 characters.");
+
         RuleFor(x => x.Dto.PersonalInfo)
             .NotNull()
             .WithMessage("PersonalInfo is required.");

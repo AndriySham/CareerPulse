@@ -43,8 +43,13 @@ public sealed class ResumeRevision
     // Required for EF Core
     private ResumeRevision() { }
 
-    internal static ResumeRevision CreateDraft(Guid resumeId, PersonalInfo personalInfo, string professionalSummary)
+    public static ResumeRevision CreateDraft(Guid resumeId, PersonalInfo personalInfo, string professionalSummary)
     {
+        if (resumeId == Guid.Empty)
+        {
+            throw new DomainException("ResumeId is required for ResumeRevision.");
+        }
+
         return new ResumeRevision
         {
             Id = Guid.NewGuid(),
@@ -58,10 +63,6 @@ public sealed class ResumeRevision
         };
     }
 
-    public static ResumeRevision CreateDraft(PersonalInfo personalInfo, string professionalSummary)
-    {
-        return CreateDraft(Guid.NewGuid(), personalInfo, professionalSummary);
-    }
 
     /// <summary>
     /// Creates a new Draft revision as a copy of this one (Copy-on-Write pattern).

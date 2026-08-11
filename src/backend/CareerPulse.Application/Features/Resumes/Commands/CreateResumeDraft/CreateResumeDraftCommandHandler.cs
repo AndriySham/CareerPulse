@@ -39,14 +39,15 @@ public sealed class CreateResumeDraftCommandHandler
             }
         }
 
-        var revision = ResumeRevision.CreateDraft(dto.PersonalInfo, dto.ProfessionalSummary);
+        var resume = Resume.Create(dto.Name, dto.Track, dto.CareerLevel, dto.TargetRole);
+        var revision = resume.CreateFirstRevision(dto.ProfessionalSummary, dto.PersonalInfo!);
 
         foreach (var skillInput in dto.Skills)
         {
             revision.AddSkill(skillInput.MasterSkillId, skillInput.ProficiencyLevel);
         }
 
-        _context.ResumeRevisions.Add(revision);
+        _context.Resumes.Add(resume);
         await _context.SaveChangesAsync(cancellationToken);
 
         // Fetch created entity with MasterSkill navigation properties loaded
@@ -64,6 +65,7 @@ public sealed class CreateResumeDraftCommandHandler
         return new ResumeRevisionDto
         {
             Id = revision.Id,
+            ResumeId = revision.ResumeId,
             Status = revision.Status,
             PersonalInfo = revision.PersonalInfo,
             ProfessionalSummary = revision.ProfessionalSummary,

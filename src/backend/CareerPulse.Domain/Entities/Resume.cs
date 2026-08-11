@@ -58,4 +58,15 @@ public sealed class Resume
         UpdatedAt = DateTime.UtcNow;
         return revision;
     }
+
+    public ResumeRevision SpawnRevision(ResumeRevision parentRevision)
+    {
+        if (parentRevision.ResumeId != Id)
+            throw new DomainException($"ResumeRevision {parentRevision.Id} does not belong to Resume {Id}.");
+
+        var newRevision = parentRevision.SpawnNewVersion();
+        _revisions.Add(newRevision);
+        UpdatedAt = DateTime.UtcNow;
+        return newRevision;
+    }
 }
