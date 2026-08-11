@@ -6,9 +6,11 @@ import {
   useUpdateResumeDraft,
 } from '@/api/resumes';
 import { useMasterSkills } from '@/api/masterSkills';
-import CustomSelect from '@/components/ui/CustomSelect';
 import ErrorAlert from '@/components/ui/ErrorAlert';
 import ResumeStatusBadge from '@/components/resumes/ResumeStatusBadge';
+import PersonalInfoSection from '@/components/resumes/PersonalInfoSection';
+import ProfessionalSummarySection from '@/components/resumes/ProfessionalSummarySection';
+import SkillsSection from '@/components/resumes/SkillsSection';
 import type {
   PersonalInfo,
   ResumeSkillInputDto,
@@ -22,8 +24,6 @@ import {
   Save,
   User,
   Award,
-  Plus,
-  Trash2,
   Loader2,
   CheckCircle2,
   Briefcase,
@@ -98,10 +98,6 @@ export const ResumeEditorPage: React.FC = () => {
   const [professionalSummary, setProfessionalSummary] = useState('');
   const [attachedSkills, setAttachedSkills] = useState<ResumeSkillInputDto[]>([]);
 
-  // Skill Selector State
-  const [selectedSkillId, setSelectedSkillId] = useState('');
-  const [selectedProficiency, setSelectedProficiency] = useState(3);
-
   // Status & Feedback State
   const [formError, setFormError] = useState<unknown | null>(null);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
@@ -126,23 +122,6 @@ export const ResumeEditorPage: React.FC = () => {
       );
     }
   }, [isNewMode, existingRevision]);
-
-  const handleAddSkill = () => {
-    if (!selectedSkillId) return;
-    if (attachedSkills.some((s) => s.masterSkillId === selectedSkillId)) {
-      return;
-    }
-    setAttachedSkills([
-      ...attachedSkills,
-      { masterSkillId: selectedSkillId, proficiencyLevel: selectedProficiency },
-    ]);
-    setSelectedSkillId('');
-    setSelectedProficiency(3);
-  };
-
-  const handleRemoveSkill = (skillId: string) => {
-    setAttachedSkills(attachedSkills.filter((s) => s.masterSkillId !== skillId));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,13 +180,6 @@ export const ResumeEditorPage: React.FC = () => {
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
   const isAppliedReadOnly = !isNewMode && existingRevision?.status === 'Applied';
-
-  const availableSkillOptions = masterSkills
-    .filter((ms) => !attachedSkills.some((as) => as.masterSkillId === ms.id))
-    .map((ms) => ({
-      value: ms.id,
-      label: `${ms.name} (${ms.category})`,
-    }));
 
   if (!isNewMode && isLoadingRevision) {
     return (
@@ -433,233 +405,31 @@ export const ResumeEditorPage: React.FC = () => {
           </div>
         )}
 
-        {/* GENERAL SECTION (Current Revision General Info) */}
+        {/* GENERAL SECTION (Personal Information & Professional Summary) */}
         {(activeSection === 'all' || activeSection === 'general') && (
-          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-6">
-            <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                <User className="h-4 w-4" />
-              </div>
-              <div>
-                <h2 className="text-base font-semibold text-foreground">General</h2>
-                <p className="text-xs text-muted-foreground">
-                  Personal contact details and professional summary snapshot attached to this revision.
-                </p>
-              </div>
-            </div>
+          <>
+            <PersonalInfoSection
+              personalInfo={personalInfo}
+              onChange={setPersonalInfo}
+              isReadOnly={isAppliedReadOnly}
+            />
 
-            {/* Personal Info Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Full Name <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.fullName}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, fullName: e.target.value })}
-                  placeholder="e.g. Alex Johnson"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Email Address <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="email"
-                  required
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.email}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-                  placeholder="e.g. alex.johnson@example.com"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.phone || ''}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
-                  placeholder="e.g. +1 (555) 234-5678"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.location || ''}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, location: e.target.value })}
-                  placeholder="e.g. San Francisco, CA"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  LinkedIn Profile URL
-                </label>
-                <input
-                  type="url"
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.linkedIn || ''}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, linkedIn: e.target.value })}
-                  placeholder="https://linkedin.com/in/username"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  GitHub Profile URL
-                </label>
-                <input
-                  type="url"
-                  disabled={isAppliedReadOnly}
-                  value={personalInfo.gitHub || ''}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, gitHub: e.target.value })}
-                  placeholder="https://github.com/username"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                />
-              </div>
-            </div>
-
-            {/* Professional Summary */}
-            <div className="pt-2">
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Professional Summary <span className="text-destructive">*</span>
-              </label>
-              <textarea
-                required
-                rows={5}
-                disabled={isAppliedReadOnly}
-                value={professionalSummary}
-                onChange={(e) => setProfessionalSummary(e.target.value)}
-                placeholder="Write a compelling overview of your software engineering expertise, core technical strengths, and career highlights..."
-                className="w-full rounded-lg border border-border bg-background p-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-          </div>
+            <ProfessionalSummarySection
+              summary={professionalSummary}
+              onChange={setProfessionalSummary}
+              isReadOnly={isAppliedReadOnly}
+            />
+          </>
         )}
 
         {/* SKILLS SECTION */}
         {(activeSection === 'all' || activeSection === 'skills') && (
-          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-border/40 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                  <Award className="h-4 w-4" />
-                </div>
-                <div>
-                  <h2 className="text-base font-semibold text-foreground">Skills</h2>
-                  <p className="text-xs text-muted-foreground">
-                    MasterSkill catalog normalization & proficiency levels (ADR 006).
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-muted-foreground font-medium">
-                {attachedSkills.length} skill(s) attached
-              </span>
-            </div>
-
-            {/* Add Skill Controls */}
-            {!isAppliedReadOnly && (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-accent/20 p-4 rounded-xl border border-border/40">
-                <div className="flex-1">
-                  <CustomSelect
-                    value={selectedSkillId}
-                    onChange={(val) => setSelectedSkillId(val)}
-                    options={availableSkillOptions}
-                    placeholder="Select skill from MasterSkill catalog..."
-                  />
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
-                      Proficiency:
-                    </span>
-                    <select
-                      value={selectedProficiency}
-                      onChange={(e) => setSelectedProficiency(Number(e.target.value))}
-                      className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
-                    >
-                      <option value={1}>1 - Beginner</option>
-                      <option value={2}>2 - Elementary</option>
-                      <option value={3}>3 - Intermediate</option>
-                      <option value={4}>4 - Advanced</option>
-                      <option value={5}>5 - Expert</option>
-                    </select>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleAddSkill}
-                    disabled={!selectedSkillId}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Attach Skill
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Attached Skills Display */}
-            {attachedSkills.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-                {attachedSkills.map((s) => {
-                  const masterSkill = masterSkills.find((ms) => ms.id === s.masterSkillId);
-                  const skillName = masterSkill ? masterSkill.name : s.masterSkillId;
-                  const category = masterSkill?.category || 'Other';
-
-                  return (
-                    <div
-                      key={s.masterSkillId}
-                      className="flex items-center justify-between gap-2 rounded-xl bg-background border border-border/80 p-3 shadow-xs"
-                    >
-                      <div>
-                        <div className="font-semibold text-sm text-foreground">{skillName}</div>
-                        <div className="text-[11px] text-muted-foreground">{category}</div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-md bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-xs font-bold">
-                          Lvl {s.proficiencyLevel}
-                        </span>
-                        {!isAppliedReadOnly && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveSkill(s.masterSkillId)}
-                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                            title="Remove skill"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-xl border border-dashed border-border/80 p-6 text-center text-xs text-muted-foreground italic">
-                No skills attached yet. Select a skill from the MasterSkill catalog above.
-              </div>
-            )}
-          </div>
+          <SkillsSection
+            attachedSkills={attachedSkills}
+            onChangeAttachedSkills={setAttachedSkills}
+            masterSkills={masterSkills}
+            isReadOnly={isAppliedReadOnly}
+          />
         )}
 
         {/* NON-INTERACTIVE / FUTURE SECTIONS PLACEHOLDER */}
