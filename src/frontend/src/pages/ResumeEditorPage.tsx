@@ -21,7 +21,6 @@ import {
   ArrowLeft,
   Save,
   User,
-  FileText,
   Award,
   Plus,
   Trash2,
@@ -29,12 +28,46 @@ import {
   CheckCircle2,
   Briefcase,
   Sparkles,
+  GraduationCap,
+  FolderGit2,
+  Languages,
+  Layers,
+  Lock,
 } from 'lucide-react';
+
+export type EditorSection =
+  | 'all'
+  | 'general'
+  | 'experience'
+  | 'education'
+  | 'projects'
+  | 'skills'
+  | 'languages';
+
+interface NavSectionItem {
+  id: EditorSection;
+  label: string;
+  icon: React.ElementType;
+  isImplemented: boolean;
+}
+
+const EDITOR_NAV_ITEMS: NavSectionItem[] = [
+  { id: 'all', label: 'All Sections', icon: Layers, isImplemented: true },
+  { id: 'general', label: 'General', icon: User, isImplemented: true },
+  { id: 'experience', label: 'Experience', icon: Briefcase, isImplemented: false },
+  { id: 'education', label: 'Education', icon: GraduationCap, isImplemented: false },
+  { id: 'projects', label: 'Projects', icon: FolderGit2, isImplemented: false },
+  { id: 'skills', label: 'Skills', icon: Award, isImplemented: true },
+  { id: 'languages', label: 'Languages', icon: Languages, isImplemented: false },
+];
 
 export const ResumeEditorPage: React.FC = () => {
   const { resumeId } = useParams<{ resumeId: string }>();
   const navigate = useNavigate();
   const isNewMode = !resumeId || resumeId === 'new';
+
+  // Section Navigation State
+  const [activeSection, setActiveSection] = useState<EditorSection>('all');
 
   // API Hooks
   const {
@@ -280,322 +313,374 @@ export const ResumeEditorPage: React.FC = () => {
         </div>
       )}
 
+      {/* EDITOR SECTION NAVIGATION */}
+      <div className="flex items-center gap-2 overflow-x-auto border-b border-border/40 pb-3">
+        {EDITOR_NAV_ITEMS.map((sec) => {
+          const Icon = sec.icon;
+          const isActive = activeSection === sec.id;
+          return (
+            <button
+              key={sec.id}
+              type="button"
+              onClick={() => setActiveSection(sec.id)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : sec.isImplemented
+                  ? 'bg-accent/40 text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer'
+                  : 'bg-accent/10 text-muted-foreground/50 border border-dashed border-border/40 cursor-pointer hover:bg-accent/20 hover:text-muted-foreground'
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <span>{sec.label}</span>
+              {!sec.isImplemented && (
+                <span className="rounded bg-muted/80 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground border border-border/40">
+                  Soon
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       <form id="resume-editor-form" onSubmit={handleSubmit} className="space-y-6">
-        {/* SECTION 1: RESUME-LEVEL METADATA */}
-        <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              <Briefcase className="h-4 w-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-semibold text-foreground">1. Resume Profile Metadata</h2>
-              <p className="text-xs text-muted-foreground">
-                High-level career positioning identity (Track, Career Level, and Target Role).
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Resume Name <span className="text-destructive">*</span>
-              </label>
-              <input
-                type="text"
-                required={isNewMode}
-                disabled={!isNewMode}
-                value={isNewMode ? name : existingRevision?.personalInfo?.fullName ? `${existingRevision.personalInfo.fullName}'s Profile` : 'Resume Profile'}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Senior .NET Backend Profile"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Target Role <span className="text-destructive">*</span>
-              </label>
-              <input
-                type="text"
-                required={isNewMode}
-                disabled={!isNewMode}
-                value={isNewMode ? targetRole : '.NET Software Engineer'}
-                onChange={(e) => setTargetRole(e.target.value)}
-                placeholder="e.g. Senior C# Backend Engineer"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Track
-              </label>
-              <select
-                disabled={!isNewMode}
-                value={track}
-                onChange={(e) => setTrack(e.target.value as ResumeTrack)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
-              >
-                <option value="Backend">Backend</option>
-                <option value="Frontend">Frontend</option>
-                <option value="FullStack">FullStack</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Career Level
-              </label>
-              <select
-                disabled={!isNewMode}
-                value={careerLevel}
-                onChange={(e) => setCareerLevel(e.target.value as CareerLevel)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
-              >
-                <option value="Intern">Intern</option>
-                <option value="Junior">Junior</option>
-                <option value="Middle">Middle</option>
-                <option value="Senior">Senior</option>
-                <option value="Lead">Lead</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* SECTION 2: PERSONAL INFORMATION */}
-        <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              <User className="h-4 w-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-semibold text-foreground">2. Personal Information</h2>
-              <p className="text-xs text-muted-foreground">
-                Developer contact details snapshot attached to this revision.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Full Name <span className="text-destructive">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                disabled={isAppliedReadOnly}
-                value={personalInfo.fullName}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, fullName: e.target.value })}
-                placeholder="e.g. Alex Johnson"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Email Address <span className="text-destructive">*</span>
-              </label>
-              <input
-                type="email"
-                required
-                disabled={isAppliedReadOnly}
-                value={personalInfo.email}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-                placeholder="e.g. alex.johnson@example.com"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                disabled={isAppliedReadOnly}
-                value={personalInfo.phone || ''}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
-                placeholder="e.g. +1 (555) 234-5678"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                disabled={isAppliedReadOnly}
-                value={personalInfo.location || ''}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, location: e.target.value })}
-                placeholder="e.g. San Francisco, CA"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                LinkedIn Profile URL
-              </label>
-              <input
-                type="url"
-                disabled={isAppliedReadOnly}
-                value={personalInfo.linkedIn || ''}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, linkedIn: e.target.value })}
-                placeholder="https://linkedin.com/in/username"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                GitHub Profile URL
-              </label>
-              <input
-                type="url"
-                disabled={isAppliedReadOnly}
-                value={personalInfo.gitHub || ''}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, gitHub: e.target.value })}
-                placeholder="https://github.com/username"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* SECTION 3: PROFESSIONAL SUMMARY */}
-        <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              <FileText className="h-4 w-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-semibold text-foreground">3. Professional Summary</h2>
-              <p className="text-xs text-muted-foreground">
-                Executive summary detailing core technical focus and career accomplishments.
-              </p>
-            </div>
-          </div>
-
-          <textarea
-            required
-            rows={5}
-            disabled={isAppliedReadOnly}
-            value={professionalSummary}
-            onChange={(e) => setProfessionalSummary(e.target.value)}
-            placeholder="Write a compelling overview of your software engineering expertise, core technical strengths, and career highlights..."
-            className="w-full rounded-lg border border-border bg-background p-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-          />
-        </div>
-
-        {/* SECTION 4: SKILLS NORMALIZATION & CATALOG */}
-        <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-border/40 pb-3">
-            <div className="flex items-center gap-2">
+        {/* RESUME INFORMATION (Resume Aggregate Metadata) */}
+        {(activeSection === 'all' || activeSection === 'general') && (
+          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+            <div className="flex items-center gap-2 border-b border-border/40 pb-3">
               <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                <Award className="h-4 w-4" />
+                <Briefcase className="h-4 w-4" />
               </div>
               <div>
-                <h2 className="text-base font-semibold text-foreground">
-                  4. Skills Catalog Normalization (ADR 006)
-                </h2>
+                <h2 className="text-base font-semibold text-foreground">Resume Information</h2>
                 <p className="text-xs text-muted-foreground">
-                  Master skills attached to this revision snapshot.
+                  Resume aggregate positioning metadata (Name, Target Role, Track, and Career Level).
                 </p>
               </div>
             </div>
-            <span className="text-xs text-muted-foreground font-medium">
-              {attachedSkills.length} skill(s) attached
-            </span>
-          </div>
 
-          {/* Add Skill Controls */}
-          {!isAppliedReadOnly && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-accent/20 p-4 rounded-xl border border-border/40">
-              <div className="flex-1">
-                <CustomSelect
-                  value={selectedSkillId}
-                  onChange={(val) => setSelectedSkillId(val)}
-                  options={availableSkillOptions}
-                  placeholder="Select skill from MasterSkill catalog..."
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Resume Name <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required={isNewMode}
+                  disabled={!isNewMode}
+                  value={
+                    isNewMode
+                      ? name
+                      : existingRevision?.personalInfo?.fullName
+                      ? `${existingRevision.personalInfo.fullName}'s Profile`
+                      : 'Resume Profile'
+                  }
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Senior .NET Backend Profile"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
                 />
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
-                    Proficiency:
-                  </span>
-                  <select
-                    value={selectedProficiency}
-                    onChange={(e) => setSelectedProficiency(Number(e.target.value))}
-                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
-                  >
-                    <option value={1}>1 - Beginner</option>
-                    <option value={2}>2 - Elementary</option>
-                    <option value={3}>3 - Intermediate</option>
-                    <option value={4}>4 - Advanced</option>
-                    <option value={5}>5 - Expert</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Target Role <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required={isNewMode}
+                  disabled={!isNewMode}
+                  value={isNewMode ? targetRole : '.NET Software Engineer'}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  placeholder="e.g. Senior C# Backend Engineer"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
+                />
+              </div>
 
-                <button
-                  type="button"
-                  onClick={handleAddSkill}
-                  disabled={!selectedSkillId}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Track
+                </label>
+                <select
+                  disabled={!isNewMode}
+                  value={track}
+                  onChange={(e) => setTrack(e.target.value as ResumeTrack)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
                 >
-                  <Plus className="h-3.5 w-3.5" /> Attach Skill
-                </button>
+                  <option value="Backend">Backend</option>
+                  <option value="Frontend">Frontend</option>
+                  <option value="FullStack">FullStack</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Career Level
+                </label>
+                <select
+                  disabled={!isNewMode}
+                  value={careerLevel}
+                  onChange={(e) => setCareerLevel(e.target.value as CareerLevel)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
+                >
+                  <option value="Intern">Intern</option>
+                  <option value="Junior">Junior</option>
+                  <option value="Middle">Middle</option>
+                  <option value="Senior">Senior</option>
+                  <option value="Lead">Lead</option>
+                </select>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Attached Skills Display */}
-          {attachedSkills.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-              {attachedSkills.map((s) => {
-                const masterSkill = masterSkills.find((ms) => ms.id === s.masterSkillId);
-                const skillName = masterSkill ? masterSkill.name : s.masterSkillId;
-                const category = masterSkill?.category || 'Other';
+        {/* GENERAL SECTION (Current Revision General Info) */}
+        {(activeSection === 'all' || activeSection === 'general') && (
+          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-6">
+            <div className="flex items-center gap-2 border-b border-border/40 pb-3">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <User className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-foreground">General</h2>
+                <p className="text-xs text-muted-foreground">
+                  Personal contact details and professional summary snapshot attached to this revision.
+                </p>
+              </div>
+            </div>
 
-                return (
-                  <div
-                    key={s.masterSkillId}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-background border border-border/80 p-3 shadow-xs"
-                  >
-                    <div>
-                      <div className="font-semibold text-sm text-foreground">{skillName}</div>
-                      <div className="text-[11px] text-muted-foreground">{category}</div>
-                    </div>
+            {/* Personal Info Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Full Name <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.fullName}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, fullName: e.target.value })}
+                  placeholder="e.g. Alex Johnson"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-xs font-bold">
-                        Lvl {s.proficiencyLevel}
-                      </span>
-                      {!isAppliedReadOnly && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveSkill(s.masterSkillId)}
-                          className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                          title="Remove skill"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Email Address <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.email}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+                  placeholder="e.g. alex.johnson@example.com"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.phone || ''}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                  placeholder="e.g. +1 (555) 234-5678"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.location || ''}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, location: e.target.value })}
+                  placeholder="e.g. San Francisco, CA"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  LinkedIn Profile URL
+                </label>
+                <input
+                  type="url"
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.linkedIn || ''}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, linkedIn: e.target.value })}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  GitHub Profile URL
+                </label>
+                <input
+                  type="url"
+                  disabled={isAppliedReadOnly}
+                  value={personalInfo.gitHub || ''}
+                  onChange={(e) => setPersonalInfo({ ...personalInfo, gitHub: e.target.value })}
+                  placeholder="https://github.com/username"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                />
+              </div>
+            </div>
+
+            {/* Professional Summary */}
+            <div className="pt-2">
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                Professional Summary <span className="text-destructive">*</span>
+              </label>
+              <textarea
+                required
+                rows={5}
+                disabled={isAppliedReadOnly}
+                value={professionalSummary}
+                onChange={(e) => setProfessionalSummary(e.target.value)}
+                placeholder="Write a compelling overview of your software engineering expertise, core technical strengths, and career highlights..."
+                className="w-full rounded-lg border border-border bg-background p-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* SKILLS SECTION */}
+        {(activeSection === 'all' || activeSection === 'skills') && (
+          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-border/40 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                  <Award className="h-4 w-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">Skills</h2>
+                  <p className="text-xs text-muted-foreground">
+                    MasterSkill catalog normalization & proficiency levels (ADR 006).
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium">
+                {attachedSkills.length} skill(s) attached
+              </span>
+            </div>
+
+            {/* Add Skill Controls */}
+            {!isAppliedReadOnly && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-accent/20 p-4 rounded-xl border border-border/40">
+                <div className="flex-1">
+                  <CustomSelect
+                    value={selectedSkillId}
+                    onChange={(val) => setSelectedSkillId(val)}
+                    options={availableSkillOptions}
+                    placeholder="Select skill from MasterSkill catalog..."
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
+                      Proficiency:
+                    </span>
+                    <select
+                      value={selectedProficiency}
+                      onChange={(e) => setSelectedProficiency(Number(e.target.value))}
+                      className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                    >
+                      <option value={1}>1 - Beginner</option>
+                      <option value={2}>2 - Elementary</option>
+                      <option value={3}>3 - Intermediate</option>
+                      <option value={4}>4 - Advanced</option>
+                      <option value={5}>5 - Expert</option>
+                    </select>
                   </div>
-                );
-              })}
+
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    disabled={!selectedSkillId}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Attach Skill
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Attached Skills Display */}
+            {attachedSkills.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                {attachedSkills.map((s) => {
+                  const masterSkill = masterSkills.find((ms) => ms.id === s.masterSkillId);
+                  const skillName = masterSkill ? masterSkill.name : s.masterSkillId;
+                  const category = masterSkill?.category || 'Other';
+
+                  return (
+                    <div
+                      key={s.masterSkillId}
+                      className="flex items-center justify-between gap-2 rounded-xl bg-background border border-border/80 p-3 shadow-xs"
+                    >
+                      <div>
+                        <div className="font-semibold text-sm text-foreground">{skillName}</div>
+                        <div className="text-[11px] text-muted-foreground">{category}</div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-md bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-xs font-bold">
+                          Lvl {s.proficiencyLevel}
+                        </span>
+                        {!isAppliedReadOnly && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSkill(s.masterSkillId)}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                            title="Remove skill"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-border/80 p-6 text-center text-xs text-muted-foreground italic">
+                No skills attached yet. Select a skill from the MasterSkill catalog above.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* NON-INTERACTIVE / FUTURE SECTIONS PLACEHOLDER */}
+        {!['all', 'general', 'skills'].includes(activeSection) && (
+          <div className="rounded-xl border border-dashed border-border/80 bg-card p-12 text-center shadow-sm">
+            <div className="mx-auto w-12 h-12 rounded-full bg-accent/50 flex items-center justify-center text-muted-foreground mb-3">
+              <Lock className="h-6 w-6" />
             </div>
-          ) : (
-            <div className="rounded-xl border border-dashed border-border/80 p-6 text-center text-xs text-muted-foreground italic">
-              No skills attached yet. Select a skill from the MasterSkill catalog above.
+            <h3 className="text-base font-semibold text-foreground capitalize">
+              {activeSection} Section
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">
+              This section is scheduled for future release (Phase 2). Work experiences, education history, portfolio projects, and spoken languages will be enabled in upcoming versions.
+            </p>
+            <div className="mt-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                <Sparkles className="h-3.5 w-3.5" /> Future Section — Non-Interactive
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </div>
   );
