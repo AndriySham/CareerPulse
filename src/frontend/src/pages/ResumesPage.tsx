@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   useResumeRevisions,
   useSpawnResumeVersion,
 } from '@/api/resumes';
 import ResumeCard from '@/components/resumes/ResumeCard';
 import ResumeStatusBadge from '@/components/resumes/ResumeStatusBadge';
-import ResumeFormModal from '@/components/resumes/ResumeFormModal';
 import ResumeDetailModal from '@/components/resumes/ResumeDetailModal';
 import ResumeVersionHistoryModal from '@/components/resumes/ResumeVersionHistoryModal';
 import CustomSelect from '@/components/ui/CustomSelect';
@@ -27,15 +27,14 @@ import {
 } from 'lucide-react';
 
 export const ResumesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
 
   // Modal States
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [editingRevision, setEditingRevision] = useState<ResumeRevisionDto | null>(null);
   const [selectedRevision, setSelectedRevision] = useState<ResumeRevisionDto | null>(null);
   const [spawnError, setSpawnError] = useState<unknown | null>(null);
 
@@ -82,14 +81,13 @@ export const ResumesPage: React.FC = () => {
 
   // Handlers
   const handleOpenCreate = () => {
-    setEditingRevision(null);
-    setIsFormModalOpen(true);
+    navigate('/resumes/new');
   };
 
   const handleOpenEdit = (revision: ResumeRevisionDto) => {
-    setEditingRevision(revision);
-    setIsFormModalOpen(true);
+    navigate(`/resumes/${revision.id}`);
   };
+
 
   const handleOpenDetail = (revision: ResumeRevisionDto) => {
     setSelectedRevision(revision);
@@ -399,12 +397,6 @@ export const ResumesPage: React.FC = () => {
       )}
 
       {/* Modals */}
-      <ResumeFormModal
-        isOpen={isFormModalOpen}
-        onClose={() => setIsFormModalOpen(false)}
-        revisionToEdit={editingRevision}
-      />
-
       <ResumeDetailModal
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}

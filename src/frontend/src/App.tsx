@@ -5,6 +5,7 @@ import ApplicationsPage from './pages/ApplicationsPage';
 import CompaniesPage from './pages/CompaniesPage';
 import VacanciesPage from './pages/VacanciesPage';
 import ResumesPage from './pages/ResumesPage';
+import ResumeEditorPage from './pages/ResumeEditorPage';
 import SkillsPage from './pages/SkillsPage';
 
 export const App: React.FC = () => {
@@ -17,6 +18,8 @@ export const App: React.FC = () => {
           <Route path="companies" element={<CompaniesPage />} />
           <Route path="vacancies" element={<VacanciesPage />} />
           <Route path="resumes" element={<ResumesPage />} />
+          <Route path="resumes/new" element={<ResumeEditorPage />} />
+          <Route path="resumes/:resumeId" element={<ResumeEditorPage />} />
           <Route path="skills" element={<SkillsPage />} />
           <Route path="*" element={<Navigate to="/applications" replace />} />
         </Route>

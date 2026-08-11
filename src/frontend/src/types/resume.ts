@@ -1,5 +1,8 @@
 import type { SkillCategory } from './masterSkill';
 
+export type ResumeTrack = 'Backend' | 'Frontend' | 'FullStack';
+export type CareerLevel = 'Intern' | 'Junior' | 'Middle' | 'Senior' | 'Lead';
+
 export type RevisionStatus = 'Draft' | 'Applied';
 
 export interface PersonalInfo {
@@ -20,6 +23,7 @@ export interface ResumeRevisionSkillDto {
 
 export interface ResumeRevisionDto {
   id: string;
+  resumeId: string;
   status: RevisionStatus;
   personalInfo: PersonalInfo;
   professionalSummary: string;
@@ -37,6 +41,10 @@ export interface ResumeSkillInputDto {
 }
 
 export interface CreateResumeDraftDto {
+  name: string;
+  track: ResumeTrack;
+  careerLevel: CareerLevel;
+  targetRole: string;
   personalInfo: PersonalInfo;
   professionalSummary: string;
   skills: ResumeSkillInputDto[];
@@ -47,3 +55,15 @@ export interface UpdateResumeDraftDto {
   professionalSummary: string;
   skills: ResumeSkillInputDto[];
 }
+
+export interface ResumeDto {
+  id: string;
+  name: string;
+  track: ResumeTrack;
+  careerLevel: CareerLevel;
+  targetRole: string;
+  createdAt: string;
+  updatedAt: string;
+  revisions?: ResumeRevisionDto[];
+}
+

@@ -16,6 +16,7 @@ public sealed class ResumeRevision
 {
     public Guid Id { get; private set; }
     public Guid ResumeId { get; private set; }
+    public Resume Resume { get; private set; } = null!;
     public RevisionStatus Status { get; private set; }
     public PersonalInfo PersonalInfo { get; private set; } = null!;
     public string ProfessionalSummary { get; private set; } = string.Empty;
