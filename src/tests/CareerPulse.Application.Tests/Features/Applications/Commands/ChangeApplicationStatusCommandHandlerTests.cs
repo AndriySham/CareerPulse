@@ -22,9 +22,11 @@ public class ChangeApplicationStatusCommandHandlerTests
     {
         var company = Company.Create("StatusCorp");
         var personalInfo = PersonalInfo.Create("Alice Smith", "alice@example.com");
-        var revision = ResumeRevision.CreateDraft(personalInfo, "Dotnet Dev");
+        var resume = Resume.Create("Alice's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Dotnet Dev");
+        var revision = resume.CreateFirstRevision("Dotnet Dev", personalInfo);
 
         context.Companies.Add(company);
+        context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
         context.SaveChanges();
 

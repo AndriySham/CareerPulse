@@ -19,10 +19,12 @@ public class GetApplicationsQueryHandlerTests
         var company2 = Company.Create("Beta LLC");
         var vacancy1 = Vacancy.Create(company1.Id, "Dev 1");
         var personalInfo = PersonalInfo.Create("Charlie Brown", "charlie@example.com");
-        var revision = ResumeRevision.CreateDraft(personalInfo, "Engineer");
+        var resume = Resume.Create("Charlie's Resume", ResumeTrack.Frontend, CareerLevel.Middle, "Engineer");
+        var revision = resume.CreateFirstRevision("Engineer", personalInfo);
 
         context.Companies.AddRange(company1, company2);
         context.Vacancies.Add(vacancy1);
+        context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
         context.SaveChanges();
 

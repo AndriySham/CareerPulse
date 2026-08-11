@@ -21,10 +21,12 @@ public class SubmitApplicationCommandHandlerTests
         var company = Company.Create("Tech Corp", "https://techcorp.com");
         var vacancy = Vacancy.Create(company.Id, "Senior C# Developer", "https://techcorp.com/jobs/1");
         var personalInfo = PersonalInfo.Create("John Doe", "john@example.com");
-        var revision = ResumeRevision.CreateDraft(personalInfo, "Experienced .NET Engineer");
+        var resume = Resume.Create("John's Resume", ResumeTrack.Backend, CareerLevel.Senior, "Experienced .NET Engineer");
+        var revision = resume.CreateFirstRevision("Experienced .NET Engineer", personalInfo);
 
         context.Companies.Add(company);
         context.Vacancies.Add(vacancy);
+        context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
         context.SaveChanges();
 
@@ -240,7 +242,8 @@ public class SubmitApplicationCommandHandlerTests
         var company = Company.Create("MapCorp");
         var vacancy = Vacancy.Create(company.Id, "FullStack Dev");
         var personalInfo = PersonalInfo.Create("Jane Smith", "jane@example.com");
-        var revision = ResumeRevision.CreateDraft(personalInfo, "Summary");
+        var resume = Resume.Create("Jane's Resume", ResumeTrack.FullStack, CareerLevel.Middle, "FullStack Dev");
+        var revision = resume.CreateFirstRevision("Summary", personalInfo);
 
         var app = AppEntity.Create(company.Id, revision.Id, "Direct", vacancy.Id);
         app.UpdateNotes("Map notes");

@@ -21,10 +21,12 @@ public class GetApplicationByIdQueryHandlerTests
         var company = Company.Create("QueryCorp");
         var vacancy = Vacancy.Create(company.Id, "Backend Engineer");
         var personalInfo = PersonalInfo.Create("Bob Martin", "bob@example.com");
-        var revision = ResumeRevision.CreateDraft(personalInfo, "Clean Coder");
+        var resume = Resume.Create("Bob's Resume", ResumeTrack.Backend, CareerLevel.Senior, "Clean Coder");
+        var revision = resume.CreateFirstRevision("Clean Coder", personalInfo);
 
         context.Companies.Add(company);
         context.Vacancies.Add(vacancy);
+        context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
         context.SaveChanges();
 

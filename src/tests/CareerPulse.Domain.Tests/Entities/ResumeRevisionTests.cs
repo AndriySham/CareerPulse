@@ -15,11 +15,19 @@ public class ResumeRevisionTests
     [Fact]
     public void CreateDraft_ShouldInitializeWithVersion1AndDraftStatus()
     {
-        // Arrange & Act
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Software Developer");
+        // Arrange
+        var resumeId = Guid.NewGuid();
+        var personalInfo = CreateValidPersonalInfo();
+
+        // Act
+        var revision = ResumeRevision.CreateDraft(
+            resumeId,
+            personalInfo,
+            "Software Developer");
 
         // Assert
         revision.Id.Should().NotBeEmpty();
+        revision.ResumeId.Should().Be(resumeId);
         revision.Status.Should().Be(RevisionStatus.Draft);
         revision.Version.Should().Be(1);
         revision.ParentRevisionId.Should().BeNull();
@@ -29,10 +37,21 @@ public class ResumeRevisionTests
     }
 
     [Fact]
+    public void CreateDraft_WhenResumeIdIsEmpty_ShouldThrowDomainException()
+    {
+        // Arrange & Act
+        var act = () => ResumeRevision.CreateDraft(Guid.Empty, CreateValidPersonalInfo(), "Summary");
+
+        // Assert
+        act.Should().Throw<DomainException>()
+           .WithMessage("ResumeId is required for ResumeRevision.");
+    }
+
+    [Fact]
     public void MarkAsApplied_WhenStatusIsDraft_ShouldTransitionToApplied()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
 
         // Act
         revision.MarkAsApplied();
@@ -45,7 +64,7 @@ public class ResumeRevisionTests
     public void MarkAsApplied_WhenStatusIsAlreadyApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
@@ -60,7 +79,7 @@ public class ResumeRevisionTests
     public void UpdateSummary_WhenStatusIsApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
@@ -75,7 +94,7 @@ public class ResumeRevisionTests
     public void UpdatePersonalInfo_WhenStatusIsApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
@@ -90,7 +109,7 @@ public class ResumeRevisionTests
     public void SetFileReference_WhenStatusIsApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
@@ -105,7 +124,7 @@ public class ResumeRevisionTests
     public void AddSkill_WhenStatusIsApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
@@ -120,7 +139,7 @@ public class ResumeRevisionTests
     public void RemoveSkill_WhenStatusIsApplied_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         var skillId = Guid.NewGuid();
         revision.AddSkill(skillId, 3);
         revision.MarkAsApplied();
@@ -137,7 +156,7 @@ public class ResumeRevisionTests
     public void AddSkill_WhenDuplicateMasterSkillId_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         var skillId = Guid.NewGuid();
         revision.AddSkill(skillId, 4);
 
@@ -153,7 +172,7 @@ public class ResumeRevisionTests
     public void RemoveSkill_WhenSkillNotFound_ShouldThrowDomainException()
     {
         // Arrange
-        var revision = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Summary");
+        var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         var skillId = Guid.NewGuid();
 
         // Act
@@ -168,7 +187,8 @@ public class ResumeRevisionTests
     public void SpawnNewVersion_WhenStatusIsApplied_ShouldCreateDraftWithIncrementedVersionAndParentId()
     {
         // Arrange
-        var original = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Original Summary");
+        var resumeId = Guid.NewGuid();
+        var original = ResumeRevision.CreateDraft(resumeId, CreateValidPersonalInfo(), "Original Summary");
         var skillId = Guid.NewGuid();
         original.AddSkill(skillId, 4);
         original.SetFileReference("resumes/v1.pdf");
@@ -180,6 +200,7 @@ public class ResumeRevisionTests
         // Assert
         spawned.Id.Should().NotBeEmpty();
         spawned.Id.Should().NotBe(original.Id);
+        spawned.ResumeId.Should().Be(resumeId);
         spawned.Status.Should().Be(RevisionStatus.Draft);
         spawned.Version.Should().Be(2);
         spawned.ParentRevisionId.Should().Be(original.Id);
@@ -192,7 +213,7 @@ public class ResumeRevisionTests
     public void SpawnNewVersion_WhenStatusIsApplied_ShouldLeaveOriginalRevisionUntouched()
     {
         // Arrange
-        var original = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Original Summary");
+        var original = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Original Summary");
         original.SetFileReference("resumes/v1.pdf");
         original.MarkAsApplied();
 
@@ -209,7 +230,7 @@ public class ResumeRevisionTests
     public void SpawnNewVersion_WhenStatusIsDraft_ShouldThrowDomainException()
     {
         // Arrange
-        var draft = ResumeRevision.CreateDraft(CreateValidPersonalInfo(), "Draft Summary");
+        var draft = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Draft Summary");
 
         // Act
         var act = () => draft.SpawnNewVersion();
@@ -217,5 +238,75 @@ public class ResumeRevisionTests
         // Assert
         act.Should().Throw<DomainException>()
            .WithMessage("Only an Applied ResumeRevision can spawn a new version.");
+    }
+
+    [Fact]
+    public void Resume_CreateFirstRevision_ShouldCreateDraftWithResumeIdAndAddToRevisions()
+    {
+        // Arrange
+        var resume = Resume.Create("John's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Software Developer");
+        var personalInfo = CreateValidPersonalInfo();
+
+        // Act
+        var revision = resume.CreateFirstRevision("Software Developer", personalInfo);
+
+        // Assert
+        revision.ResumeId.Should().Be(resume.Id);
+        revision.Version.Should().Be(1);
+        revision.Status.Should().Be(RevisionStatus.Draft);
+        resume.Revisions.Should().ContainSingle(r => r.Id == revision.Id);
+    }
+
+    [Fact]
+    public void Resume_CreateFirstRevision_WhenFirstRevisionAlreadyExists_ShouldThrowDomainException()
+    {
+        // Arrange
+        var resume = Resume.Create("John's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Software Developer");
+        resume.CreateFirstRevision("First Summary", CreateValidPersonalInfo());
+
+        // Act
+        var act = () => resume.CreateFirstRevision("Second Summary", CreateValidPersonalInfo());
+
+        // Assert
+        act.Should().Throw<DomainException>()
+           .WithMessage("First revision already exists. Use SpawnNewVersion() on an existing revision.");
+    }
+
+    [Fact]
+    public void Resume_SpawnRevision_WhenRevisionBelongsToDifferentResume_ShouldThrowDomainException()
+    {
+        // Arrange
+        var resume1 = Resume.Create("Resume 1", ResumeTrack.Backend, CareerLevel.Senior, "Dev 1");
+        var resume2 = Resume.Create("Resume 2", ResumeTrack.Frontend, CareerLevel.Middle, "Dev 2");
+
+        var revision1 = resume1.CreateFirstRevision("Summary 1", CreateValidPersonalInfo());
+        revision1.MarkAsApplied();
+
+        // Act
+        var act = () => resume2.SpawnRevision(revision1);
+
+        // Assert
+        act.Should().Throw<DomainException>()
+           .WithMessage($"ResumeRevision {revision1.Id} does not belong to Resume {resume2.Id}.");
+    }
+
+    [Fact]
+    public void Resume_SpawnRevision_WhenRevisionBelongsToSameResume_ShouldSpawnNewVersionAndAddToRevisions()
+    {
+        // Arrange
+        var resume = Resume.Create("Resume 1", ResumeTrack.Backend, CareerLevel.Senior, "Dev 1");
+        var revision1 = resume.CreateFirstRevision("Summary 1", CreateValidPersonalInfo());
+        revision1.MarkAsApplied();
+
+        // Act
+        var revision2 = resume.SpawnRevision(revision1);
+
+        // Assert
+        revision2.ResumeId.Should().Be(resume.Id);
+        revision2.Version.Should().Be(2);
+        revision2.ParentRevisionId.Should().Be(revision1.Id);
+        revision2.Status.Should().Be(RevisionStatus.Draft);
+        resume.Revisions.Should().HaveCount(2);
+        resume.Revisions.Should().Contain(revision2);
     }
 }
