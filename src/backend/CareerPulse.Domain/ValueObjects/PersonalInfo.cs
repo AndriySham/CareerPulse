@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CareerPulse.Domain.ValueObjects;
 
 /// <summary>
@@ -16,6 +18,23 @@ public sealed record PersonalInfo
 
     private PersonalInfo() { }
 
+    [JsonConstructor]
+    public PersonalInfo(
+        string fullName,
+        string email,
+        string? phone = null,
+        string? linkedIn = null,
+        string? gitHub = null,
+        string? location = null)
+    {
+        FullName = fullName;
+        Email = email;
+        Phone = phone;
+        LinkedIn = linkedIn;
+        GitHub = gitHub;
+        Location = location;
+    }
+
     public static PersonalInfo Create(
         string fullName,
         string email,
@@ -29,14 +48,13 @@ public sealed record PersonalInfo
         if (string.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email is required.", nameof(email));
 
-        return new PersonalInfo
-        {
-            FullName = fullName.Trim(),
-            Email = email.Trim().ToLowerInvariant(),
-            Phone = phone?.Trim(),
-            LinkedIn = linkedIn?.Trim(),
-            GitHub = gitHub?.Trim(),
-            Location = location?.Trim()
-        };
+        return new PersonalInfo(
+            fullName.Trim(),
+            email.Trim().ToLowerInvariant(),
+            phone?.Trim(),
+            linkedIn?.Trim(),
+            gitHub?.Trim(),
+            location?.Trim()
+        );
     }
 }
