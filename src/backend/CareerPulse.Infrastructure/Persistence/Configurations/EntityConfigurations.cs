@@ -60,7 +60,7 @@ public sealed class ResumeConfiguration : IEntityTypeConfiguration<Resume>
         builder.Property(x => x.TargetRole).HasMaxLength(200).IsRequired();
 
         builder.HasMany(x => x.Revisions)
-            .WithOne()
+            .WithOne(x => x.Resume)
             .HasForeignKey(x => x.ResumeId)
             .OnDelete(DeleteBehavior.Cascade);
 
