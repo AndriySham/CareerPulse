@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   useResumeRevision,
+  useResumeRevisions,
   useCreateResumeDraft,
   useUpdateResumeDraft,
+  useSpawnResumeVersion,
 } from '@/api/resumes';
 import { useMasterSkills } from '@/api/masterSkills';
 import ErrorAlert from '@/components/ui/ErrorAlert';
@@ -11,6 +13,8 @@ import ResumeStatusBadge from '@/components/resumes/ResumeStatusBadge';
 import PersonalInfoSection from '@/components/resumes/PersonalInfoSection';
 import ProfessionalSummarySection from '@/components/resumes/ProfessionalSummarySection';
 import SkillsSection from '@/components/resumes/SkillsSection';
+import ResumeRevisionWorkflowCard from '@/components/resumes/ResumeRevisionWorkflowCard';
+import ResumeVersionHistoryModal from '@/components/resumes/ResumeVersionHistoryModal';
 import type {
   PersonalInfo,
   ResumeSkillInputDto,
@@ -33,6 +37,9 @@ import {
   Languages,
   Layers,
   Lock,
+  GitBranch,
+  Plus,
+  History,
 } from 'lucide-react';
 
 export type EditorSection =
@@ -69,6 +76,9 @@ export const ResumeEditorPage: React.FC = () => {
   // Section Navigation State
   const [activeSection, setActiveSection] = useState<EditorSection>('all');
 
+  // History Modal State
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
   // API Hooks
   const {
     data: existingRevision,
@@ -76,8 +86,10 @@ export const ResumeEditorPage: React.FC = () => {
     isError: isErrorRevision,
     error: loadError,
   } = useResumeRevision(isNewMode ? undefined : resumeId);
+  const { data: allRevisions = [] } = useResumeRevisions();
   const createMutation = useCreateResumeDraft();
   const updateMutation = useUpdateResumeDraft();
+  const spawnMutation = useSpawnResumeVersion();
   const { data: masterSkills = [] } = useMasterSkills();
 
   // Resume-level Metadata State
@@ -178,6 +190,19 @@ export const ResumeEditorPage: React.FC = () => {
     }
   };
 
+  const handleSpawnVersion = () => {
+    if (!existingRevision) return;
+    setFormError(null);
+    spawnMutation.mutate(existingRevision.id, {
+      onSuccess: (newRev) => {
+        navigate(`/resumes/${newRev.id}`);
+      },
+      onError: (err) => {
+        setFormError(err);
+      },
+    });
+  };
+
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
   const isAppliedReadOnly = !isNewMode && existingRevision?.status === 'Applied';
 
@@ -223,7 +248,7 @@ export const ResumeEditorPage: React.FC = () => {
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
                 {isNewMode
                   ? 'Create New Resume Profile'
-                  : `Resume Editor (v${existingRevision?.version || 1})`}
+                  : `Resume Editor (Revision ${existingRevision?.version || 1})`}
               </h1>
               {!isNewMode && existingRevision && (
                 <ResumeStatusBadge status={existingRevision.status} size="sm" />
@@ -244,6 +269,35 @@ export const ResumeEditorPage: React.FC = () => {
           >
             Cancel
           </Link>
+
+          {!isNewMode && existingRevision && (
+            <>
+              <button
+                type="button"
+                onClick={() => setIsHistoryModalOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-2 text-sm font-semibold text-foreground hover:bg-accent transition-colors cursor-pointer"
+                title="View version history"
+              >
+                <History className="h-4 w-4 text-muted-foreground" />
+                <span className="hidden sm:inline">View History</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSpawnVersion}
+                disabled={spawnMutation.isPending}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-all cursor-pointer disabled:opacity-50"
+                title="Create a new version draft from this revision"
+              >
+                {spawnMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <GitBranch className="h-4 w-4" />
+                )}
+                <span>Create New Version</span>
+              </button>
+            </>
+          )}
 
           <button
             type="submit"
@@ -274,15 +328,42 @@ export const ResumeEditorPage: React.FC = () => {
 
       {/* Applied Read-only Notice */}
       {isAppliedReadOnly && (
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-300 text-sm">
-          <p className="font-semibold flex items-center gap-2">
-            <Sparkles className="h-4 w-4" /> Read-Only Revision (ADR 005)
-          </p>
-          <p className="text-xs text-amber-300/80 mt-1">
-            This resume revision has been linked to an active job application and marked as Applied.
-            To make changes, return to the Resumes list and click &quot;Spawn&quot; to branch a new editable draft.
-          </p>
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-300 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <p className="font-semibold flex items-center gap-2">
+              <Sparkles className="h-4 w-4" /> Read-Only Revision (ADR 005)
+            </p>
+            <p className="text-xs text-amber-300/80 mt-1">
+              This resume revision has been linked to an active job application and marked as Applied.
+              To make changes, branch a new editable draft.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleSpawnVersion}
+            disabled={spawnMutation.isPending}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500/20 text-amber-200 border border-amber-500/30 px-3.5 py-1.5 text-xs font-semibold hover:bg-amber-500/30 transition-all cursor-pointer shrink-0"
+          >
+            {spawnMutation.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Plus className="h-3.5 w-3.5" />
+            )}
+            <span>Create New Version (v{existingRevision.version + 1})</span>
+          </button>
         </div>
+      )}
+
+      {/* RESUME REVISION WORKFLOW CARD & CURRENT REVISION HEADER */}
+      {!isNewMode && existingRevision && (
+        <ResumeRevisionWorkflowCard
+          currentRevision={existingRevision}
+          allRevisions={allRevisions}
+          onSelectRevision={(id) => navigate(`/resumes/${id}`)}
+          onSpawnVersion={handleSpawnVersion}
+          onOpenHistoryModal={() => setIsHistoryModalOpen(true)}
+          isSpawning={spawnMutation.isPending}
+        />
       )}
 
       {/* EDITOR SECTION NAVIGATION */}
@@ -452,6 +533,20 @@ export const ResumeEditorPage: React.FC = () => {
           </div>
         )}
       </form>
+
+      {/* REVISION VERSION HISTORY MODAL */}
+      {!isNewMode && existingRevision && (
+        <ResumeVersionHistoryModal
+          isOpen={isHistoryModalOpen}
+          onClose={() => setIsHistoryModalOpen(false)}
+          revisions={allRevisions}
+          selectedRevision={existingRevision}
+          onSelectRevision={(rev) => {
+            setIsHistoryModalOpen(false);
+            navigate(`/resumes/${rev.id}`);
+          }}
+        />
+      )}
     </div>
   );
 };
