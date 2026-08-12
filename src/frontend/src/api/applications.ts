@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { resumesKeys } from './resumes';
 import type {
   ApplicationDto,
   SubmitApplicationDto,
@@ -72,6 +73,7 @@ export function useSubmitApplication() {
     mutationFn: submitApplication,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: applicationsKeys.all });
+      queryClient.invalidateQueries({ queryKey: resumesKeys.all });
     },
   });
 }
@@ -83,6 +85,7 @@ export function useChangeApplicationStatus() {
       changeApplicationStatus(id, dto),
     onSuccess: (updatedApp) => {
       queryClient.invalidateQueries({ queryKey: applicationsKeys.all });
+      queryClient.invalidateQueries({ queryKey: resumesKeys.all });
       queryClient.setQueryData(applicationsKeys.detail(updatedApp.id), updatedApp);
     },
   });

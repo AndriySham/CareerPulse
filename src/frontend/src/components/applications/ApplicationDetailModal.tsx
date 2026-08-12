@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Modal } from '@/components/ui/Modal';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import ApplicationStatusBadge, { STATUS_CONFIG } from './ApplicationStatusBadge';
 import { useChangeApplicationStatus } from '@/api/applications';
+import { useResumeRevision } from '@/api/resumes';
 import type { ApplicationDto, ApplicationStatus } from '@/types';
 import {
   Building2,
@@ -13,6 +15,7 @@ import {
   ArrowRight,
   Send,
   Lock,
+  ExternalLink,
 } from 'lucide-react';
 
 interface ApplicationDetailModalProps {
@@ -30,6 +33,7 @@ export const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({
   const [transitionNotes, setTransitionNotes] = useState('');
 
   const changeStatusMutation = useChangeApplicationStatus();
+  const { data: linkedRevision } = useResumeRevision(application?.resumeRevisionId);
 
   if (!application) return null;
 
@@ -130,15 +134,38 @@ export const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({
           </div>
 
           <div className="rounded-xl border border-border/60 bg-card p-3.5 space-y-2">
-            <div className="font-bold text-foreground flex items-center gap-1.5">
-              <FileText className="h-3.5 w-3.5 text-primary" /> Linked Resume Revision (ADR 005)
+            <div className="font-bold text-foreground flex items-center gap-1.5 justify-between">
+              <span className="flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5 text-primary" /> Linked Resume Revision
+              </span>
+              <Link
+                to="/resumes"
+                onClick={onClose}
+                className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-0.5"
+              >
+                Resumes <ExternalLink className="h-3 w-3" />
+              </Link>
             </div>
             <div className="text-muted-foreground space-y-1">
-              <div>
-                Revision ID: <code className="text-primary font-mono text-[11px]">{application.resumeRevisionId.slice(0, 8)}...</code>
-              </div>
-              <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-[11px]">
-                <Lock className="h-3 w-3" /> Immutability Locked on Submission
+              {linkedRevision ? (
+                <>
+                  <div>
+                    Version: <strong className="text-foreground">v{linkedRevision.version}</strong>{' '}
+                    <span className="text-[11px] opacity-75">({linkedRevision.status})</span>
+                  </div>
+                  {linkedRevision.personalInfo?.fullName && (
+                    <div className="truncate">
+                      Candidate: <strong className="text-foreground">{linkedRevision.personalInfo.fullName}</strong>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div>
+                  Revision ID: <code className="text-primary font-mono text-[11px]">{application.resumeRevisionId.slice(0, 8)}...</code>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-[11px] pt-1">
+                <Lock className="h-3 w-3" /> Immutability Locked on Submission (ADR 005)
               </div>
             </div>
           </div>
