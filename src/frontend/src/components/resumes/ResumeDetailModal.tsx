@@ -68,7 +68,7 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
             <div>
               <h4 className="font-semibold text-amber-400 text-sm">Editable Draft Revision</h4>
               <p className="mt-0.5 opacity-90">
-                This revision is in Draft status. You can modify its contact info, summary, or skills directly, or spawn a new version.
+                This revision is in Draft status. You can modify its contact info, summary, or skills directly.
               </p>
             </div>
           </div>
@@ -246,17 +246,19 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
               </button>
             )}
 
-            <button
-              type="button"
-              disabled={isSpawning}
-              onClick={() => {
-                onSpawn(revision);
-              }}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50"
-            >
-              <GitBranch className="h-4 w-4" />
-              Spawn New Version
-            </button>
+            {!isDraft && (
+              <button
+                type="button"
+                disabled={isSpawning}
+                onClick={() => {
+                  onSpawn(revision);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <GitBranch className="h-4 w-4" />
+                Spawn New Version
+              </button>
+            )}
           </div>
         </div>
       </div>

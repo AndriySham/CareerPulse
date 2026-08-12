@@ -74,20 +74,22 @@ export const ResumeRevisionWorkflowCard: React.FC<ResumeRevisionWorkflowCardProp
 
         {/* Header Actions */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onSpawnVersion}
-            disabled={isSpawning}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 text-xs font-semibold hover:bg-primary/20 transition-all cursor-pointer disabled:opacity-50"
-            title="Create a new draft version from this revision"
-          >
-            {isSpawning ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Plus className="h-3.5 w-3.5" />
-            )}
-            <span>Create New Version</span>
-          </button>
+          {currentRevision.status === 'Applied' && (
+            <button
+              type="button"
+              onClick={onSpawnVersion}
+              disabled={isSpawning}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 text-xs font-semibold hover:bg-primary/20 transition-all cursor-pointer disabled:opacity-50"
+              title="Create a new draft version from this revision"
+            >
+              {isSpawning ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Plus className="h-3.5 w-3.5" />
+              )}
+              <span>Create New Version</span>
+            </button>
+          )}
 
           <button
             type="button"

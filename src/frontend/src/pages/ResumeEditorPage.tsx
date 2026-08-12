@@ -191,7 +191,7 @@ export const ResumeEditorPage: React.FC = () => {
   };
 
   const handleSpawnVersion = () => {
-    if (!existingRevision) return;
+    if (!existingRevision || existingRevision.status !== 'Applied') return;
     setFormError(null);
     spawnMutation.mutate(existingRevision.id, {
       onSuccess: (newRev) => {
@@ -282,20 +282,22 @@ export const ResumeEditorPage: React.FC = () => {
                 <span className="hidden sm:inline">View History</span>
               </button>
 
-              <button
-                type="button"
-                onClick={handleSpawnVersion}
-                disabled={spawnMutation.isPending}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-all cursor-pointer disabled:opacity-50"
-                title="Create a new version draft from this revision"
-              >
-                {spawnMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <GitBranch className="h-4 w-4" />
-                )}
-                <span>Create New Version</span>
-              </button>
+              {existingRevision.status === 'Applied' && (
+                <button
+                  type="button"
+                  onClick={handleSpawnVersion}
+                  disabled={spawnMutation.isPending}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-all cursor-pointer disabled:opacity-50"
+                  title="Create a new version draft from this revision"
+                >
+                  {spawnMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <GitBranch className="h-4 w-4" />
+                  )}
+                  <span>Create New Version</span>
+                </button>
+              )}
             </>
           )}
 

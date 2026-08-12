@@ -100,6 +100,7 @@ export const ResumesPage: React.FC = () => {
   };
 
   const handleSpawnVersion = (revision: ResumeRevisionDto) => {
+    if (revision.status !== 'Applied') return;
     setSpawnError(null);
     spawnMutation.mutate(revision.id, {
       onSuccess: (newRevision) => {
@@ -376,16 +377,18 @@ export const ResumesPage: React.FC = () => {
                             Edit
                           </button>
                         )}
-                        <button
-                          type="button"
-                          disabled={
-                            spawnMutation.isPending && spawnMutation.variables === rev.id
-                          }
-                          onClick={() => handleSpawnVersion(rev)}
-                          className="rounded bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 text-xs font-semibold hover:bg-primary/20 transition-colors disabled:opacity-50"
-                        >
-                          Spawn
-                        </button>
+                        {rev.status === 'Applied' && (
+                          <button
+                            type="button"
+                            disabled={
+                              spawnMutation.isPending && spawnMutation.variables === rev.id
+                            }
+                            onClick={() => handleSpawnVersion(rev)}
+                            className="rounded bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 text-xs font-semibold hover:bg-primary/20 transition-colors disabled:opacity-50"
+                          >
+                            Spawn
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

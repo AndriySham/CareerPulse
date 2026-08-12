@@ -161,16 +161,18 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({
             </span>
           )}
 
-          <button
-            type="button"
-            disabled={isSpawning}
-            onClick={() => onSpawn(revision)}
-            className="inline-flex items-center gap-1 rounded-lg bg-primary/10 border border-primary/20 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
-            title="Spawn a new editable draft version (Copy-on-Write per ADR 005)"
-          >
-            <GitBranch className="h-3.5 w-3.5" />
-            Spawn
-          </button>
+          {!isDraft && (
+            <button
+              type="button"
+              disabled={isSpawning}
+              onClick={() => onSpawn(revision)}
+              className="inline-flex items-center gap-1 rounded-lg bg-primary/10 border border-primary/20 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
+              title="Spawn a new editable draft version (Copy-on-Write per ADR 005)"
+            >
+              <GitBranch className="h-3.5 w-3.5" />
+              Spawn
+            </button>
+          )}
         </div>
       </div>
     </div>
