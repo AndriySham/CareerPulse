@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import type { VacancyDto, CompanyDto } from '@/types';
 import { Briefcase, Building2, Calendar, ExternalLink, Edit3, ChevronRight } from 'lucide-react';
 
 interface VacancyCardProps {
   vacancy: VacancyDto;
   company?: CompanyDto;
-  onView: (vacancy: VacancyDto) => void;
+  onView?: (vacancy: VacancyDto) => void;
   onEdit: (vacancy: VacancyDto) => void;
 }
 
@@ -25,12 +26,13 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
               <Briefcase className="h-5 w-5" />
             </div>
             <div>
-              <h3
-                onClick={() => onView(vacancy)}
-                className="font-bold text-base text-foreground tracking-tight hover:text-primary transition-colors cursor-pointer"
+              <Link
+                to={`/vacancies/${vacancy.id}`}
+                onClick={() => onView?.(vacancy)}
+                className="font-bold text-base text-foreground tracking-tight hover:text-primary transition-colors cursor-pointer block"
               >
                 {vacancy.title}
-              </h3>
+              </Link>
               {company && (
                 <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground mt-0.5">
                   <Building2 className="h-3 w-3 text-primary/70" />
@@ -83,18 +85,18 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
           <button
             type="button"
             onClick={() => onEdit(vacancy)}
-            className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-primary transition-colors"
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-primary transition-colors cursor-pointer"
             title="Edit Vacancy"
           >
             <Edit3 className="h-4 w-4" />
           </button>
-          <button
-            type="button"
-            onClick={() => onView(vacancy)}
-            className="inline-flex items-center gap-1 rounded-lg bg-accent/60 px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+          <Link
+            to={`/vacancies/${vacancy.id}`}
+            onClick={() => onView?.(vacancy)}
+            className="inline-flex items-center gap-1 rounded-lg bg-accent/60 px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
           >
             Details <ChevronRight className="h-3.5 w-3.5" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

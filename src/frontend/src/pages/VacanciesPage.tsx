@@ -1,23 +1,21 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useVacancies } from '@/api/vacancies';
 import { useCompanies } from '@/api/companies';
 import VacancyCard from '@/components/vacancies/VacancyCard';
 import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
-import VacancyDetailModal from '@/components/vacancies/VacancyDetailModal';
 import CustomSelect from '@/components/ui/CustomSelect';
 import type { VacancyDto } from '@/types';
 import { Briefcase, Search, Plus, Building2, Filter } from 'lucide-react';
 
 export const VacanciesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal states
   const [isVacancyFormOpen, setIsVacancyFormOpen] = useState(false);
   const [editingVacancy, setEditingVacancy] = useState<VacancyDto | null>(null);
-
-  const [isVacancyDetailOpen, setIsVacancyDetailOpen] = useState(false);
-  const [viewingVacancy, setViewingVacancy] = useState<VacancyDto | null>(null);
 
   // Queries
   const { data: companies = [] } = useCompanies(true);
@@ -63,8 +61,7 @@ export const VacanciesPage: React.FC = () => {
   };
 
   const handleViewVacancy = (vacancy: VacancyDto) => {
-    setViewingVacancy(vacancy);
-    setIsVacancyDetailOpen(true);
+    navigate(`/vacancies/${vacancy.id}`);
   };
 
   return (
@@ -201,13 +198,6 @@ export const VacanciesPage: React.FC = () => {
         onClose={() => setIsVacancyFormOpen(false)}
         vacancyToEdit={editingVacancy}
         initialCompanyId={selectedCompanyId !== 'all' ? selectedCompanyId : undefined}
-      />
-
-      <VacancyDetailModal
-        isOpen={isVacancyDetailOpen}
-        onClose={() => setIsVacancyDetailOpen(false)}
-        vacancy={viewingVacancy}
-        onEditVacancy={handleEditVacancy}
       />
     </div>
   );

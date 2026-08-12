@@ -4,6 +4,7 @@ import MainLayout from './components/layout/MainLayout';
 import ApplicationsPage from './pages/ApplicationsPage';
 import CompaniesPage from './pages/CompaniesPage';
 import VacanciesPage from './pages/VacanciesPage';
+import VacancyDetailPage from './pages/VacancyDetailPage';
 import ResumesPage from './pages/ResumesPage';
 import ResumeEditorPage from './pages/ResumeEditorPage';
 import SkillsPage from './pages/SkillsPage';
@@ -17,6 +18,7 @@ export const App: React.FC = () => {
           <Route path="applications" element={<ApplicationsPage />} />
           <Route path="companies" element={<CompaniesPage />} />
           <Route path="vacancies" element={<VacanciesPage />} />
+          <Route path="vacancies/:vacancyId" element={<VacancyDetailPage />} />
           <Route path="resumes" element={<ResumesPage />} />
           <Route path="resumes/new" element={<ResumeEditorPage />} />
           <Route path="resumes/:resumeId" element={<ResumeEditorPage />} />

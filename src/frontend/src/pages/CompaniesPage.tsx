@@ -1,15 +1,15 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCompanies } from '@/api/companies';
 import CompanyCard from '@/components/companies/CompanyCard';
 import CompanyFormModal from '@/components/companies/CompanyFormModal';
 import CompanyDetailModal from '@/components/companies/CompanyDetailModal';
 import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
-import VacancyDetailModal from '@/components/vacancies/VacancyDetailModal';
-import { useVacancies } from '@/api/vacancies';
 import type { CompanyDto, VacancyDto } from '@/types';
 import { Building2, Search, Plus, Archive, CheckCircle2, SlidersHorizontal } from 'lucide-react';
 
 export const CompaniesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [includeArchived, setIncludeArchived] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -24,12 +24,8 @@ export const CompaniesPage: React.FC = () => {
   const [vacancyCompanyId, setVacancyCompanyId] = useState<string | undefined>(undefined);
   const [editingVacancy, setEditingVacancy] = useState<VacancyDto | null>(null);
 
-  const [isVacancyDetailOpen, setIsVacancyDetailOpen] = useState(false);
-  const [viewingVacancy, setViewingVacancy] = useState<VacancyDto | null>(null);
-
   // Queries
   const { data: companies = [], isLoading, isError, refetch } = useCompanies(includeArchived);
-  const { data: vacancies = [] } = useVacancies();
 
   // Statistics
   const totalCompanies = companies.length;
@@ -71,11 +67,7 @@ export const CompaniesPage: React.FC = () => {
   };
 
   const handleSelectVacancyFromDetail = (vacancyId: string) => {
-    const found = vacancies.find((v) => v.id === vacancyId);
-    if (found) {
-      setViewingVacancy(found);
-      setIsVacancyDetailOpen(true);
-    }
+    navigate(`/vacancies/${vacancyId}`);
   };
 
   return (
@@ -238,17 +230,6 @@ export const CompaniesPage: React.FC = () => {
         onClose={() => setIsVacancyFormOpen(false)}
         vacancyToEdit={editingVacancy}
         initialCompanyId={vacancyCompanyId}
-      />
-
-      <VacancyDetailModal
-        isOpen={isVacancyDetailOpen}
-        onClose={() => setIsVacancyDetailOpen(false)}
-        vacancy={viewingVacancy}
-        onEditVacancy={(v) => {
-          setIsVacancyDetailOpen(false);
-          setEditingVacancy(v);
-          setIsVacancyFormOpen(true);
-        }}
       />
     </div>
   );
