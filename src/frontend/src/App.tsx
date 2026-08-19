@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import ApplicationsPage from './pages/ApplicationsPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import CompaniesPage from './pages/CompaniesPage';
 import VacanciesPage from './pages/VacanciesPage';
 import VacancyDetailPage from './pages/VacancyDetailPage';
@@ -16,6 +17,7 @@ export const App: React.FC = () => {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Navigate to="/applications" replace />} />
           <Route path="applications" element={<ApplicationsPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="companies" element={<CompaniesPage />} />
           <Route path="vacancies" element={<VacanciesPage />} />
           <Route path="vacancies/:vacancyId" element={<VacancyDetailPage />} />

@@ -3,14 +3,14 @@
     "",
     "\\src",
     "\\src\\backend",
-    "\\src\\backend\\CareerPulse.Application",
-    "\\src\\backend\\CareerPulse.Application\\Behaviors",
     "\\src\\backend\\CareerPulse.Application\\DTOs",
     "\\src\\backend\\CareerPulse.Application\\DTOs\\AI",
     "\\src\\backend\\CareerPulse.Application\\DTOs\\MasterSkills",
-    "\\src\\backend\\CareerPulse.Infrastructure",
-    "\\src\\backend\\CareerPulse.Infrastructure\\Persistence\\Configurations"
+    "\\src\\backend\\CareerPulse.Domain",
+    "\\src\\backend\\CareerPulse.Domain\\Entities",
+    "\\src\\backend\\CareerPulse.Domain\\Enums",
+    "\\src\\backend\\CareerPulse.Infrastructure"
   ],
-  "SelectedNode": "\\src\\backend\\CareerPulse.Application\\Behaviors\\ValidationBehavior.cs",
+  "SelectedNode": "\\src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevisionSkill.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -6,6 +6,7 @@ import {
   Briefcase,
   FileUser,
   Award,
+  BarChart3,
   Activity,
   X,
 } from 'lucide-react';
@@ -20,6 +21,11 @@ const navItems = [
     name: 'Applications / Kanban',
     path: '/applications',
     icon: Kanban,
+  },
+  {
+    name: 'Analytics & Metrics',
+    path: '/analytics',
+    icon: BarChart3,
   },
   {
     name: 'Companies',

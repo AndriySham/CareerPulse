@@ -62,10 +62,13 @@ export const ApplicationsPage: React.FC = () => {
     [applications]
   );
   const responseRate = useMemo(() => {
-    if (totalApplications === 0) return '0%';
-    const responded = applications.filter((a) => a.status !== 'Draft' && a.status !== 'Applied').length;
-    return `${Math.round((responded / totalApplications) * 100)}%`;
-  }, [applications, totalApplications]);
+    const submitted = applications.filter((a) => a.status !== 'Draft');
+    if (submitted.length === 0) return '0%';
+    const responded = submitted.filter((a) =>
+      ['Viewed', 'HRInterview', 'TechnicalInterview', 'Offer', 'Rejected'].includes(a.status)
+    ).length;
+    return `${Math.round((responded / submitted.length) * 100)}%`;
+  }, [applications]);
 
   // Filtered applications based on search query
   const filteredApplications = useMemo(() => {
