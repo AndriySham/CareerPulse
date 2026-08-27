@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { VacancyDto, CompanyDto } from '@/types';
-import { Briefcase, Building2, Calendar, ExternalLink, Edit3, ChevronRight } from 'lucide-react';
+import { Briefcase, Building2, Calendar, ExternalLink, Edit3, ChevronRight, Send } from 'lucide-react';
 
 interface VacancyCardProps {
   vacancy: VacancyDto;
   company?: CompanyDto;
   onView?: (vacancy: VacancyDto) => void;
   onEdit: (vacancy: VacancyDto) => void;
+  onApply?: (vacancy: VacancyDto) => void;
 }
 
 export const VacancyCard: React.FC<VacancyCardProps> = ({
@@ -15,6 +16,7 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
   company,
   onView,
   onEdit,
+  onApply,
 }) => {
   return (
     <div className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md">
@@ -81,15 +83,31 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
           Added {new Date(vacancy.createdAt).toLocaleDateString()}
         </span>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => onEdit(vacancy)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(vacancy);
+            }}
             className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-primary transition-colors cursor-pointer"
             title="Edit Vacancy"
           >
             <Edit3 className="h-4 w-4" />
           </button>
+          {onApply && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onApply(vacancy);
+              }}
+              className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer"
+              title="Apply for Vacancy"
+            >
+              <Send className="h-3.5 w-3.5" /> Apply
+            </button>
+          )}
           <Link
             to={`/vacancies/${vacancy.id}`}
             onClick={() => onView?.(vacancy)}

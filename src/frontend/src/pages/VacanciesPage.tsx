@@ -4,6 +4,7 @@ import { useVacancies } from '@/api/vacancies';
 import { useCompanies } from '@/api/companies';
 import VacancyCard from '@/components/vacancies/VacancyCard';
 import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
+import ApplicationFormModal from '@/components/applications/ApplicationFormModal';
 import CustomSelect from '@/components/ui/CustomSelect';
 import type { VacancyDto } from '@/types';
 import { Briefcase, Search, Plus, Building2, Filter } from 'lucide-react';
@@ -16,6 +17,9 @@ export const VacanciesPage: React.FC = () => {
   // Modal states
   const [isVacancyFormOpen, setIsVacancyFormOpen] = useState(false);
   const [editingVacancy, setEditingVacancy] = useState<VacancyDto | null>(null);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [applyCompanyId, setApplyCompanyId] = useState<string>('');
+  const [applyVacancyId, setApplyVacancyId] = useState<string>('');
 
   // Queries
   const { data: companies = [] } = useCompanies(true);
@@ -62,6 +66,12 @@ export const VacanciesPage: React.FC = () => {
 
   const handleViewVacancy = (vacancy: VacancyDto) => {
     navigate(`/vacancies/${vacancy.id}`);
+  };
+
+  const handleApplyVacancy = (vacancy: VacancyDto) => {
+    setApplyCompanyId(vacancy.companyId);
+    setApplyVacancyId(vacancy.id);
+    setIsApplicationModalOpen(true);
   };
 
   return (
@@ -187,6 +197,7 @@ export const VacanciesPage: React.FC = () => {
               company={companyMap.get(vacancy.companyId)}
               onView={handleViewVacancy}
               onEdit={handleEditVacancy}
+              onApply={handleApplyVacancy}
             />
           ))}
         </div>
@@ -198,6 +209,13 @@ export const VacanciesPage: React.FC = () => {
         onClose={() => setIsVacancyFormOpen(false)}
         vacancyToEdit={editingVacancy}
         initialCompanyId={selectedCompanyId !== 'all' ? selectedCompanyId : undefined}
+      />
+
+      <ApplicationFormModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
+        initialCompanyId={applyCompanyId}
+        initialVacancyId={applyVacancyId}
       />
     </div>
   );
