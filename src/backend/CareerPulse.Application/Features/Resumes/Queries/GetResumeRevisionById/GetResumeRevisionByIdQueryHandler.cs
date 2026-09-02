@@ -21,6 +21,7 @@ public sealed class GetResumeRevisionByIdQueryHandler
         CancellationToken cancellationToken)
     {
         var revision = await _context.ResumeRevisions
+            .Include(r => r.Resume)
             .Include(r => r.Skills)
                 .ThenInclude(s => s.MasterSkill)
             .AsNoTracking()

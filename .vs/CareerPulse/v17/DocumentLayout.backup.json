@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "D:\\CareerPulse\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Api\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.Development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Api\\appsettings.Development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -13,34 +41,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Language.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Language.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Education.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Education.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Company.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Company.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Application.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\backend\\CareerPulse.Domain\\Entities\\Application.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\CareerPulse\\src\\backend\\CareerPulse.Infrastructure\\Persistence\\CareerPulseDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,137 +62,128 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Project.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Project.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Project.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Project.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Project.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Program.cs",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Api\\Program.cs",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Program.cs",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Api\\Program.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAAAYAAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:16:03.382Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Language.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Language.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Language.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Language.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Language.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:15:35.186Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Interview.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Interview.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:15:31.066Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Education.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Education.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Education.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Education.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Education.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:15:19.93Z",
+              "WhenOpened": "2026-08-28T16:22:01.157Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Api\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-28T16:01:28.595Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Api\\appsettings.Development.json",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.Development.json",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Api\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-28T15:59:09.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Api\\appsettings.json",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\appsettings.json",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-28T15:58:08.11Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CompaniesController.cs",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Api\\Controllers\\CompaniesController.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAAAFQAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-28T15:21:23.56Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SpawnResumeVersionCommandValidator.cs",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-28T08:42:08.487Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SpawnResumeVersionCommandHandler.cs",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommandHandler.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-28T08:41:41.594Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SpawnResumeVersionCommand.cs",
+              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs",
+              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs",
+              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs",
+              "RelativeToolTip": "src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\SpawnResumeVersion\\SpawnResumeVersionCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-28T08:41:25.882Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "ResumeRevision.cs",
               "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevision.cs",
               "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevision.cs",
               "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevision.cs",
               "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\ResumeRevision.cs",
-              "ViewState": "AgIAAHMAAAAAAAAAAAAAAEgAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAOcAAAAAAAAAAAAAAPQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:12:50.513Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-26T18:49:55.39Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 9,
               "Title": "Resume.cs",
               "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs",
               "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs",
               "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs",
               "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Resume.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:12:24.385Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MasterSkill.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\MasterSkill.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:12:02.564Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Vacancy.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Vacancy.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T13:12:00.145Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Company.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Company.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Company.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Company.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Company.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T12:18:22.186Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Application.cs",
-              "DocumentMoniker": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Application.cs",
-              "RelativeDocumentMoniker": "src\\backend\\CareerPulse.Domain\\Entities\\Application.cs",
-              "ToolTip": "D:\\CareerPulse\\src\\backend\\CareerPulse.Domain\\Entities\\Application.cs",
-              "RelativeToolTip": "src\\backend\\CareerPulse.Domain\\Entities\\Application.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T07:59:02.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-26T18:49:38.543Z"
             },
             {
               "$type": "Document",
@@ -204,8 +195,7 @@
               "RelativeToolTip": "src\\backend\\CareerPulse.Infrastructure\\Persistence\\Configurations\\EntityConfigurations.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAACsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T12:27:07.021Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-25T12:27:07.021Z"
             },
             {
               "$type": "Document",
@@ -217,8 +207,7 @@
               "RelativeToolTip": "src\\backend\\CareerPulse.Infrastructure\\Extensions\\InfrastructureServiceExtensions.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAAABQAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T13:23:09.389Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-25T13:23:09.389Z"
             },
             {
               "$type": "Document",
@@ -230,8 +219,7 @@
               "RelativeToolTip": "src\\backend\\CareerPulse.Infrastructure\\Persistence\\CareerPulseDbContext.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAAAAsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T12:23:51.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-25T12:23:51.086Z"
             }
           ]
         }

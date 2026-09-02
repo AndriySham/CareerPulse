@@ -117,6 +117,10 @@ export const ResumeEditorPage: React.FC = () => {
   // Populate state when editing existing revision
   useEffect(() => {
     if (!isNewMode && existingRevision) {
+      setName(existingRevision.resumeName || '');
+      setTargetRole(existingRevision.targetRole || '');
+      setTrack(existingRevision.track || 'Backend');
+      setCareerLevel(existingRevision.careerLevel || 'Middle');
       setPersonalInfo({
         fullName: existingRevision.personalInfo?.fullName || '',
         email: existingRevision.personalInfo?.email || '',
@@ -423,13 +427,7 @@ export const ResumeEditorPage: React.FC = () => {
                   type="text"
                   required={isNewMode}
                   disabled={!isNewMode}
-                  value={
-                    isNewMode
-                      ? name
-                      : existingRevision?.personalInfo?.fullName
-                      ? `${existingRevision.personalInfo.fullName}'s Profile`
-                      : 'Resume Profile'
-                  }
+                  value={isNewMode ? name : (existingRevision?.resumeName || name || 'Resume Profile')}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Senior .NET Backend Profile"
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
@@ -444,7 +442,7 @@ export const ResumeEditorPage: React.FC = () => {
                   type="text"
                   required={isNewMode}
                   disabled={!isNewMode}
-                  value={isNewMode ? targetRole : '.NET Software Engineer'}
+                  value={isNewMode ? targetRole : (existingRevision?.targetRole || targetRole || 'Software Engineer')}
                   onChange={(e) => setTargetRole(e.target.value)}
                   placeholder="e.g. Senior C# Backend Engineer"
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60 disabled:bg-accent/30"
@@ -457,7 +455,7 @@ export const ResumeEditorPage: React.FC = () => {
                 </label>
                 <select
                   disabled={!isNewMode}
-                  value={track}
+                  value={isNewMode ? track : (existingRevision?.track || track)}
                   onChange={(e) => setTrack(e.target.value as ResumeTrack)}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
                 >
@@ -473,7 +471,7 @@ export const ResumeEditorPage: React.FC = () => {
                 </label>
                 <select
                   disabled={!isNewMode}
-                  value={careerLevel}
+                  value={isNewMode ? careerLevel : (existingRevision?.careerLevel || careerLevel)}
                   onChange={(e) => setCareerLevel(e.target.value as CareerLevel)}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer disabled:opacity-60 disabled:bg-accent/30"
                 >

@@ -77,6 +77,7 @@ public sealed class UpdateResumeDraftCommandHandler
 
         // Reload with navigation properties
         var updated = await _context.ResumeRevisions
+            .Include(r => r.Resume)
             .Include(r => r.Skills)
                 .ThenInclude(s => s.MasterSkill)
             .AsNoTracking()

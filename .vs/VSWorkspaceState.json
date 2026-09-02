@@ -3,14 +3,10 @@
     "",
     "\\src",
     "\\src\\backend",
-    "\\src\\backend\\CareerPulse.Application",
-    "\\src\\backend\\CareerPulse.Application\\DTOs",
-    "\\src\\backend\\CareerPulse.Application\\DTOs\\Resumes",
-    "\\src\\backend\\CareerPulse.Application\\Features",
-    "\\src\\backend\\CareerPulse.Application\\Features\\Resumes",
-    "\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands",
-    "\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\UpdateResumeDraft"
+    "\\src\\backend\\CareerPulse.Api",
+    "\\src\\backend\\CareerPulse.Api\\Controllers",
+    "\\src\\backend\\CareerPulse.Api\\Properties"
   ],
-  "SelectedNode": "\\src\\backend\\CareerPulse.Application\\Features\\Resumes\\Commands\\UpdateResumeDraft\\UpdateResumeDraftCommandValidator.cs",
+  "SelectedNode": "\\src\\backend\\CareerPulse.Api",
   "PreviewInSolutionExplorer": false
 }

@@ -48,6 +48,7 @@ public sealed class SpawnResumeVersionCommandHandler
         await _context.SaveChangesAsync(cancellationToken);
 
         var created = await _context.ResumeRevisions
+            .Include(r => r.Resume)
             .Include(r => r.Skills)
                 .ThenInclude(s => s.MasterSkill)
             .AsNoTracking()

@@ -64,9 +64,9 @@ export const ResumeRevisionWorkflowCard: React.FC<ResumeRevisionWorkflowCardProp
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              {currentRevision.personalInfo?.fullName
+              {currentRevision.resumeName || (currentRevision.personalInfo?.fullName
                 ? `${currentRevision.personalInfo.fullName}'s Resume`
-                : 'Software Developer Resume'}{' '}
+                : 'Software Developer Resume')}{' '}
               — Version {currentRevision.version} snapshot
             </p>
           </div>

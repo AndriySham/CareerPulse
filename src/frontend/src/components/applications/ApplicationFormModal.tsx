@@ -6,6 +6,7 @@ import { useVacancies } from '@/api/vacancies';
 import { useResumeRevisions } from '@/api/resumes';
 import { useSubmitApplication } from '@/api/applications';
 import CustomSelect from '@/components/ui/CustomSelect';
+import ResumeRevisionSelect from '@/components/resumes/ResumeRevisionSelect';
 import type { SubmitApplicationDto } from '@/types';
 import { Building2, Briefcase, FileText, Globe, Send, AlertCircle } from 'lucide-react';
 
@@ -160,20 +161,17 @@ export const ApplicationFormModal: React.FC<ApplicationFormModalProps> = ({
           <label className="block text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
             <FileText className="h-3.5 w-3.5 text-primary" /> Resume Revision <span className="text-destructive">*</span>
           </label>
-          <CustomSelect
+          <ResumeRevisionSelect
             value={resumeRevisionId}
-            onChange={(val) => setResumeRevisionId(val)}
-            disabled={isLoadingResumes}
-            placeholder="Select a resume revision..."
-            options={resumeRevisions.map((rev) => ({
-              value: rev.id,
-              label: `v${rev.version} — ${rev.status} (${new Date(rev.createdAt).toLocaleDateString()})`,
-            }))}
-            className="w-full"
+            onChange={(id) => setResumeRevisionId(id)}
+            revisions={resumeRevisions}
+            isLoading={isLoadingResumes}
+            disabled={submitApplicationMutation.isPending}
+            showDetailsCard={true}
           />
           {resumeRevisions.length === 0 && !isLoadingResumes && (
-            <p className="mt-1 text-xs text-amber-500 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" /> No resume revisions found. Please create a resume draft in Resumes section first.
+            <p className="mt-1.5 text-xs text-amber-500 flex items-center gap-1">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" /> No resume revisions found. Please create a resume draft in Resumes section first.
             </p>
           )}
         </div>

@@ -54,9 +54,21 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({
         </div>
 
         {/* Developer Name & Title */}
-        <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-          {personalInfo?.fullName || 'Untitled Profile'}
-        </h3>
+        <div className="space-y-0.5">
+          <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            {revision.resumeName || revision.personalInfo?.fullName || 'Untitled Profile'}
+          </h3>
+          {(revision.targetRole || revision.track || revision.careerLevel) && (
+            <div className="text-xs font-semibold text-primary/90 flex items-center gap-1.5 flex-wrap">
+              {revision.targetRole || `${revision.track} Developer`}
+              {revision.track && revision.careerLevel && (
+                <span className="text-muted-foreground text-[11px] font-normal">
+                  • {revision.track} ({revision.careerLevel})
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Contact Metadata Bar */}
         <div className="mt-2 flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-muted-foreground">

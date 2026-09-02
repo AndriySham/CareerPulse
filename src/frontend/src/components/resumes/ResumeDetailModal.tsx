@@ -76,16 +76,26 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
 
         {/* Section 1: Overview Header */}
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/40 bg-accent/20 p-4">
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xl font-bold text-foreground">
-                {personalInfo?.fullName || 'Untitled Profile'}
+                {revision.resumeName || revision.personalInfo?.fullName || 'Untitled Profile'}
               </span>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-bold border border-primary/20">
                 v{revision.version}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">{personalInfo?.email}</p>
+            {(revision.targetRole || revision.track || revision.careerLevel) && (
+              <div className="text-xs font-semibold text-primary flex items-center gap-1.5 flex-wrap">
+                {revision.targetRole || `${revision.track} Developer`}
+                {revision.track && revision.careerLevel && (
+                  <span className="text-muted-foreground text-[11px] font-normal">
+                    • {revision.track} ({revision.careerLevel})
+                  </span>
+                )}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground">{personalInfo?.fullName} {personalInfo?.email && `• ${personalInfo.email}`}</p>
           </div>
 
           <div className="flex items-center gap-2">

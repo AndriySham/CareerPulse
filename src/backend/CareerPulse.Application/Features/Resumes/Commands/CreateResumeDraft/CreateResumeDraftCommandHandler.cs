@@ -50,8 +50,9 @@ public sealed class CreateResumeDraftCommandHandler
         _context.Resumes.Add(resume);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // Fetch created entity with MasterSkill navigation properties loaded
+        // Fetch created entity with Resume and MasterSkill navigation properties loaded
         var created = await _context.ResumeRevisions
+            .Include(r => r.Resume)
             .Include(r => r.Skills)
                 .ThenInclude(s => s.MasterSkill)
             .AsNoTracking()
@@ -66,6 +67,10 @@ public sealed class CreateResumeDraftCommandHandler
         {
             Id = revision.Id,
             ResumeId = revision.ResumeId,
+            ResumeName = revision.Resume?.Name ?? string.Empty,
+            Track = revision.Resume?.Track ?? Domain.Enums.ResumeTrack.Backend,
+            CareerLevel = revision.Resume?.CareerLevel ?? Domain.Enums.CareerLevel.Middle,
+            TargetRole = revision.Resume?.TargetRole ?? string.Empty,
             Status = revision.Status,
             PersonalInfo = revision.PersonalInfo,
             ProfessionalSummary = revision.ProfessionalSummary,

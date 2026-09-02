@@ -24,6 +24,10 @@ export interface ResumeRevisionSkillDto {
 export interface ResumeRevisionDto {
   id: string;
   resumeId: string;
+  resumeName: string;
+  track: ResumeTrack;
+  careerLevel: CareerLevel;
+  targetRole: string;
   status: RevisionStatus;
   personalInfo: PersonalInfo;
   professionalSummary: string;
