@@ -4,6 +4,8 @@ dist/
 bin/
 obj/
 
+.vs/
+
 # Environment Variables
 .env
 .env.local

@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Companies;
+using CareerPulse.Application.Features.Companies.Commands.ArchiveCompany;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Features.Companies.Commands.UpdateCompany;
 using CareerPulse.Application.Features.Companies.Queries.GetCompanies;
@@ -87,5 +88,21 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Archive a Company by ID.
+    /// </summary>
+    [HttpPost("{id:guid}/archive")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)] //404
+    public async Task<IActionResult> Archive(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new ArchiveCompanyCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

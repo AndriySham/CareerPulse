@@ -1,5 +1,6 @@
 using CareerPulse.Domain.Exceptions;
 using CareerPulse.Domain.ValueObjects;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CareerPulse.Domain.Entities;
 
@@ -51,5 +52,21 @@ public sealed class Company
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void Archive() => IsArchived = true;
+    public void Archive()
+    {
+        if (IsArchived)
+            return;
+
+        IsArchived = true;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Restore()
+    {
+        if (!IsArchived)
+            return;
+        
+        IsArchived = false;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
