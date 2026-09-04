@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
@@ -40,6 +41,6 @@ public sealed class UpdateVacancyCommandHandler
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return CreateVacancyCommandHandler.MapToDto(vacancy);
+        return VacancyMapping.MapToDto(vacancy);
     }
 }

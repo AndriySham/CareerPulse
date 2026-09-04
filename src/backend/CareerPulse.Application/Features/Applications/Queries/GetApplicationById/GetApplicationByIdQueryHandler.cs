@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Interfaces;
@@ -27,6 +28,6 @@ public sealed class GetApplicationByIdQueryHandler : IRequestHandler<GetApplicat
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
 
-        return application == null ? null : SubmitApplicationCommandHandler.MapToDto(application);
+        return application == null ? null : ApplicationMapping.MapToDto(application);
     }
 }

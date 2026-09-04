@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Resumes;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Resumes.Commands.CreateResumeDraft;
@@ -84,6 +85,6 @@ public sealed class UpdateResumeDraftCommandHandler
             .AsNoTracking()
             .FirstAsync(r => r.Id == revision.Id, cancellationToken);
 
-        return CreateResumeDraftCommandHandler.MapToDto(updated);
+        return ResumeRevisionMapping.MapToDto(updated);
     }
 }

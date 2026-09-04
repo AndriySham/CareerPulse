@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
@@ -40,18 +41,6 @@ public sealed class CreateVacancyCommandHandler
         _context.Vacancies.Add(vacancy);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(vacancy);
+        return VacancyMapping.MapToDto(vacancy);
     }
-
-    public static VacancyDto MapToDto(Vacancy vacancy) => new()
-    {
-        Id = vacancy.Id,
-        CompanyId = vacancy.CompanyId,
-        Title = vacancy.Title,
-        Description = vacancy.Description,
-        Url = vacancy.Url,
-        PostedAt = vacancy.PostedAt,
-        CreatedAt = vacancy.CreatedAt,
-        UpdatedAt = vacancy.UpdatedAt
-    };
 }

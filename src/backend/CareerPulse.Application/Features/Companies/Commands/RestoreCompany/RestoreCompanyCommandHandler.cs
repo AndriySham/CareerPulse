@@ -1,4 +1,5 @@
-﻿using CareerPulse.Application.DTOs.Companies;
+﻿using CareerPulse.Application.Common.Mappings;
+using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Interfaces;
@@ -36,6 +37,6 @@ public sealed class RestoreCompanyCommandHandler
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return CreateCompanyCommandHandler.MapToDto(company);
+        return CompanyMapping.MapToDto(company);
     }
 }

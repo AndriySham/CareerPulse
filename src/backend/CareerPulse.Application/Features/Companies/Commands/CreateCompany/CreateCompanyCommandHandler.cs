@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
@@ -40,18 +41,6 @@ public sealed class CreateCompanyCommandHandler
         _context.Companies.Add(company);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return MapToDto(company);
+        return CompanyMapping.MapToDto(company);
     }
-
-    public static CompanyDto MapToDto(Company company) => new()
-    {
-        Id = company.Id,
-        Name = company.Name,
-        Website = company.Website,
-        Industry = company.Industry,
-        Notes = company.Notes,
-        IsArchived = company.IsArchived,
-        CreatedAt = company.CreatedAt,
-        UpdatedAt = company.UpdatedAt
-    };
 }

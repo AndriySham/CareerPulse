@@ -1,6 +1,5 @@
 using CareerPulse.Domain.Exceptions;
 using CareerPulse.Domain.ValueObjects;
-using System.Reflection.Metadata.Ecma335;
 
 namespace CareerPulse.Domain.Entities;
 

@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Tests.TestHelpers;
@@ -249,7 +250,7 @@ public class SubmitApplicationCommandHandlerTests
         app.UpdateNotes("Map notes");
 
         // Act
-        var dto = SubmitApplicationCommandHandler.MapToDto(app);
+        var dto = ApplicationMapping.MapToDto(app);
 
         // Assert
         dto.Id.Should().Be(app.Id);

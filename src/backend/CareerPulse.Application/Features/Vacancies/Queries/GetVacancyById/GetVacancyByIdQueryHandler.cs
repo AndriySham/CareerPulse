@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Interfaces;
@@ -27,6 +28,6 @@ public sealed class GetVacancyByIdQueryHandler
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.Id == request.Id, cancellationToken);
 
-        return vacancy == null ? null : CreateVacancyCommandHandler.MapToDto(vacancy);
+        return vacancy == null ? null : VacancyMapping.MapToDto(vacancy);
     }
 }

@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Domain.Entities;
@@ -162,7 +163,7 @@ public class VacancyDomainTests
         var vacancy = Vacancy.Create(companyId, "Fullstack Engineer", "Fullstack desc", "https://fullstack.io", postedAt);
 
         // Act
-        var dto = CreateVacancyCommandHandler.MapToDto(vacancy);
+        var dto = VacancyMapping.MapToDto(vacancy);
 
         // Assert
         dto.Should().NotBeNull();

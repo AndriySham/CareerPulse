@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Interfaces;
@@ -35,6 +36,6 @@ public sealed class GetVacanciesQueryHandler
             .OrderByDescending(v => v.CreatedAt)
             .ToListAsync(cancellationToken);
 
-        return vacancies.Select(CreateVacancyCommandHandler.MapToDto).ToList();
+        return vacancies.Select(VacancyMapping.MapToDto).ToList();
     }
 }

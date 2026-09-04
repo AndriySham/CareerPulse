@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Resumes;
 using CareerPulse.Application.Features.Resumes.Commands.CreateResumeDraft;
 using CareerPulse.Application.Interfaces;
@@ -36,6 +37,6 @@ public sealed class GetResumeRevisionsQueryHandler
             .ThenByDescending(r => r.CreatedAt)
             .ToListAsync(cancellationToken);
 
-        return revisions.Select(CreateResumeDraftCommandHandler.MapToDto).ToList();
+        return revisions.Select(ResumeRevisionMapping.MapToDto).ToList();
     }
 }

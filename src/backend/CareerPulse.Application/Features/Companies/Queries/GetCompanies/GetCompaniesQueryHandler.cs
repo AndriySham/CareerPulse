@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Interfaces;
@@ -35,6 +36,6 @@ public sealed class GetCompaniesQueryHandler
             .OrderBy(c => c.Name)
             .ToListAsync(cancellationToken);
 
-        return companies.Select(CreateCompanyCommandHandler.MapToDto).ToList();
+        return companies.Select(CompanyMapping.MapToDto).ToList();
     }
 }

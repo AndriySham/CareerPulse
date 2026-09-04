@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Interfaces;
@@ -45,6 +46,6 @@ public sealed class GetApplicationsQueryHandler : IRequestHandler<GetApplication
             .OrderByDescending(a => a.UpdatedAt)
             .ToListAsync(cancellationToken);
 
-        return applications.Select(SubmitApplicationCommandHandler.MapToDto).ToList();
+        return applications.Select(ApplicationMapping.MapToDto).ToList();
     }
 }

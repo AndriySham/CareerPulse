@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
@@ -55,6 +56,6 @@ public sealed class ChangeApplicationStatusCommandHandler : IRequestHandler<Chan
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return SubmitApplicationCommandHandler.MapToDto(application);
+        return ApplicationMapping.MapToDto(application);
     }
 }

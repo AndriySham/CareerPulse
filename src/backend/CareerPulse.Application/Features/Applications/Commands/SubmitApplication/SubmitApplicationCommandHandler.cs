@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
@@ -83,23 +84,6 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
             .AsNoTracking()
             .FirstAsync(a => a.Id == application.Id, cancellationToken);
 
-        return MapToDto(created);
+        return ApplicationMapping.MapToDto(created);
     }
-
-    public static ApplicationDto MapToDto(Domain.Entities.Application app) => new()
-    {
-        Id = app.Id,
-        CompanyId = app.CompanyId,
-        CompanyName = app.Company?.Name ?? string.Empty,
-        VacancyId = app.VacancyId,
-        VacancyTitle = app.Vacancy?.Title,
-        ResumeRevisionId = app.ResumeRevisionId,
-        Status = app.Status,
-        JobSource = app.JobSource,
-        Notes = app.Notes,
-        AppliedAt = app.SubmissionDate,
-        CreatedAt = app.CreatedAt,
-        UpdatedAt = app.UpdatedAt,
-        AllowedTransitions = app.GetAllowedTransitions().ToList()
-    };
 }

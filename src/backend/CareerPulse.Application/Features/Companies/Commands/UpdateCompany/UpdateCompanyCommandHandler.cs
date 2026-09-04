@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
@@ -47,6 +48,6 @@ public sealed class UpdateCompanyCommandHandler
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return CreateCompanyCommandHandler.MapToDto(company);
+        return CompanyMapping.MapToDto(company);
     }
 }

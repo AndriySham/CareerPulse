@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Tests.TestHelpers;
@@ -160,7 +161,7 @@ public class CreateCompanyCommandHandlerTests
         company.Update("MapTest", "https://map.test", "Testing", "Test notes");
 
         // Act
-        var dto = CreateCompanyCommandHandler.MapToDto(company);
+        var dto = CompanyMapping.MapToDto(company);
 
         // Assert
         dto.Id.Should().Be(company.Id);
