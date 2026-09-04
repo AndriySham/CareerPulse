@@ -1,8 +1,8 @@
 using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Enums;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +31,7 @@ public sealed class ChangeApplicationStatusCommandHandler : IRequestHandler<Chan
 
         if (application == null)
         {
-            throw new DomainException($"Application with ID {request.Id} was not found.");
+            throw new ResourceNotFoundException($"Application with ID {request.Id} was not found.");
         }
 
         var newStatus = request.Dto.NewStatus;

@@ -25,56 +25,6 @@ public class ResumesController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new ResumeRevision draft (Version 1, Status = Draft).
-    /// </summary>
-    [HttpPost]
-    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ResumeRevisionDto>> Create(
-        [FromBody] CreateResumeDraftDto dto,
-        CancellationToken ct)
-    {
-        var command = new CreateResumeDraftCommand(dto);
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
-    /// Updates summary and skills of an existing draft revision.
-    /// ADR 005: Modifications allowed ONLY in Draft status.
-    /// </summary>
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ResumeRevisionDto>> Update(
-        Guid id,
-        [FromBody] UpdateResumeDraftDto dto,
-        CancellationToken ct)
-    {
-        var command = new UpdateResumeDraftCommand(id, dto);
-        var result = await _mediator.Send(command, ct);
-        return Ok(result);
-    }
-
-    /// <summary>
-    /// Spawns a new editable Draft revision (Version = Parent.Version + 1) from an existing revision.
-    /// ADR 005: Copy-on-Write pattern.
-    /// </summary>
-    [HttpPost("{id:guid}/spawn")]
-    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ResumeRevisionDto>> SpawnVersion(
-        Guid id,
-        CancellationToken ct)
-    {
-        var command = new SpawnResumeVersionCommand(id);
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
     /// Retrieves all ResumeRevisions with AsNoTracking().
     /// </summary>
     [HttpGet]
@@ -100,6 +50,57 @@ public class ResumesController : ControllerBase
         {
             return NotFound();
         }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates a new ResumeRevision draft (Version 1, Status = Draft).
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ResumeRevisionDto>> Create(
+        [FromBody] CreateResumeDraftDto dto,
+        CancellationToken ct)
+    {
+        var command = new CreateResumeDraftCommand(dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Spawns a new editable Draft revision (Version = Parent.Version + 1) from an existing revision.
+    /// ADR 005: Copy-on-Write pattern.
+    /// </summary>
+    [HttpPost("{id:guid}/spawn")]
+    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ResumeRevisionDto>> SpawnVersion(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new SpawnResumeVersionCommand(id);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates summary and skills of an existing draft revision.
+    /// ADR 005: Modifications allowed ONLY in Draft status.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(ResumeRevisionDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ResumeRevisionDto>> Update(
+        Guid id,
+        [FromBody] UpdateResumeDraftDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateResumeDraftCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
         return Ok(result);
     }
 }

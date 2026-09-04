@@ -1,6 +1,6 @@
 using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
-using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using MediatR;
@@ -29,14 +29,14 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
             .AnyAsync(c => c.Id == dto.CompanyId, cancellationToken);
         if (!companyExists)
         {
-            throw new DomainException($"Company with ID {dto.CompanyId} was not found.");
+            throw new ResourceNotFoundException($"Company with ID {dto.CompanyId} was not found.");
         }
 
         var resumeRevision = await _context.ResumeRevisions
             .FirstOrDefaultAsync(r => r.Id == dto.ResumeRevisionId, cancellationToken);
         if (resumeRevision == null)
         {
-            throw new DomainException($"ResumeRevision with ID {dto.ResumeRevisionId} was not found.");
+            throw new ResourceNotFoundException($"ResumeRevision with ID {dto.ResumeRevisionId} was not found.");
         }
 
         if (dto.VacancyId.HasValue && dto.VacancyId.Value != Guid.Empty)
@@ -45,7 +45,7 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
                 .FirstOrDefaultAsync(v => v.Id == dto.VacancyId.Value, cancellationToken);
             if (vacancy == null)
             {
-                throw new DomainException($"Vacancy with ID {dto.VacancyId.Value} was not found.");
+                throw new ResourceNotFoundException($"Vacancy with ID {dto.VacancyId.Value} was not found.");
             }
             if (vacancy.CompanyId != dto.CompanyId)
             {

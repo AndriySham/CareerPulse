@@ -23,21 +23,6 @@ public class MasterSkillsController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new MasterSkill in the catalog with optional initial aliases.
-    /// </summary>
-    [HttpPost]
-    [ProducesResponseType(typeof(MasterSkillDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<MasterSkillDto>> Create(
-        [FromBody] CreateMasterSkillCommand command,
-        CancellationToken ct)
-    {
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
     /// Gets MasterSkills from the catalog with optional category or active status filtering.
     /// </summary>
     [HttpGet]
@@ -68,6 +53,21 @@ public class MasterSkillsController : ControllerBase
             return NotFound();
         }
         return Ok(skill);
+    }
+
+    /// <summary>
+    /// Creates a new MasterSkill in the catalog with optional initial aliases.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(MasterSkillDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<MasterSkillDto>> Create(
+        [FromBody] CreateMasterSkillCommand command,
+        CancellationToken ct)
+    {
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     /// <summary>

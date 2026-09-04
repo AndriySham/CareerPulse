@@ -1,7 +1,7 @@
 using CareerPulse.Application.DTOs.Resumes;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Resumes.Commands.CreateResumeDraft;
 using CareerPulse.Application.Interfaces;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +31,7 @@ public sealed class SpawnResumeVersionCommandHandler
 
         if (parentRevision == null)
         {
-            throw new DomainException($"Parent ResumeRevision with ID '{request.ParentRevisionId}' was not found.");
+            throw new ResourceNotFoundException($"Parent ResumeRevision with ID '{request.ParentRevisionId}' was not found.");
         }
 
         var resume = await _context.Resumes
@@ -39,7 +39,7 @@ public sealed class SpawnResumeVersionCommandHandler
 
         if (resume == null)
         {
-            throw new DomainException($"Resume with ID '{parentRevision.ResumeId}' was not found.");
+            throw new ResourceNotFoundException($"Resume with ID '{parentRevision.ResumeId}' was not found.");
         }
 
         // Copy-on-Write: Spawns new version via Resume aggregate root

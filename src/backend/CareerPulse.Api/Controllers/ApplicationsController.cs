@@ -25,40 +25,6 @@ public class ApplicationsController : ControllerBase
     }
 
     /// <summary>
-    /// Creates and optionally submits a new job application.
-    /// </summary>
-    [HttpPost]
-    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ApplicationDto>> Submit(
-        [FromBody] SubmitApplicationDto dto,
-        CancellationToken ct)
-    {
-        var command = new SubmitApplicationCommand(dto);
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
-    /// Updates application status in the Kanban pipeline according to state machine rules.
-    /// </summary>
-    [HttpPut("{id:guid}/status")]
-    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ApplicationDto>> ChangeStatus(
-        Guid id,
-        [FromBody] ChangeApplicationStatusDto dto,
-        CancellationToken ct)
-    {
-        var command = new ChangeApplicationStatusCommand(id, dto);
-        var result = await _mediator.Send(command, ct);
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Gets all applications for Kanban board view, with optional status, vacancy, and company filtering.
     /// </summary>
     [HttpGet]
@@ -90,6 +56,41 @@ public class ApplicationsController : ControllerBase
         {
             return NotFound();
         }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates and optionally submits a new job application.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApplicationDto>> Submit(
+        [FromBody] SubmitApplicationDto dto,
+        CancellationToken ct)
+    {
+        var command = new SubmitApplicationCommand(dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates application status in the Kanban pipeline according to state machine rules.
+    /// </summary>
+    [HttpPut("{id:guid}/status")]
+    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApplicationDto>> ChangeStatus(
+        Guid id,
+        [FromBody] ChangeApplicationStatusDto dto,
+        CancellationToken ct)
+    {
+        var command = new ChangeApplicationStatusCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
         return Ok(result);
     }
 }

@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Resumes;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Resumes.Commands.CreateResumeDraft;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Exceptions;
@@ -27,7 +28,7 @@ public sealed class UpdateResumeDraftCommandHandler
 
         if (revision == null)
         {
-            throw new DomainException($"ResumeRevision with ID '{request.Id}' was not found.");
+            throw new ResourceNotFoundException($"ResumeRevision with ID '{request.Id}' was not found.");
         }
 
         var dto = request.Dto;

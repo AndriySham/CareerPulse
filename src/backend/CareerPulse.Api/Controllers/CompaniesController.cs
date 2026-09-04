@@ -24,40 +24,6 @@ public class CompaniesController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new Company entity.
-    /// </summary>
-    [HttpPost]
-    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<CompanyDto>> Create(
-        [FromBody] CreateCompanyDto dto,
-        CancellationToken ct)
-    {
-        var command = new CreateCompanyCommand(dto);
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
-    /// Updates an existing Company entity by ID.
-    /// </summary>
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<CompanyDto>> Update(
-        Guid id,
-        [FromBody] UpdateCompanyDto dto,
-        CancellationToken ct)
-    {
-        var command = new UpdateCompanyCommand(id, dto);
-        var result = await _mediator.Send(command, ct);
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Gets all companies with optional filtering for archived items.
     /// </summary>
     [HttpGet]
@@ -91,12 +57,28 @@ public class CompaniesController : ControllerBase
     }
 
     /// <summary>
+    /// Creates a new Company entity.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<CompanyDto>> Create(
+        [FromBody] CreateCompanyDto dto,
+        CancellationToken ct)
+    {
+        var command = new CreateCompanyCommand(dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
     /// Archive a Company by ID.
     /// </summary>
     [HttpPost("{id:guid}/archive")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)] //404
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Archive(
         Guid id,
         CancellationToken ct)
@@ -104,5 +86,23 @@ public class CompaniesController : ControllerBase
         var command = new ArchiveCompanyCommand(id);
         await _mediator.Send(command, ct);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Updates an existing Company entity by ID.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<CompanyDto>> Update(
+        Guid id,
+        [FromBody] UpdateCompanyDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateCompanyCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }

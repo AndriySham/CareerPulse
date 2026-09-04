@@ -23,40 +23,6 @@ public class VacanciesController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new Vacancy entity.
-    /// </summary>
-    [HttpPost]
-    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<VacancyDto>> Create(
-        [FromBody] CreateVacancyDto dto,
-        CancellationToken ct)
-    {
-        var command = new CreateVacancyCommand(dto);
-        var result = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
-
-    /// <summary>
-    /// Updates an existing Vacancy entity by ID.
-    /// </summary>
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<VacancyDto>> Update(
-        Guid id,
-        [FromBody] UpdateVacancyDto dto,
-        CancellationToken ct)
-    {
-        var command = new UpdateVacancyCommand(id, dto);
-        var result = await _mediator.Send(command, ct);
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Gets all vacancies with optional filtering by company ID.
     /// </summary>
     [HttpGet]
@@ -86,6 +52,40 @@ public class VacanciesController : ControllerBase
         {
             return NotFound();
         }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates a new Vacancy entity.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<VacancyDto>> Create(
+        [FromBody] CreateVacancyDto dto,
+        CancellationToken ct)
+    {
+        var command = new CreateVacancyCommand(dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates an existing Vacancy entity by ID.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<VacancyDto>> Update(
+        Guid id,
+        [FromBody] UpdateVacancyDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateVacancyCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
         return Ok(result);
     }
 }

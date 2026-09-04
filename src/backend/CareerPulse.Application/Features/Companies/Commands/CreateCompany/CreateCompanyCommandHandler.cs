@@ -1,7 +1,7 @@
 using CareerPulse.Application.DTOs.Companies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Entities;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +32,7 @@ public sealed class CreateCompanyCommandHandler
 
         if (existingCompany)
         {
-            throw new DomainException($"Company with name '{trimmedName}' already exists.");
+            throw new ConflictException($"Company with name '{trimmedName}' already exists.");
         }
 
         var company = Company.Create(trimmedName, dto.Website, dto.Industry);

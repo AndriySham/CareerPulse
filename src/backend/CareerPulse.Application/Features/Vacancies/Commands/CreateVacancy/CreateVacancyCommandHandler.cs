@@ -1,7 +1,7 @@
 using CareerPulse.Application.DTOs.Vacancies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Entities;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +32,7 @@ public sealed class CreateVacancyCommandHandler
 
         if (!companyExists)
         {
-            throw new DomainException($"Company with ID '{dto.CompanyId}' was not found.");
+            throw new ResourceNotFoundException($"Company with ID '{dto.CompanyId}' was not found.");
         }
 
         var vacancy = Vacancy.Create(dto.CompanyId, trimmedTitle, dto.Description, dto.Url, dto.PostedAt);

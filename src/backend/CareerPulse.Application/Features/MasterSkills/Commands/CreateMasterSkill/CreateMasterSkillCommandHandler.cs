@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.MasterSkills;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Exceptions;
@@ -32,7 +33,7 @@ public sealed class CreateMasterSkillCommandHandler
 
         if (existingSkill)
         {
-            throw new DomainException($"MasterSkill with name '{trimmedName}' already exists.");
+            throw new ConflictException($"MasterSkill with name '{trimmedName}' already exists.");
         }
 
         // Check if name conflicts with an existing alias

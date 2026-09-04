@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Vacancies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Exceptions;
@@ -29,7 +30,7 @@ public sealed class UpdateVacancyCommandHandler
 
         if (vacancy == null)
         {
-            throw new DomainException($"Vacancy with ID '{request.Id}' was not found.");
+            throw new ResourceNotFoundException($"Vacancy with ID '{request.Id}' was not found.");
         }
 
         var dto = request.Dto;

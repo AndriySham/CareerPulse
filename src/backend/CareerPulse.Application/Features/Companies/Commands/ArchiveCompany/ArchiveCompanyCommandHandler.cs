@@ -1,5 +1,5 @@
-﻿using CareerPulse.Application.Interfaces;
-using CareerPulse.Domain.Exceptions;
+﻿using CareerPulse.Application.Exceptions;
+using CareerPulse.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,7 @@ public sealed class ArchiveCompanyCommandHandler
     
         if (company == null)
         {
-            throw new DomainException($"Company with ID '{request.Id}' was not found.");
+            throw new ResourceNotFoundException($"Company with ID '{request.Id}' was not found.");
         }
 
         company.Archive();

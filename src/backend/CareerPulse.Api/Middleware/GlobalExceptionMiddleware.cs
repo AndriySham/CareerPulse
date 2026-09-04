@@ -1,3 +1,4 @@
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,10 @@ namespace CareerPulse.Api.Middleware;
 
 /// <summary>
 /// Global exception handler middleware.
-/// ADR 009: Maps domain exceptions to RFC 7807 ProblemDetails responses.
+/// Maps application and domain exceptions to RFC 7807 ProlemDetails responces.
+/// 
+/// ResourseNotFoundException → HTTP 404 Not Found
+/// ConflictException → HTTP 409 Conflict
 /// DomainException  → HTTP 409 Conflict
 /// ValidationException → HTTP 400 Bad Request
 /// Unhandled        → HTTP 500 Internal Server Error
@@ -27,6 +31,24 @@ public sealed class GlobalExceptionMiddleware
         try
         {
             await _next(context);
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Resource not found: {Message}", ex.Message);
+            await WriteProblemAsync(context,
+                StatusCodes.Status404NotFound,
+                "https://careerpulse.local/errors/resource-not-found",
+                "Resource Not Found",
+                ex.Message);
+        }
+        catch (ConflictException ex)
+        {
+            _logger.LogWarning(ex, "Conflict detected: {Message}", ex.Message);
+            await WriteProblemAsync(context,
+            StatusCodes.Status409Conflict,
+            "https://careerpulse.local/errors/conflict",
+            "Conflict",
+            ex.Message);
         }
         catch (DomainException ex)
         {

@@ -1,7 +1,7 @@
 using CareerPulse.Application.DTOs.Companies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Interfaces;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +29,7 @@ public sealed class UpdateCompanyCommandHandler
 
         if (company == null)
         {
-            throw new DomainException($"Company with ID '{request.Id}' was not found.");
+            throw new ResourceNotFoundException($"Company with ID '{request.Id}' was not found.");
         }
 
         var dto = request.Dto;
@@ -40,7 +40,7 @@ public sealed class UpdateCompanyCommandHandler
 
         if (nameConflict)
         {
-            throw new DomainException($"Company with name '{trimmedName}' already exists.");
+            throw new ConflictException($"Company with name '{trimmedName}' already exists.");
         }
 
         company.Update(trimmedName, dto.Website, dto.Industry, dto.Notes);
