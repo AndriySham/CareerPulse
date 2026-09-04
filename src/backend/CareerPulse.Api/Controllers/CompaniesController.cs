@@ -1,6 +1,7 @@
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Features.Companies.Commands.ArchiveCompany;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
+using CareerPulse.Application.Features.Companies.Commands.RestoreCompany;
 using CareerPulse.Application.Features.Companies.Commands.UpdateCompany;
 using CareerPulse.Application.Features.Companies.Queries.GetCompanies;
 using CareerPulse.Application.Features.Companies.Queries.GetCompanyById;
@@ -86,6 +87,22 @@ public class CompaniesController : ControllerBase
         var command = new ArchiveCompanyCommand(id);
         await _mediator.Send(command, ct);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Restore a Company by ID.
+    /// </summary>
+    [HttpPost("{id:guid}/restore")]
+    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CompanyDto>> Restore(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new RestoreCompanyCommand(id);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 
     /// <summary>
