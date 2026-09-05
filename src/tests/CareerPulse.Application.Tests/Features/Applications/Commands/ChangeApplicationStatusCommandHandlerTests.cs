@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Applications.Commands.ChangeApplicationStatus;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -124,7 +125,7 @@ public class ChangeApplicationStatusCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenApplicationNotFound_ShouldThrowDomainException()
+    public async Task Handle_WhenApplicationNotFound_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -138,7 +139,7 @@ public class ChangeApplicationStatusCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Application with ID {nonExistentId} was not found.");
     }
 }

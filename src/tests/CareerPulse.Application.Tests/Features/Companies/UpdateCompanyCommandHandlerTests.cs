@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Companies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Companies.Commands.UpdateCompany;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -78,7 +79,7 @@ public class UpdateCompanyCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenUpdatingWithAnotherExistingCompanyName_ShouldThrowDomainException()
+    public async Task Handle_WhenUpdatingWithAnotherExistingCompanyName_ShouldThrowConflictException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -95,12 +96,12 @@ public class UpdateCompanyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ConflictException>()
             .WithMessage("Company with name 'Company Two' already exists.");
     }
 
     [Fact]
-    public async Task Handle_WhenUpdatingWithAnotherExistingCompanyNameCaseInsensitive_ShouldThrowDomainException()
+    public async Task Handle_WhenUpdatingWithAnotherExistingCompanyNameCaseInsensitive_ShouldThrowConflictException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -117,12 +118,12 @@ public class UpdateCompanyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ConflictException>()
             .WithMessage("Company with name 'COMPANY TWO' already exists.");
     }
 
     [Fact]
-    public async Task Handle_WhenCompanyDoesNotExist_ShouldThrowDomainException()
+    public async Task Handle_WhenCompanyDoesNotExist_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -135,7 +136,7 @@ public class UpdateCompanyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Company with ID '{nonExistentId}' was not found.");
     }
 

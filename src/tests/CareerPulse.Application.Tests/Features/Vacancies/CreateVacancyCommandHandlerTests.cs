@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Vacancies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -88,7 +89,7 @@ public class CreateVacancyCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCompanyDoesNotExist_ShouldThrowDomainException()
+    public async Task Handle_WhenCompanyDoesNotExist_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -105,7 +106,7 @@ public class CreateVacancyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Company with ID '{nonExistentCompanyId}' was not found.");
     }
 

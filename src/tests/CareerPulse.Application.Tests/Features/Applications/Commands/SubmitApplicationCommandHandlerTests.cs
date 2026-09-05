@@ -1,5 +1,6 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -129,7 +130,7 @@ public class SubmitApplicationCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCompanyNotFound_ShouldThrowDomainException()
+    public async Task Handle_WhenCompanyNotFound_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -149,12 +150,12 @@ public class SubmitApplicationCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Company with ID {nonExistentCompanyId} was not found.");
     }
 
     [Fact]
-    public async Task Handle_WhenResumeRevisionNotFound_ShouldThrowDomainException()
+    public async Task Handle_WhenResumeRevisionNotFound_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -174,12 +175,12 @@ public class SubmitApplicationCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"ResumeRevision with ID {nonExistentRevisionId} was not found.");
     }
 
     [Fact]
-    public async Task Handle_WhenVacancyNotFound_ShouldThrowDomainException()
+    public async Task Handle_WhenVacancyNotFound_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -200,7 +201,7 @@ public class SubmitApplicationCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Vacancy with ID {nonExistentVacancyId} was not found.");
     }
 

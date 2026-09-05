@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Vacancies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.UpdateVacancy;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -51,7 +52,7 @@ public class UpdateVacancyCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenVacancyDoesNotExist_ShouldThrowDomainException()
+    public async Task Handle_WhenVacancyDoesNotExist_ShouldThrowResourceNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -64,7 +65,7 @@ public class UpdateVacancyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Vacancy with ID '{nonExistentId}' was not found.");
     }
 

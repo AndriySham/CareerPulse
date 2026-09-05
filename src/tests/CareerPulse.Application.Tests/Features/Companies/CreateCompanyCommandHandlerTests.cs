@@ -1,5 +1,6 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
+using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
@@ -77,7 +78,7 @@ public class CreateCompanyCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithDuplicateNameSameCase_ShouldThrowDomainException()
+    public async Task Handle_WithDuplicateNameSameCase_ShouldThrowConflictException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -93,12 +94,12 @@ public class CreateCompanyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ConflictException>()
             .WithMessage("Company with name 'InnovateSoft' already exists.");
     }
 
     [Fact]
-    public async Task Handle_WithDuplicateNameDifferentCaseAndSpaces_ShouldThrowDomainException()
+    public async Task Handle_WithDuplicateNameDifferentCaseAndSpaces_ShouldThrowConflictException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -114,7 +115,7 @@ public class CreateCompanyCommandHandlerTests
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<DomainException>()
+        await act.Should().ThrowAsync<ConflictException>()
             .WithMessage("Company with name 'INNOVATESOFT' already exists.");
     }
 
