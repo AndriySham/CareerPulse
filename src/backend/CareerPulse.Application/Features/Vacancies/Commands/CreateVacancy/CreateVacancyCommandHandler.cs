@@ -36,7 +36,17 @@ public sealed class CreateVacancyCommandHandler
             throw new ResourceNotFoundException($"Company with ID '{dto.CompanyId}' was not found.");
         }
 
-        var vacancy = Vacancy.Create(dto.CompanyId, trimmedTitle, dto.Description, dto.Url, dto.PostedAt);
+        var vacancy = Vacancy.Create(
+            dto.CompanyId, 
+            trimmedTitle, 
+            dto.Description, 
+            dto.Url, 
+            dto.Location, 
+            dto.WorkMode, 
+            dto.SalaryMin, 
+            dto.SalaryMax, 
+            dto.SalaryCurrency, 
+            dto.PostedAt);
 
         _context.Vacancies.Add(vacancy);
         await _context.SaveChangesAsync(cancellationToken);

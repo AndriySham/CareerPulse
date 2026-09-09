@@ -1,7 +1,6 @@
 using CareerPulse.Application.Common.Mappings;
-using CareerPulse.Application.DTOs.Vacancies;
-using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Domain.Entities;
+using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using FluentAssertions;
 using Xunit;
@@ -18,10 +17,15 @@ public class VacancyDomainTests
         var title = "Senior Backend Engineer";
         var description = "Great role with .NET 9";
         var url = "https://example.com/jobs/123";
+        var location = "Kyiv";
+        var mode = WorkMode.Remote;
+        var salaryMin = 1000;
+        var salaryMax = 5000;
+        var salaryCurrency = SalaryCurrency.USD;
         var postedAt = DateTime.UtcNow.AddDays(-2);
 
         // Act
-        var vacancy = Vacancy.Create(companyId, title, description, url, postedAt);
+        var vacancy = Vacancy.Create(companyId, title, description, url, location, mode, salaryMin, salaryMax, salaryCurrency, postedAt);
 
         // Assert
         vacancy.Should().NotBeNull();
@@ -30,6 +34,11 @@ public class VacancyDomainTests
         vacancy.Title.Should().Be("Senior Backend Engineer");
         vacancy.Description.Should().Be("Great role with .NET 9");
         vacancy.Url.Should().Be("https://example.com/jobs/123");
+        vacancy.Location.Should().Be("Kyiv");
+        vacancy.WorkMode.Should().Be(WorkMode.Remote);
+        vacancy.SalaryMin.Should().Be(1000);
+        vacancy.SalaryMax.Should().Be(5000);
+        vacancy.SalaryCurrency.Should().Be(SalaryCurrency.USD);
         vacancy.PostedAt.Should().Be(postedAt);
         vacancy.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         vacancy.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
@@ -160,7 +169,7 @@ public class VacancyDomainTests
         // Arrange
         var companyId = Guid.NewGuid();
         var postedAt = DateTime.UtcNow.AddDays(-1);
-        var vacancy = Vacancy.Create(companyId, "Fullstack Engineer", "Fullstack desc", "https://fullstack.io", postedAt);
+        var vacancy = Vacancy.Create(companyId, "Fullstack Engineer", "Fullstack desc", "https://fullstack.io", "Kyiv", WorkMode.Remote, 1000, 5000, SalaryCurrency.USD, postedAt);
 
         // Act
         var dto = VacancyMapping.MapToDto(vacancy);

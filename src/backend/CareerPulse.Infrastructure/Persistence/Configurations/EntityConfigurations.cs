@@ -230,6 +230,9 @@ public sealed class VacancyConfiguration : IEntityTypeConfiguration<Vacancy>
         builder.Property(x => x.Title).HasMaxLength(300).IsRequired();
         builder.Property(x => x.Description).HasColumnType("text");
         builder.Property(x => x.Url).HasMaxLength(1000);
+        builder.Property(x => x.Location).HasMaxLength(300);
+        builder.Property(x => x.WorkMode).HasConversion<string>().HasMaxLength(50);
+        builder.Property(x => x.SalaryCurrency).HasConversion<string>().HasMaxLength(20);
 
         builder.HasIndex(x => x.CompanyId);
     }

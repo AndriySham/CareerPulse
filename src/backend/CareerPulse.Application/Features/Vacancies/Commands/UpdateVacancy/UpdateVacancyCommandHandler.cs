@@ -37,7 +37,15 @@ public sealed class UpdateVacancyCommandHandler
         var dto = request.Dto;
         var trimmedTitle = dto.Title?.Trim() ?? string.Empty;
 
-        vacancy.Update(trimmedTitle, dto.Description, dto.Url);
+        vacancy.Update(
+            trimmedTitle, 
+            dto.Description, 
+            dto.Url, 
+            dto.Location,
+            dto.WorkMode,
+            dto.SalaryMin,
+            dto.SalaryMax,
+            dto.SalaryCurrency);
 
         await _context.SaveChangesAsync(cancellationToken);
 

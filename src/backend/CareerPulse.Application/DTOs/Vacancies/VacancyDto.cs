@@ -1,3 +1,5 @@
+using CareerPulse.Domain.Enums;
+
 namespace CareerPulse.Application.DTOs.Vacancies;
 
 /// <summary>
@@ -10,6 +12,11 @@ public sealed class VacancyDto
     public string Title { get; init; } = string.Empty;
     public string? Description { get; init; }
     public string? Url { get; init; }
+    public string? Location { get; init; }
+    public WorkMode? WorkMode { get; init; }
+    public int? SalaryMin { get; init; }
+    public int? SalaryMax { get; init; }
+    public SalaryCurrency? SalaryCurrency { get; init; }
     public DateTime? PostedAt { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }

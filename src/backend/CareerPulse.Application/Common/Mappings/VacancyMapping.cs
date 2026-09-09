@@ -12,6 +12,11 @@ public class VacancyMapping
         Title = vacancy.Title,
         Description = vacancy.Description,
         Url = vacancy.Url,
+        Location = vacancy.Location,
+        WorkMode = vacancy.WorkMode,
+        SalaryMin = vacancy.SalaryMin,
+        SalaryMax = vacancy.SalaryMax,
+        SalaryCurrency = vacancy.SalaryCurrency,
         PostedAt = vacancy.PostedAt,
         CreatedAt = vacancy.CreatedAt,
         UpdatedAt = vacancy.UpdatedAt

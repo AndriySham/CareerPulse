@@ -1,6 +1,7 @@
 using CareerPulse.Application.Features.Vacancies.Queries.GetVacancyById;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
+using CareerPulse.Domain.Enums;
 using FluentAssertions;
 using Xunit;
 
@@ -18,7 +19,7 @@ public class GetVacancyByIdQueryHandlerTests
         await context.SaveChangesAsync();
 
         var postedAt = DateTime.UtcNow.AddDays(-5);
-        var vacancy = Vacancy.Create(company.Id, "Staff Engineer", "Role description", "https://single.com/job", postedAt);
+        var vacancy = Vacancy.Create(company.Id, "Staff Engineer", "Role description", "https://single.com/job", "Kyiv", WorkMode.Remote, 1000, 5000, SalaryCurrency.USD, postedAt);
         context.Vacancies.Add(vacancy);
         await context.SaveChangesAsync();
 
@@ -35,6 +36,11 @@ public class GetVacancyByIdQueryHandlerTests
         result.Title.Should().Be("Staff Engineer");
         result.Description.Should().Be("Role description");
         result.Url.Should().Be("https://single.com/job");
+        result.Location.Should().Be("Kyiv");
+        result.WorkMode.Should().Be(WorkMode.Remote);
+        result.SalaryMin.Should().Be(1000);
+        result.SalaryMax.Should().Be(5000);
+        result.SalaryCurrency.Should().Be(SalaryCurrency.USD);
         result.PostedAt.Should().Be(postedAt);
         result.CreatedAt.Should().Be(vacancy.CreatedAt);
         result.UpdatedAt.Should().Be(vacancy.UpdatedAt);
