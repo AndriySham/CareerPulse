@@ -19,7 +19,7 @@ public class GetVacancyByIdQueryHandlerTests
         await context.SaveChangesAsync();
 
         var postedAt = DateTime.UtcNow.AddDays(-5);
-        var vacancy = Vacancy.Create(company.Id, "Staff Engineer", "Role description", "https://single.com/job", "Kyiv", WorkMode.Remote, 1000, 5000, SalaryCurrency.USD, postedAt);
+        var vacancy = Vacancy.Create(company.Id, "Staff Engineer", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://single.com/job", postedAt);
         context.Vacancies.Add(vacancy);
         await context.SaveChangesAsync();
 
@@ -34,7 +34,7 @@ public class GetVacancyByIdQueryHandlerTests
         result!.Id.Should().Be(vacancy.Id);
         result.CompanyId.Should().Be(company.Id);
         result.Title.Should().Be("Staff Engineer");
-        result.Description.Should().Be("Role description");
+        result.Description.Should().Be("Full description");
         result.Url.Should().Be("https://single.com/job");
         result.Location.Should().Be("Kyiv");
         result.WorkMode.Should().Be(WorkMode.Remote);

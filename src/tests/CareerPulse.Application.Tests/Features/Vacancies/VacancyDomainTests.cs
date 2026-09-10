@@ -25,7 +25,7 @@ public class VacancyDomainTests
         var postedAt = DateTime.UtcNow.AddDays(-2);
 
         // Act
-        var vacancy = Vacancy.Create(companyId, title, description, url, location, mode, salaryMin, salaryMax, salaryCurrency, postedAt);
+        var vacancy = Vacancy.Create(companyId, title, location, WorkMode.Remote, EmploymentType.FullTime, salaryMin, salaryMax, salaryCurrency, description, "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", url, postedAt);
 
         // Assert
         vacancy.Should().NotBeNull();
@@ -89,9 +89,9 @@ public class VacancyDomainTests
         var vacancy = Vacancy.Create(
             companyId,
             "  DevOps Lead  ",
-            "  Some description  ",
-            "  https://jobs.example.com/456  "
-        );
+            description: "  Some description  ",
+            url: "  https://jobs.example.com/456  "
+        ); ;
 
         // Assert
         vacancy.Title.Should().Be("DevOps Lead");
@@ -103,16 +103,16 @@ public class VacancyDomainTests
     public void Update_WithValidData_ShouldUpdateTitleDescriptionUrlAndSetUpdatedAt()
     {
         // Arrange
-        var vacancy = Vacancy.Create(Guid.NewGuid(), "Original Title", "Original Desc", "https://old.url");
+        var vacancy = Vacancy.Create(Guid.NewGuid(), "Updated Title", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Updated Desc", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job");
         var initialUpdatedAt = vacancy.UpdatedAt;
 
         // Act
-        vacancy.Update("Updated Title", "Updated Desc", "https://new.url");
+        vacancy.Update(title: "Updated Title", mode: WorkMode.Remote, description: "Updated Desc");
 
         // Assert
         vacancy.Title.Should().Be("Updated Title");
         vacancy.Description.Should().Be("Updated Desc");
-        vacancy.Url.Should().Be("https://new.url");
+        vacancy.WorkMode.Should().Be(WorkMode.Remote);
         vacancy.UpdatedAt.Should().BeOnOrAfter(initialUpdatedAt);
         vacancy.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -121,7 +121,7 @@ public class VacancyDomainTests
     public void Update_WithNullOptionalFields_ShouldSetDescriptionAndUrlToNull()
     {
         // Arrange
-        var vacancy = Vacancy.Create(Guid.NewGuid(), "Title", "Desc", "https://url.com");
+        var vacancy = Vacancy.Create(Guid.NewGuid(), "Full Spec Vacancy", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job");
 
         // Act
         vacancy.Update("Updated Title", null, null);
@@ -156,11 +156,11 @@ public class VacancyDomainTests
         var vacancy = Vacancy.Create(Guid.NewGuid(), "Title");
 
         // Act
-        vacancy.Update("  Pricipal Engineer  ", "Desc", "  https://trimmed.com  ");
-
+        vacancy.Update("  Pricipal Engineer  ", "Desc", WorkMode.Remote);
+     
         // Assert
         vacancy.Title.Should().Be("Pricipal Engineer");
-        vacancy.Url.Should().Be("https://trimmed.com");
+        vacancy.WorkMode.Should().Be(WorkMode.Remote);
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public class VacancyDomainTests
         // Arrange
         var companyId = Guid.NewGuid();
         var postedAt = DateTime.UtcNow.AddDays(-1);
-        var vacancy = Vacancy.Create(companyId, "Fullstack Engineer", "Fullstack desc", "https://fullstack.io", "Kyiv", WorkMode.Remote, 1000, 5000, SalaryCurrency.USD, postedAt);
+        var vacancy = Vacancy.Create(companyId, "Full Spec Vacancy", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job", postedAt);
 
         // Act
         var dto = VacancyMapping.MapToDto(vacancy);

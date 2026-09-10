@@ -4,8 +4,7 @@ import { useCompanies } from '@/api/companies';
 import CompanyCard from '@/components/companies/CompanyCard';
 import CompanyFormModal from '@/components/companies/CompanyFormModal';
 import CompanyDetailModal from '@/components/companies/CompanyDetailModal';
-import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
-import type { CompanyDto, VacancyDto } from '@/types';
+import type { CompanyDto } from '@/types';
 import { Building2, Search, Plus, Archive, CheckCircle2, SlidersHorizontal } from 'lucide-react';
 
 export const CompaniesPage: React.FC = () => {
@@ -19,10 +18,6 @@ export const CompaniesPage: React.FC = () => {
 
   const [isCompanyDetailOpen, setIsCompanyDetailOpen] = useState(false);
   const [viewingCompany, setViewingCompany] = useState<CompanyDto | null>(null);
-
-  const [isVacancyFormOpen, setIsVacancyFormOpen] = useState(false);
-  const [vacancyCompanyId, setVacancyCompanyId] = useState<string | undefined>(undefined);
-  const [editingVacancy, setEditingVacancy] = useState<VacancyDto | null>(null);
 
   // Queries
   const { data: companies = [], isLoading, isError, refetch } = useCompanies(includeArchived);
@@ -61,9 +56,7 @@ export const CompaniesPage: React.FC = () => {
   };
 
   const handleAddVacancy = (companyId: string) => {
-    setEditingVacancy(null);
-    setVacancyCompanyId(companyId);
-    setIsVacancyFormOpen(true);
+    navigate(`/vacancies/new?companyId=${companyId}`);
   };
 
   const handleSelectVacancyFromDetail = (vacancyId: string) => {
@@ -223,13 +216,6 @@ export const CompaniesPage: React.FC = () => {
         onEditCompany={handleEditCompany}
         onAddVacancy={handleAddVacancy}
         onSelectVacancy={handleSelectVacancyFromDetail}
-      />
-
-      <VacancyFormModal
-        isOpen={isVacancyFormOpen}
-        onClose={() => setIsVacancyFormOpen(false)}
-        vacancyToEdit={editingVacancy}
-        initialCompanyId={vacancyCompanyId}
       />
     </div>
   );

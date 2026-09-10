@@ -4,7 +4,7 @@ import ErrorAlert from '@/components/ui/ErrorAlert';
 import { useCreateVacancy, useUpdateVacancy } from '@/api/vacancies';
 import { useCompanies } from '@/api/companies';
 import CustomSelect from '@/components/ui/CustomSelect';
-import type { VacancyDto } from '@/types';
+import type { VacancyDto, WorkMode, SalaryCurrency } from '@/types';
 
 interface VacancyFormModalProps {
   isOpen: boolean;
@@ -28,6 +28,11 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
+  const [location, setLocation] = useState('');
+  const [workMode, setWorkMode] = useState('');
+  const [salaryMin, setSalaryMin] = useState('');
+  const [salaryMax, setSalaryMax] = useState('');
+  const [salaryCurrency, setSalaryCurrency] = useState('USD');
   const [postedAt, setPostedAt] = useState('');
 
   useEffect(() => {
@@ -36,6 +41,11 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
       setTitle(vacancyToEdit.title || '');
       setDescription(vacancyToEdit.description || '');
       setUrl(vacancyToEdit.url || '');
+      setLocation(vacancyToEdit.location || '');
+      setWorkMode(vacancyToEdit.workMode || '');
+      setSalaryMin(vacancyToEdit.salaryMin != null ? String(vacancyToEdit.salaryMin) : '');
+      setSalaryMax(vacancyToEdit.salaryMax != null ? String(vacancyToEdit.salaryMax) : '');
+      setSalaryCurrency(vacancyToEdit.salaryCurrency || 'USD');
       setPostedAt(
         vacancyToEdit.postedAt
           ? new Date(vacancyToEdit.postedAt).toISOString().substring(0, 10)
@@ -46,6 +56,11 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
       setTitle('');
       setDescription('');
       setUrl('');
+      setLocation('');
+      setWorkMode('');
+      setSalaryMin('');
+      setSalaryMax('');
+      setSalaryCurrency('USD');
       setPostedAt(new Date().toISOString().substring(0, 10));
     }
     createMutation.reset();
@@ -64,6 +79,9 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const minNum = salaryMin !== '' ? Number(salaryMin) : null;
+    const maxNum = salaryMax !== '' ? Number(salaryMax) : null;
+
     try {
       if (isEditing && vacancyToEdit) {
         await updateMutation.mutateAsync({
@@ -72,6 +90,11 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
             title: title.trim(),
             description: description.trim() || null,
             url: url.trim() || null,
+            location: location.trim() || null,
+            workMode: (workMode as WorkMode) || null,
+            salaryMin: minNum,
+            salaryMax: maxNum,
+            salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
           },
         });
       } else {
@@ -80,6 +103,11 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
           title: title.trim(),
           description: description.trim() || null,
           url: url.trim() || null,
+          location: location.trim() || null,
+          workMode: (workMode as WorkMode) || null,
+          salaryMin: minNum,
+          salaryMax: maxNum,
+          salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
           postedAt: postedAt ? new Date(postedAt).toISOString() : null,
         });
       }

@@ -1,9 +1,7 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Interfaces;
-using CareerPulse.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,14 +36,19 @@ public sealed class UpdateVacancyCommandHandler
         var trimmedTitle = dto.Title?.Trim() ?? string.Empty;
 
         vacancy.Update(
-            trimmedTitle, 
-            dto.Description, 
-            dto.Url, 
+            trimmedTitle,
             dto.Location,
             dto.WorkMode,
+            dto.EmploymentType,
             dto.SalaryMin,
             dto.SalaryMax,
-            dto.SalaryCurrency);
+            dto.SalaryCurrency,
+            dto.Description,
+            dto.Responsibilities,
+            dto.Requirements,
+            dto.NiceToHave,
+            dto.Benefits,
+            dto.Url);
 
         await _context.SaveChangesAsync(cancellationToken);
 

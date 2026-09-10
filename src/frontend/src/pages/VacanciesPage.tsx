@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useVacancies } from '@/api/vacancies';
 import { useCompanies } from '@/api/companies';
 import VacancyCard from '@/components/vacancies/VacancyCard';
-import VacancyFormModal from '@/components/vacancies/VacancyFormModal';
-import ApplicationFormModal from '@/components/applications/ApplicationFormModal';
 import CustomSelect from '@/components/ui/CustomSelect';
 import type { VacancyDto } from '@/types';
 import { Briefcase, Search, Plus, Building2, Filter } from 'lucide-react';
@@ -13,13 +11,6 @@ export const VacanciesPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Modal states
-  const [isVacancyFormOpen, setIsVacancyFormOpen] = useState(false);
-  const [editingVacancy, setEditingVacancy] = useState<VacancyDto | null>(null);
-  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
-  const [applyCompanyId, setApplyCompanyId] = useState<string>('');
-  const [applyVacancyId, setApplyVacancyId] = useState<string>('');
 
   // Queries
   const { data: companies = [] } = useCompanies(true);
@@ -41,6 +32,8 @@ export const VacanciesPage: React.FC = () => {
       return (
         v.title.toLowerCase().includes(query) ||
         (v.description && v.description.toLowerCase().includes(query)) ||
+        (v.location && v.location.toLowerCase().includes(query)) ||
+        (v.workMode && v.workMode.toLowerCase().includes(query)) ||
         (company && company.name.toLowerCase().includes(query))
       );
     });
@@ -55,13 +48,15 @@ export const VacanciesPage: React.FC = () => {
 
   // Actions
   const handleCreateVacancy = () => {
-    setEditingVacancy(null);
-    setIsVacancyFormOpen(true);
+    if (selectedCompanyId && selectedCompanyId !== 'all') {
+      navigate(`/vacancies/new?companyId=${selectedCompanyId}`);
+    } else {
+      navigate('/vacancies/new');
+    }
   };
 
   const handleEditVacancy = (vacancy: VacancyDto) => {
-    setEditingVacancy(vacancy);
-    setIsVacancyFormOpen(true);
+    navigate(`/vacancies/${vacancy.id}/edit`);
   };
 
   const handleViewVacancy = (vacancy: VacancyDto) => {
@@ -69,9 +64,7 @@ export const VacanciesPage: React.FC = () => {
   };
 
   const handleApplyVacancy = (vacancy: VacancyDto) => {
-    setApplyCompanyId(vacancy.companyId);
-    setApplyVacancyId(vacancy.id);
-    setIsApplicationModalOpen(true);
+    navigate(`/applications/new?vacancyId=${vacancy.id}&companyId=${vacancy.companyId}`);
   };
 
   return (
@@ -202,21 +195,6 @@ export const VacanciesPage: React.FC = () => {
           ))}
         </div>
       )}
-
-      {/* Modals */}
-      <VacancyFormModal
-        isOpen={isVacancyFormOpen}
-        onClose={() => setIsVacancyFormOpen(false)}
-        vacancyToEdit={editingVacancy}
-        initialCompanyId={selectedCompanyId !== 'all' ? selectedCompanyId : undefined}
-      />
-
-      <ApplicationFormModal
-        isOpen={isApplicationModalOpen}
-        onClose={() => setIsApplicationModalOpen(false)}
-        initialCompanyId={applyCompanyId}
-        initialVacancyId={applyVacancyId}
-      />
     </div>
   );
 };

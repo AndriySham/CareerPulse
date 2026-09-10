@@ -54,6 +54,10 @@ public sealed class UpdateVacancyCommandValidator : AbstractValidator<UpdateVaca
             RuleFor(x => x.Dto.SalaryCurrency)
                 .IsInEnum()
                 .WithMessage("Invalid SalaryCurrency.");
+
+            RuleFor(x => x.Dto.EmploymentType)
+                .IsInEnum()
+                .WithMessage("Invalid EmploymentType");
         });
     }
 }

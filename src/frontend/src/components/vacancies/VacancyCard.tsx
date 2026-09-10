@@ -1,7 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatSalary, formatWorkMode } from '@/types';
 import type { VacancyDto, CompanyDto } from '@/types';
-import { Briefcase, Building2, Calendar, ExternalLink, Edit3, ChevronRight, Send } from 'lucide-react';
+import {
+  Briefcase,
+  Building2,
+  Calendar,
+  ExternalLink,
+  Edit3,
+  ChevronRight,
+  Send,
+  MapPin,
+  Laptop,
+  Banknote,
+} from 'lucide-react';
 
 interface VacancyCardProps {
   vacancy: VacancyDto;
@@ -18,6 +30,9 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
   onEdit,
   onApply,
 }) => {
+  const salaryText = formatSalary(vacancy.salaryMin, vacancy.salaryMax, vacancy.salaryCurrency);
+  const workModeText = formatWorkMode(vacancy.workMode);
+
   return (
     <div className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md">
       <div>
@@ -58,6 +73,30 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
           )}
         </div>
 
+        {/* Compact Metadata Tags: Work Mode, Location & Salary */}
+        {(workModeText || vacancy.location || salaryText) && (
+          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px]">
+            {workModeText && (
+              <span className="inline-flex items-center gap-1 rounded bg-accent/60 px-2 py-0.5 font-medium text-foreground">
+                <Laptop className="h-3 w-3 text-primary" />
+                {workModeText}
+              </span>
+            )}
+            {vacancy.location && (
+              <span className="inline-flex items-center gap-1 rounded bg-accent/60 px-2 py-0.5 font-medium text-muted-foreground truncate max-w-[150px]">
+                <MapPin className="h-3 w-3 text-primary shrink-0" />
+                <span className="truncate">{vacancy.location}</span>
+              </span>
+            )}
+            {salaryText && (
+              <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-400 border border-emerald-500/20">
+                <Banknote className="h-3 w-3" />
+                {salaryText}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Posted date & Description snippet */}
         <div className="mt-3 space-y-2 text-xs">
           {vacancy.postedAt && (
@@ -68,11 +107,11 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
           )}
 
           {vacancy.description ? (
-            <p className="line-clamp-3 text-muted-foreground text-xs leading-relaxed pt-1">
+            <p className="line-clamp-2 text-muted-foreground text-xs leading-relaxed pt-0.5">
               {vacancy.description}
             </p>
           ) : (
-            <p className="text-xs text-muted-foreground/40 italic pt-1">No description provided</p>
+            <p className="text-xs text-muted-foreground/40 italic pt-0.5">No description provided</p>
           )}
         </div>
       </div>

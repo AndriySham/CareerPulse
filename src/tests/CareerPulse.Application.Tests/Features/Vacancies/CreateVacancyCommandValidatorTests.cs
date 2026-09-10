@@ -14,11 +14,15 @@ public class CreateVacancyCommandValidatorTests
     {
         // Arrange
         var command = new CreateVacancyCommand(
-            Guid.NewGuid(),
-            "Software Architect",
-            "Designing scalable systems",
-            "https://company.com/architect",
-            DateTime.UtcNow
+            new CreateVacancyDto
+            {
+                CompanyId = Guid.NewGuid(),
+                Title = "Software Architect",
+                Description = "Designing scalable systems",
+                Url = "https://company.com/architect",
+                PostedAt = DateTime.UtcNow
+
+            }
         );
 
         // Act

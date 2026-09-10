@@ -1,8 +1,21 @@
 import React from 'react';
 import Modal from '@/components/ui/Modal';
 import { useVacancies } from '@/api/vacancies';
+import { formatSalary, formatWorkMode } from '@/types';
 import type { CompanyDto } from '@/types';
-import { Globe, Tag, Edit3, Plus, Briefcase, ExternalLink, Calendar, Archive } from 'lucide-react';
+import {
+  Globe,
+  Tag,
+  Edit3,
+  Plus,
+  Briefcase,
+  ExternalLink,
+  Calendar,
+  Archive,
+  Laptop,
+  MapPin,
+  Banknote,
+} from 'lucide-react';
 
 interface CompanyDetailModalProps {
   isOpen: boolean;
@@ -110,35 +123,56 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
             </div>
           ) : (
             <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {vacancies.map((v) => (
-                <div
-                  key={v.id}
-                  onClick={() => onSelectVacancy?.(v.id)}
-                  className="flex items-center justify-between rounded-lg border border-border/40 bg-card p-3 hover:bg-accent/40 transition-colors cursor-pointer"
-                >
-                  <div>
-                    <h4 className="text-sm font-semibold text-foreground">{v.title}</h4>
-                    {v.postedAt && (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                        <Calendar className="h-3 w-3" />
-                        Posted: {new Date(v.postedAt).toLocaleDateString()}
-                      </span>
+              {vacancies.map((v) => {
+                const salaryStr = formatSalary(v.salaryMin, v.salaryMax, v.salaryCurrency);
+                const workModeStr = formatWorkMode(v.workMode);
+                return (
+                  <div
+                    key={v.id}
+                    onClick={() => onSelectVacancy?.(v.id)}
+                    className="flex items-center justify-between rounded-lg border border-border/40 bg-card p-3 hover:bg-accent/40 transition-colors cursor-pointer"
+                  >
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-semibold text-foreground">{v.title}</h4>
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                        {workModeStr && (
+                          <span className="inline-flex items-center gap-0.5 rounded bg-accent px-1.5 py-0.5 font-medium text-foreground">
+                            <Laptop className="h-3 w-3 text-primary" /> {workModeStr}
+                          </span>
+                        )}
+                        {v.location && (
+                          <span className="inline-flex items-center gap-0.5">
+                            <MapPin className="h-3 w-3 text-primary" /> {v.location}
+                          </span>
+                        )}
+                        {salaryStr && (
+                          <span className="inline-flex items-center gap-0.5 text-emerald-400 font-semibold">
+                            <Banknote className="h-3 w-3" /> {salaryStr}
+                          </span>
+                        )}
+                        {v.postedAt && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            Posted: {new Date(v.postedAt).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {v.url && (
+                      <a
+                        href={v.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-accent transition-colors shrink-0 ml-2"
+                        title="Open job posting"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
                     )}
                   </div>
-                  {v.url && (
-                    <a
-                      href={v.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
-                      title="Open job posting"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

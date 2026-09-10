@@ -55,6 +55,10 @@ public sealed class CreateVacancyCommandValidator : AbstractValidator<CreateVaca
             RuleFor(x => x.Dto.SalaryCurrency)
                 .IsInEnum()
                 .WithMessage("Invalid SalaryCurrency.");
+
+            RuleFor(x => x.Dto.EmploymentType)
+                .IsInEnum()
+                .WithMessage("Invalid EmploymentType");
         });
     }
 }

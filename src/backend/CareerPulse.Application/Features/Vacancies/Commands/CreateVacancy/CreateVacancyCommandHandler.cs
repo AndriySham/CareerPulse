@@ -38,14 +38,19 @@ public sealed class CreateVacancyCommandHandler
 
         var vacancy = Vacancy.Create(
             dto.CompanyId, 
-            trimmedTitle, 
-            dto.Description, 
-            dto.Url, 
-            dto.Location, 
-            dto.WorkMode, 
-            dto.SalaryMin, 
-            dto.SalaryMax, 
-            dto.SalaryCurrency, 
+            trimmedTitle,
+            dto.Location,
+            dto.WorkMode,
+            dto.EmploymentType,
+            dto.SalaryMin,
+            dto.SalaryMax,
+            dto.SalaryCurrency,
+            dto.Description,
+            dto.Responsibilities,
+            dto.Requirements,
+            dto.NiceToHave,
+            dto.Benefits,
+            dto.Url,
             dto.PostedAt);
 
         _context.Vacancies.Add(vacancy);

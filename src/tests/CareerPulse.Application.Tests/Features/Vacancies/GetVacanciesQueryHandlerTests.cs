@@ -118,7 +118,7 @@ public class GetVacanciesQueryHandlerTests
         await context.SaveChangesAsync();
 
         var postedAt = DateTime.UtcNow.AddDays(-3);
-        var vacancy = Vacancy.Create(company.Id, "Full Spec Vacancy", "Full description", "https://detail.com/job", "Full Location", WorkMode.Remote, 1000, 5000, SalaryCurrency.USD, postedAt);
+        var vacancy = Vacancy.Create(company.Id, "Full Spec Vacancy", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job", postedAt);
         context.Vacancies.Add(vacancy);
         await context.SaveChangesAsync();
 
@@ -137,7 +137,7 @@ public class GetVacanciesQueryHandlerTests
         dto.Description.Should().Be("Full description");
         dto.Url.Should().Be("https://detail.com/job");
         dto.WorkMode.Should().Be(WorkMode.Remote);
-        dto.Location.Should().Be("Full Location");
+        dto.Location.Should().Be("Kyiv");
         dto.SalaryMin.Should().Be(1000);
         dto.SalaryMax.Should().Be(5000);
         dto.SalaryCurrency.Should().Be(SalaryCurrency.USD);

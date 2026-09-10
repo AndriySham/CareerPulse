@@ -3,6 +3,7 @@ using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.UpdateVacancy;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
+using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ public class UpdateVacancyCommandHandlerTests
         using var context = TestDbContext.CreateInMemory();
         var company = Company.Create("TechCorp");
         context.Companies.Add(company);
-        var vacancy = Vacancy.Create(company.Id, "Junior Dev", "Old desc", "https://old.com");
+        var vacancy = Vacancy.Create(company.Id, "Full Spec Vacancy", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job");
         context.Vacancies.Add(vacancy);
         await context.SaveChangesAsync();
 
@@ -132,7 +133,7 @@ public class UpdateVacancyCommandHandlerTests
         using var context = TestDbContext.CreateInMemory();
         var company = Company.Create("ClearCorp");
         context.Companies.Add(company);
-        var vacancy = Vacancy.Create(company.Id, "Developer", "Has description", "https://has.url");
+        var vacancy = Vacancy.Create(company.Id, "Full Spec Vacancy", "Kyiv", WorkMode.Remote, EmploymentType.FullTime, 1000, 5000, SalaryCurrency.USD, "Full description", "Full responsibilities", "Full requirements", " Full NiceToHave", "Full Benefits", "https://detail.com/job");
         context.Vacancies.Add(vacancy);
         await context.SaveChangesAsync();
 

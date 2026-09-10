@@ -136,16 +136,23 @@ public class CreateVacancyCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithOptionalNullFields_ShouldCreateVacancyWithNullDescriptionUrlAndPostedAt()
+    public async Task Handle_WithOptionalNullFields_ShouldCreateVacancyWithNullOptionaFields()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
+
         var company = Company.Create("BareBones Co");
         context.Companies.Add(company);
         await context.SaveChangesAsync();
 
+        var dto = new CreateVacancyDto
+        {
+            CompanyId = company.Id,
+            Title = "Simple Developer"
+        };
+
         var handler = new CreateVacancyCommandHandler(context);
-        var command = new CreateVacancyCommand(company.Id, "Simple Developer");
+        var command = new CreateVacancyCommand(dto);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -153,13 +160,37 @@ public class CreateVacancyCommandHandlerTests
         // Assert
         result.CompanyId.Should().Be(company.Id);
         result.Title.Should().Be("Simple Developer");
+
+        result.Location.Should().BeNull();
+        result.WorkMode.Should().BeNull();
+        result.EmploymentType.Should().BeNull();
+        result.SalaryMin.Should().BeNull();
+        result.SalaryMax.Should().BeNull();
+        result.SalaryCurrency.Should().BeNull();
         result.Description.Should().BeNull();
+        result.Responsibilities.Should().BeNull();
+        result.Requirements.Should().BeNull();
+        result.NiceToHave.Should().BeNull();
+        result.Benefits.Should().BeNull();
         result.Url.Should().BeNull();
         result.PostedAt.Should().BeNull();
 
-        var dbVacancy = await context.Vacancies.FirstOrDefaultAsync(v => v.Id == result.Id);
+        var dbVacancy = await context.Vacancies
+            .FirstOrDefaultAsync(v => v.Id == result.Id);
+
         dbVacancy.Should().NotBeNull();
-        dbVacancy!.Description.Should().BeNull();
+
+        dbVacancy!.Location.Should().BeNull();
+        dbVacancy.WorkMode.Should().BeNull();
+        dbVacancy.EmploymentType.Should().BeNull();
+        dbVacancy.SalaryMin.Should().BeNull();
+        dbVacancy.SalaryMax.Should().BeNull();
+        dbVacancy.SalaryCurrency.Should().BeNull();
+        dbVacancy.Description.Should().BeNull();
+        dbVacancy.Responsibilities.Should().BeNull();
+        dbVacancy.Requirements.Should().BeNull();
+        dbVacancy.NiceToHave.Should().BeNull();
+        dbVacancy.Benefits.Should().BeNull();
         dbVacancy.Url.Should().BeNull();
         dbVacancy.PostedAt.Should().BeNull();
     }
