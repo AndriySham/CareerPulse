@@ -1,5 +1,6 @@
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
+using CareerPulse.Application.Features.Vacancies.Commands.DeleteVacancy;
 using CareerPulse.Application.Features.Vacancies.Commands.UpdateVacancy;
 using CareerPulse.Application.Features.Vacancies.Queries.GetVacancies;
 using CareerPulse.Application.Features.Vacancies.Queries.GetVacancyById;
@@ -87,5 +88,22 @@ public class VacanciesController : ControllerBase
         var command = new UpdateVacancyCommand(id, dto);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete an existing Vacancy entity by ID.
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new DeleteVacancyCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

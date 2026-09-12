@@ -1,7 +1,6 @@
 ﻿using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Companies;
 using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Companies.Commands.CreateCompany;
 using CareerPulse.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
