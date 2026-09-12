@@ -4,7 +4,7 @@ import { useCreateVacancy, useUpdateVacancy, useVacancy } from '@/api/vacancies'
 import { useCompanies, useCompany } from '@/api/companies';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ErrorAlert from '@/components/ui/ErrorAlert';
-import type { WorkMode, SalaryCurrency, CreateVacancyDto, UpdateVacancyDto } from '@/types';
+import type { WorkMode, EmploymentType, SalaryCurrency, CreateVacancyDto, UpdateVacancyDto } from '@/types';
 import {
   ArrowLeft,
   Briefcase,
@@ -16,6 +16,10 @@ import {
   FileText,
   Save,
   AlertCircle,
+  ListChecks,
+  CheckCircle2,
+  Sparkles,
+  Gift,
 } from 'lucide-react';
 
 const WORK_MODE_OPTIONS = [
@@ -23,6 +27,13 @@ const WORK_MODE_OPTIONS = [
   { value: 'Remote', label: 'Remote' },
   { value: 'Hybride', label: 'Hybrid' },
   { value: 'Office', label: 'Office' },
+];
+
+const EMPLOYMENT_TYPE_OPTIONS = [
+  { value: '', label: 'Unspecified / Flexible' },
+  { value: 'FullTime', label: 'Full-time' },
+  { value: 'PartTime', label: 'Part-time' },
+  { value: 'Internship', label: 'Internship' },
 ];
 
 const CURRENCY_OPTIONS = [
@@ -61,11 +72,16 @@ export const VacancyEditorPage: React.FC = () => {
   const [url, setUrl] = useState('');
   const [location, setLocation] = useState('');
   const [workMode, setWorkMode] = useState<string>('');
+  const [employmentType, setEmploymentType] = useState<string>('');
   const [salaryMin, setSalaryMin] = useState<string>('');
   const [salaryMax, setSalaryMax] = useState<string>('');
   const [salaryCurrency, setSalaryCurrency] = useState<string>('USD');
   const [postedAt, setPostedAt] = useState('');
   const [description, setDescription] = useState('');
+  const [responsibilities, setResponsibilities] = useState('');
+  const [requirements, setRequirements] = useState('');
+  const [niceToHave, setNiceToHave] = useState('');
+  const [benefits, setBenefits] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Populate data when editing or creating
@@ -76,6 +92,7 @@ export const VacancyEditorPage: React.FC = () => {
       setUrl(existingVacancy.url || '');
       setLocation(existingVacancy.location || '');
       setWorkMode(existingVacancy.workMode || '');
+      setEmploymentType(existingVacancy.employmentType || '');
       setSalaryMin(existingVacancy.salaryMin != null ? String(existingVacancy.salaryMin) : '');
       setSalaryMax(existingVacancy.salaryMax != null ? String(existingVacancy.salaryMax) : '');
       setSalaryCurrency(
@@ -88,6 +105,10 @@ export const VacancyEditorPage: React.FC = () => {
           : ''
       );
       setDescription(existingVacancy.description || '');
+      setResponsibilities(existingVacancy.responsibilities || '');
+      setRequirements(existingVacancy.requirements || '');
+      setNiceToHave(existingVacancy.niceToHave || '');
+      setBenefits(existingVacancy.benefits || '');
     } else if (!isEditing) {
       const defaultCompany = queryCompanyId || (companies.length > 0 ? companies[0].id : '');
       setCompanyId(defaultCompany);
@@ -140,9 +161,14 @@ export const VacancyEditorPage: React.FC = () => {
         const dto: UpdateVacancyDto = {
           title: trimmedTitle,
           description: description.trim() || null,
+          responsibilities: responsibilities.trim() || null,
+          requirements: requirements.trim() || null,
+          niceToHave: niceToHave.trim() || null,
+          benefits: benefits.trim() || null,
           url: url.trim() || null,
           location: location.trim() || null,
           workMode: (workMode as WorkMode) || null,
+          employmentType: (employmentType as EmploymentType) || null,
           salaryMin: minNum,
           salaryMax: maxNum,
           salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
@@ -154,9 +180,14 @@ export const VacancyEditorPage: React.FC = () => {
           companyId,
           title: trimmedTitle,
           description: description.trim() || null,
+          responsibilities: responsibilities.trim() || null,
+          requirements: requirements.trim() || null,
+          niceToHave: niceToHave.trim() || null,
+          benefits: benefits.trim() || null,
           url: url.trim() || null,
           location: location.trim() || null,
           workMode: (workMode as WorkMode) || null,
+          employmentType: (employmentType as EmploymentType) || null,
           salaryMin: minNum,
           salaryMax: maxNum,
           salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
@@ -356,7 +387,7 @@ export const VacancyEditorPage: React.FC = () => {
             <DollarSign className="h-4 w-4 text-primary" /> Role Details & Compensation
           </h2>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {/* Location */}
             <div>
               <label htmlFor="vacancy-location" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
@@ -390,8 +421,22 @@ export const VacancyEditorPage: React.FC = () => {
               />
             </div>
 
+            {/* Employment Type */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                Employment Type
+              </label>
+              <CustomSelect
+                value={employmentType}
+                onChange={(val) => setEmploymentType(val)}
+                placeholder="Select type..."
+                options={EMPLOYMENT_TYPE_OPTIONS}
+                className="w-full"
+              />
+            </div>
+
             {/* Compensation Row */}
-            <div className="sm:col-span-2 pt-2 border-t border-border/30">
+            <div className="sm:col-span-3 pt-2 border-t border-border/30">
               <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                 Salary Range & Currency
               </label>
@@ -451,20 +496,87 @@ export const VacancyEditorPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Section 3: Job Description & Requirements */}
+        {/* Section 3: Job Description & Overview */}
         <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
-            <FileText className="h-4 w-4 text-primary" /> Job Description & Requirements
+            <FileText className="h-4 w-4 text-primary" /> General Description & Overview
           </h2>
 
           <div>
             <textarea
               id="vacancy-description"
-              rows={8}
+              rows={5}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Paste job description, technical requirements, responsibilities, nice-to-haves..."
+              placeholder="Paste overall job summary, company context, or general intro..."
               className="w-full rounded-lg border border-border bg-background px-3.5 py-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed resize-y"
+            />
+          </div>
+        </div>
+
+        {/* Section 4: Role Specifications & Requirements */}
+        <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-6">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+            <ListChecks className="h-4 w-4 text-primary" /> Role Specifications & Requirements
+          </h2>
+
+          {/* Responsibilities */}
+          <div>
+            <label htmlFor="vacancy-responsibilities" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
+              <ListChecks className="h-3.5 w-3.5 text-primary" /> Responsibilities
+            </label>
+            <textarea
+              id="vacancy-responsibilities"
+              rows={4}
+              value={responsibilities}
+              onChange={(e) => setResponsibilities(e.target.value)}
+              placeholder="Key responsibilities, day-to-day tasks, expectations..."
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed resize-y"
+            />
+          </div>
+
+          {/* Requirements */}
+          <div>
+            <label htmlFor="vacancy-requirements" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Requirements
+            </label>
+            <textarea
+              id="vacancy-requirements"
+              rows={4}
+              value={requirements}
+              onChange={(e) => setRequirements(e.target.value)}
+              placeholder="Must-have qualifications, skills, years of experience, core tech stack..."
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed resize-y"
+            />
+          </div>
+
+          {/* Nice to Have */}
+          <div>
+            <label htmlFor="vacancy-nice-to-have" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" /> Nice to Have
+            </label>
+            <textarea
+              id="vacancy-nice-to-have"
+              rows={3}
+              value={niceToHave}
+              onChange={(e) => setNiceToHave(e.target.value)}
+              placeholder="Preferred experience, bonus skills, bonus certifications..."
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed resize-y"
+            />
+          </div>
+
+          {/* Benefits */}
+          <div>
+            <label htmlFor="vacancy-benefits" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
+              <Gift className="h-3.5 w-3.5 text-primary" /> Benefits & Perks
+            </label>
+            <textarea
+              id="vacancy-benefits"
+              rows={3}
+              value={benefits}
+              onChange={(e) => setBenefits(e.target.value)}
+              placeholder="Health insurance, vacation policy, learning budget, equipment, bonuses..."
+              className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed resize-y"
             />
           </div>
         </div>

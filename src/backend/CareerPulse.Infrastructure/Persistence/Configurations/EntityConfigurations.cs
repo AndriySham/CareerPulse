@@ -232,7 +232,12 @@ public sealed class VacancyConfiguration : IEntityTypeConfiguration<Vacancy>
         builder.Property(x => x.Url).HasMaxLength(1000);
         builder.Property(x => x.Location).HasMaxLength(300);
         builder.Property(x => x.WorkMode).HasConversion<string>().HasMaxLength(50);
+        builder.Property(x => x.EmploymentType).HasConversion<string>().HasMaxLength(50);
         builder.Property(x => x.SalaryCurrency).HasConversion<string>().HasMaxLength(20);
+        builder.Property(x => x.Requirements).HasColumnType("text");
+        builder.Property(x => x.Responsibilities).HasColumnType("text");
+        builder.Property(x => x.NiceToHave).HasColumnType("text");
+        builder.Property(x => x.Benefits).HasColumnType("text");
 
         builder.HasIndex(x => x.CompanyId);
     }

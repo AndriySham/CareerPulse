@@ -4,7 +4,14 @@ import ErrorAlert from '@/components/ui/ErrorAlert';
 import { useCreateVacancy, useUpdateVacancy } from '@/api/vacancies';
 import { useCompanies } from '@/api/companies';
 import CustomSelect from '@/components/ui/CustomSelect';
-import type { VacancyDto, WorkMode, SalaryCurrency } from '@/types';
+import type { VacancyDto, WorkMode, EmploymentType, SalaryCurrency } from '@/types';
+
+const EMPLOYMENT_TYPE_OPTIONS = [
+  { value: '', label: 'Unspecified' },
+  { value: 'FullTime', label: 'Full-time' },
+  { value: 'PartTime', label: 'Part-time' },
+  { value: 'Internship', label: 'Internship' },
+];
 
 interface VacancyFormModalProps {
   isOpen: boolean;
@@ -27,9 +34,14 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
   const [companyId, setCompanyId] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [responsibilities, setResponsibilities] = useState('');
+  const [requirements, setRequirements] = useState('');
+  const [niceToHave, setNiceToHave] = useState('');
+  const [benefits, setBenefits] = useState('');
   const [url, setUrl] = useState('');
   const [location, setLocation] = useState('');
   const [workMode, setWorkMode] = useState('');
+  const [employmentType, setEmploymentType] = useState('');
   const [salaryMin, setSalaryMin] = useState('');
   const [salaryMax, setSalaryMax] = useState('');
   const [salaryCurrency, setSalaryCurrency] = useState('USD');
@@ -40,9 +52,14 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
       setCompanyId(vacancyToEdit.companyId);
       setTitle(vacancyToEdit.title || '');
       setDescription(vacancyToEdit.description || '');
+      setResponsibilities(vacancyToEdit.responsibilities || '');
+      setRequirements(vacancyToEdit.requirements || '');
+      setNiceToHave(vacancyToEdit.niceToHave || '');
+      setBenefits(vacancyToEdit.benefits || '');
       setUrl(vacancyToEdit.url || '');
       setLocation(vacancyToEdit.location || '');
       setWorkMode(vacancyToEdit.workMode || '');
+      setEmploymentType(vacancyToEdit.employmentType || '');
       setSalaryMin(vacancyToEdit.salaryMin != null ? String(vacancyToEdit.salaryMin) : '');
       setSalaryMax(vacancyToEdit.salaryMax != null ? String(vacancyToEdit.salaryMax) : '');
       setSalaryCurrency(vacancyToEdit.salaryCurrency || 'USD');
@@ -55,9 +72,14 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
       setCompanyId(initialCompanyId || (companies.length > 0 ? companies[0].id : ''));
       setTitle('');
       setDescription('');
+      setResponsibilities('');
+      setRequirements('');
+      setNiceToHave('');
+      setBenefits('');
       setUrl('');
       setLocation('');
       setWorkMode('');
+      setEmploymentType('');
       setSalaryMin('');
       setSalaryMax('');
       setSalaryCurrency('USD');
@@ -89,9 +111,14 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
           dto: {
             title: title.trim(),
             description: description.trim() || null,
+            responsibilities: responsibilities.trim() || null,
+            requirements: requirements.trim() || null,
+            niceToHave: niceToHave.trim() || null,
+            benefits: benefits.trim() || null,
             url: url.trim() || null,
             location: location.trim() || null,
             workMode: (workMode as WorkMode) || null,
+            employmentType: (employmentType as EmploymentType) || null,
             salaryMin: minNum,
             salaryMax: maxNum,
             salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
@@ -102,9 +129,14 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
           companyId,
           title: title.trim(),
           description: description.trim() || null,
+          responsibilities: responsibilities.trim() || null,
+          requirements: requirements.trim() || null,
+          niceToHave: niceToHave.trim() || null,
+          benefits: benefits.trim() || null,
           url: url.trim() || null,
           location: location.trim() || null,
           workMode: (workMode as WorkMode) || null,
+          employmentType: (employmentType as EmploymentType) || null,
           salaryMin: minNum,
           salaryMax: maxNum,
           salaryCurrency: (salaryCurrency as SalaryCurrency) || null,
@@ -238,8 +270,8 @@ export const VacancyFormModal: React.FC<VacancyFormModalProps> = ({
                 ? 'Saving...'
                 : 'Creating...'
               : isEditing
-              ? 'Save Changes'
-              : 'Create Vacancy'}
+                ? 'Save Changes'
+                : 'Create Vacancy'}
           </button>
         </div>
       </form>

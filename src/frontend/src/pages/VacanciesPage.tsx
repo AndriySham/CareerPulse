@@ -32,8 +32,13 @@ export const VacanciesPage: React.FC = () => {
       return (
         v.title.toLowerCase().includes(query) ||
         (v.description && v.description.toLowerCase().includes(query)) ||
+        (v.responsibilities && v.responsibilities.toLowerCase().includes(query)) ||
+        (v.requirements && v.requirements.toLowerCase().includes(query)) ||
+        (v.niceToHave && v.niceToHave.toLowerCase().includes(query)) ||
+        (v.benefits && v.benefits.toLowerCase().includes(query)) ||
         (v.location && v.location.toLowerCase().includes(query)) ||
         (v.workMode && v.workMode.toLowerCase().includes(query)) ||
+        (v.employmentType && v.employmentType.toLowerCase().includes(query)) ||
         (company && company.name.toLowerCase().includes(query))
       );
     });

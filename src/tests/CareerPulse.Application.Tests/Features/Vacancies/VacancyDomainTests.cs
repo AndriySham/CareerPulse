@@ -180,7 +180,17 @@ public class VacancyDomainTests
         dto.CompanyId.Should().Be(vacancy.CompanyId);
         dto.Title.Should().Be(vacancy.Title);
         dto.Description.Should().Be(vacancy.Description);
+        dto.Responsibilities.Should().Be(vacancy.Responsibilities);
+        dto.Requirements.Should().Be(vacancy.Requirements);
+        dto.NiceToHave.Should().Be(vacancy.NiceToHave);
+        dto.Benefits.Should().Be(vacancy.Benefits);
         dto.Url.Should().Be(vacancy.Url);
+        dto.Location.Should().Be(vacancy.Location);
+        dto.WorkMode.Should().Be(vacancy.WorkMode);
+        dto.EmploymentType.Should().Be(vacancy.EmploymentType);
+        dto.SalaryMin.Should().Be(vacancy.SalaryMin);
+        dto.SalaryMax.Should().Be(vacancy.SalaryMax);
+        dto.SalaryCurrency.Should().Be(vacancy.SalaryCurrency);
         dto.PostedAt.Should().Be(vacancy.PostedAt);
         dto.CreatedAt.Should().Be(vacancy.CreatedAt);
         dto.UpdatedAt.Should().Be(vacancy.UpdatedAt);

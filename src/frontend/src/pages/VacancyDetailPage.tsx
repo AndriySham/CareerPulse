@@ -6,7 +6,7 @@ import { useApplications } from '@/api/applications';
 import { useResumeRevision } from '@/api/resumes';
 import ApplicationStatusBadge from '@/components/applications/ApplicationStatusBadge';
 import ApplicationDetailModal from '@/components/applications/ApplicationDetailModal';
-import { formatSalary, formatWorkMode } from '@/types';
+import { formatSalary, formatWorkMode, formatEmploymentType } from '@/types';
 import type { ApplicationDto } from '@/types';
 import {
   ArrowLeft,
@@ -26,6 +26,10 @@ import {
   Laptop,
   Banknote,
   ArrowRight,
+  ListChecks,
+  CheckCircle2,
+  Sparkles,
+  Gift,
 } from 'lucide-react';
 
 export const VacancyDetailPage: React.FC = () => {
@@ -151,6 +155,7 @@ export const VacancyDetailPage: React.FC = () => {
 
   const salaryFormatted = formatSalary(vacancy.salaryMin, vacancy.salaryMax, vacancy.salaryCurrency);
   const workModeFormatted = formatWorkMode(vacancy.workMode);
+  const employmentTypeFormatted = formatEmploymentType(vacancy.employmentType);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-16">
@@ -204,6 +209,13 @@ export const VacancyDetailPage: React.FC = () => {
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 font-semibold text-foreground border border-border/60">
                     <Laptop className="h-3.5 w-3.5 text-primary" />
                     {workModeFormatted}
+                  </span>
+                )}
+
+                {employmentTypeFormatted && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 font-semibold text-foreground border border-border/60">
+                    <Briefcase className="h-3.5 w-3.5 text-primary" />
+                    {employmentTypeFormatted}
                   </span>
                 )}
 
@@ -290,6 +302,16 @@ export const VacancyDetailPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Employment Type */}
+              <div className="rounded-lg bg-accent/30 p-3 border border-border/40 space-y-1">
+                <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
+                  <Briefcase className="h-3.5 w-3.5 text-primary" /> Employment Type
+                </span>
+                <div className="font-semibold text-foreground text-sm">
+                  {employmentTypeFormatted || <span className="text-muted-foreground/60 italic font-normal">Not specified</span>}
+                </div>
+              </div>
+
               {/* Compensation */}
               <div className="rounded-lg bg-accent/30 p-3 border border-border/40 space-y-1">
                 <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
@@ -333,28 +355,76 @@ export const VacancyDetailPage: React.FC = () => {
           </div>
 
           {/* Job Description Card */}
-          <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
-              <FileText className="h-4 w-4 text-primary" /> Job Description & Requirements
-            </h2>
-
-            {vacancy.description ? (
+          {vacancy.description ? (
+            <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+                <FileText className="h-4 w-4 text-primary" /> Job Description & Overview
+              </h2>
               <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                 {vacancy.description}
               </div>
-            ) : (
-              <div className="rounded-xl border border-dashed border-border p-8 text-center">
-                <p className="text-xs text-muted-foreground italic">No detailed description attached to this vacancy.</p>
-                <button
-                  type="button"
-                  onClick={handleEditClick}
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
-                >
-                  <Edit3 className="h-3.5 w-3.5" /> Add Description & Requirements
-                </button>
+            </div>
+          ) : !vacancy.responsibilities && !vacancy.requirements && !vacancy.niceToHave && !vacancy.benefits ? (
+            <div className="rounded-xl border border-dashed border-border p-8 text-center bg-card">
+              <FileText className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
+              <p className="text-xs text-muted-foreground italic">No detailed description or specifications attached to this vacancy.</p>
+              <button
+                type="button"
+                onClick={handleEditClick}
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer"
+              >
+                <Edit3 className="h-3.5 w-3.5" /> Add Description & Specifications
+              </button>
+            </div>
+          ) : null}
+
+          {/* Key Responsibilities */}
+          {vacancy.responsibilities && (
+            <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+                <ListChecks className="h-4 w-4 text-primary" /> Key Responsibilities
+              </h2>
+              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {vacancy.responsibilities}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Requirements */}
+          {vacancy.requirements && (
+            <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+                <CheckCircle2 className="h-4 w-4 text-primary" /> Requirements & Qualifications
+              </h2>
+              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {vacancy.requirements}
+              </div>
+            </div>
+          )}
+
+          {/* Nice to Have */}
+          {vacancy.niceToHave && (
+            <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+                <Sparkles className="h-4 w-4 text-primary" /> Nice to Have
+              </h2>
+              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {vacancy.niceToHave}
+              </div>
+            </div>
+          )}
+
+          {/* Benefits */}
+          {vacancy.benefits && (
+            <div className="rounded-xl border border-border/60 bg-card p-6 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 border-b border-border/40 pb-3">
+                <Gift className="h-4 w-4 text-primary" /> Benefits & Perks
+              </h2>
+              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {vacancy.benefits}
+              </div>
+            </div>
+          )}
 
           {/* About Employer Card */}
           {company && (

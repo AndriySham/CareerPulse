@@ -1,11 +1,19 @@
 export type WorkMode = 'Remote' | 'Office' | 'Hybride';
 
+export type EmploymentType = 'FullTime' | 'PartTime' | 'Internship';
+
 export type SalaryCurrency = 'USD' | 'EUR' | 'UAH' | 'PLN';
 
 export const WORK_MODE_LABELS: Record<WorkMode, string> = {
   Remote: 'Remote',
   Office: 'Office',
   Hybride: 'Hybrid',
+};
+
+export const EMPLOYMENT_TYPE_LABELS: Record<EmploymentType, string> = {
+  FullTime: 'Full-time',
+  PartTime: 'Part-time',
+  Internship: 'Internship',
 };
 
 export const CURRENCY_SYMBOLS: Record<SalaryCurrency, string> = {
@@ -48,14 +56,24 @@ export function formatWorkMode(mode?: WorkMode | null): string | null {
   return WORK_MODE_LABELS[mode] ?? mode;
 }
 
+export function formatEmploymentType(type?: EmploymentType | null): string | null {
+  if (!type) return null;
+  return EMPLOYMENT_TYPE_LABELS[type] ?? type;
+}
+
 export interface VacancyDto {
   id: string;
   companyId: string;
   title: string;
   description?: string | null;
+  responsibilities?: string | null;
+  requirements?: string | null;
+  niceToHave?: string | null;
+  benefits?: string | null;
   url?: string | null;
   location?: string | null;
   workMode?: WorkMode | null;
+  employmentType?: EmploymentType | null;
   salaryMin?: number | null;
   salaryMax?: number | null;
   salaryCurrency?: SalaryCurrency | null;
@@ -68,9 +86,14 @@ export interface CreateVacancyDto {
   companyId: string;
   title: string;
   description?: string | null;
+  responsibilities?: string | null;
+  requirements?: string | null;
+  niceToHave?: string | null;
+  benefits?: string | null;
   url?: string | null;
   location?: string | null;
   workMode?: WorkMode | null;
+  employmentType?: EmploymentType | null;
   salaryMin?: number | null;
   salaryMax?: number | null;
   salaryCurrency?: SalaryCurrency | null;
@@ -80,9 +103,14 @@ export interface CreateVacancyDto {
 export interface UpdateVacancyDto {
   title: string;
   description?: string | null;
+  responsibilities?: string | null;
+  requirements?: string | null;
+  niceToHave?: string | null;
+  benefits?: string | null;
   url?: string | null;
   location?: string | null;
   workMode?: WorkMode | null;
+  employmentType?: EmploymentType | null;
   salaryMin?: number | null;
   salaryMax?: number | null;
   salaryCurrency?: SalaryCurrency | null;

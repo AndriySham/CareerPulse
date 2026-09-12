@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatSalary, formatWorkMode } from '@/types';
+import { formatSalary, formatWorkMode, formatEmploymentType } from '@/types';
 import type { VacancyDto, CompanyDto } from '@/types';
 import {
   Briefcase,
@@ -32,6 +32,7 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
 }) => {
   const salaryText = formatSalary(vacancy.salaryMin, vacancy.salaryMax, vacancy.salaryCurrency);
   const workModeText = formatWorkMode(vacancy.workMode);
+  const employmentTypeText = formatEmploymentType(vacancy.employmentType);
 
   return (
     <div className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md">
@@ -73,13 +74,19 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
           )}
         </div>
 
-        {/* Compact Metadata Tags: Work Mode, Location & Salary */}
-        {(workModeText || vacancy.location || salaryText) && (
+        {/* Compact Metadata Tags: Work Mode, Employment Type, Location & Salary */}
+        {(workModeText || employmentTypeText || vacancy.location || salaryText) && (
           <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px]">
             {workModeText && (
               <span className="inline-flex items-center gap-1 rounded bg-accent/60 px-2 py-0.5 font-medium text-foreground">
                 <Laptop className="h-3 w-3 text-primary" />
                 {workModeText}
+              </span>
+            )}
+            {employmentTypeText && (
+              <span className="inline-flex items-center gap-1 rounded bg-accent/60 px-2 py-0.5 font-medium text-foreground">
+                <Briefcase className="h-3 w-3 text-primary" />
+                {employmentTypeText}
               </span>
             )}
             {vacancy.location && (

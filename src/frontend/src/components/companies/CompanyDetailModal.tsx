@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '@/components/ui/Modal';
 import { useVacancies } from '@/api/vacancies';
-import { formatSalary, formatWorkMode } from '@/types';
+import { formatSalary, formatWorkMode, formatEmploymentType } from '@/types';
 import type { CompanyDto } from '@/types';
 import {
   Globe,
@@ -126,6 +126,7 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
               {vacancies.map((v) => {
                 const salaryStr = formatSalary(v.salaryMin, v.salaryMax, v.salaryCurrency);
                 const workModeStr = formatWorkMode(v.workMode);
+                const employmentTypeStr = formatEmploymentType(v.employmentType);
                 return (
                   <div
                     key={v.id}
@@ -138,6 +139,11 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
                         {workModeStr && (
                           <span className="inline-flex items-center gap-0.5 rounded bg-accent px-1.5 py-0.5 font-medium text-foreground">
                             <Laptop className="h-3 w-3 text-primary" /> {workModeStr}
+                          </span>
+                        )}
+                        {employmentTypeStr && (
+                          <span className="inline-flex items-center gap-0.5 rounded bg-accent px-1.5 py-0.5 font-medium text-foreground">
+                            <Briefcase className="h-3 w-3 text-primary" /> {employmentTypeStr}
                           </span>
                         )}
                         {v.location && (
