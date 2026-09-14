@@ -1,4 +1,3 @@
-using CareerPulse.Application.DTOs.MasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Queries.ResolveSkills;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;

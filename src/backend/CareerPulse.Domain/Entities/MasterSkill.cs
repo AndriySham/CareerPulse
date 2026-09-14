@@ -49,7 +49,13 @@ public sealed class MasterSkill
         _aliases.Add(new MasterSkillAlias(Id, aliasName));
     }
 
-    public void Deactivate() => IsActive = false;
+    public void Deactivate()
+    {
+        if (!IsActive)
+            return;
+
+         IsActive = false;
+    }
 
     public void Activate()
     {

@@ -3,23 +3,23 @@ using CareerPulse.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CareerPulse.Application.Features.MasterSkills.Commands.ActivateMasterSkill;
+namespace CareerPulse.Application.Features.MasterSkills.Commands.DeactivateMasterSkill;
 
 /// <summary>
-/// Command handler for activating an existing Masterskill entity.
+/// Command handler for deactivating an existing Masterskill entity.
 /// </summary>
-public sealed class ActivateMasterSkillCommandHandler 
-    : IRequestHandler<ActivateMasterSkillCommand>
+public sealed class DeactivateMasterSkillCommandHandler 
+    : IRequestHandler<DeactivateMasterSkillCommand>
 {
     private readonly IApplicationDbContext _context;
 
-    public ActivateMasterSkillCommandHandler(IApplicationDbContext context)
+    public DeactivateMasterSkillCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
     public async Task Handle(
-        ActivateMasterSkillCommand request,
+        DeactivateMasterSkillCommand request,
         CancellationToken cancellationToken)
     {
         var skill = await _context.MasterSkills
@@ -27,10 +27,10 @@ public sealed class ActivateMasterSkillCommandHandler
 
         if (skill == null)
         {
-            throw new ResourceNotFoundException($"MasterSkill with ID '{request.Id}' was not found.");
+            throw new ResourceNotFoundException($"MasterSkill with ID '{request.Id}' was not found");
         }
 
-        skill.Activate();
+        skill.Deactivate();
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

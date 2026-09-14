@@ -1,6 +1,7 @@
 using CareerPulse.Application.DTOs.MasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Commands.ActivateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Commands.CreateMasterSkill;
+using CareerPulse.Application.Features.MasterSkills.Commands.DeactivateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Queries.GetMasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Queries.ResolveSkills;
 using CareerPulse.Domain.Enums;
@@ -98,6 +99,22 @@ public class MasterSkillsController : ControllerBase
         CancellationToken ct)
     {
         var command = new ActivateMasterSkillCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Deactivate MasterSkill by ID.
+    /// </summary>
+    [HttpPost("{id:guid}/deactivate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Deactivate(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new DeactivateMasterSkillCommand(id);
         await _mediator.Send(command, ct);
         return NoContent();
     }

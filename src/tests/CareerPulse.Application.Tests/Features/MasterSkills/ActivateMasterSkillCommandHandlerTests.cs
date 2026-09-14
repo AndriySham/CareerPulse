@@ -9,7 +9,7 @@ using Xunit;
 
 namespace CareerPulse.Application.Tests.Features.MasterSkills;
 
-public class ActivateMasterSkillHandlerTests
+public class ActivateMasterSkillCommandHandlerTests
 {
     [Fact]
     public async Task Handle_WithValidData_ShouldActivateMasterSkill()
