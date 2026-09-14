@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.MasterSkills;
+using CareerPulse.Application.Features.MasterSkills.Commands.ActivateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Commands.CreateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Queries.GetMasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Queries.ResolveSkills;
@@ -83,5 +84,21 @@ public class MasterSkillsController : ControllerBase
     {
         var result = await _mediator.Send(query, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Activate MasterSkill by ID.
+    /// </summary>
+    [HttpPost("{id:guid}/activate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Activate(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new ActivateMasterSkillCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

@@ -51,5 +51,11 @@ public sealed class MasterSkill
 
     public void Deactivate() => IsActive = false;
 
-    public void Activate() => IsActive = true;
+    public void Activate()
+    {
+        if (IsActive)
+            return;
+
+        IsActive = true;
+    }
 }

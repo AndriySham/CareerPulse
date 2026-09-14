@@ -1,3 +1,5 @@
+using CareerPulse.Domain.Exceptions;
+
 namespace CareerPulse.Domain.Entities;
 
 /// <summary>
@@ -18,7 +20,7 @@ public sealed class ResumeRevisionSkill
     internal ResumeRevisionSkill(Guid revisionId, Guid masterSkillId, int proficiencyLevel)
     {
         if (proficiencyLevel is < 1 or > 5)
-            throw new ArgumentOutOfRangeException(nameof(proficiencyLevel), "Must be between 1 and 5.");
+            throw new DomainException("Proficiency level must be between 1 and 5.");
 
         ResumeRevisionId = revisionId;
         MasterSkillId = masterSkillId;
