@@ -1,3 +1,4 @@
+using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.MasterSkills;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
@@ -72,14 +73,6 @@ public sealed class CreateMasterSkillCommandHandler
         _context.MasterSkills.Add(skill);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new MasterSkillDto
-        {
-            Id = skill.Id,
-            Name = skill.Name,
-            Category = skill.Category,
-            IsActive = skill.IsActive,
-            CreatedAt = skill.CreatedAt,
-            Aliases = skill.Aliases.Select(a => a.AliasName).ToList()
-        };
+        return MasterSkillMapping.MapToDto(skill);
     }
 }

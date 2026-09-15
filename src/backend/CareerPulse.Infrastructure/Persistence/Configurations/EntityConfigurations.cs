@@ -282,6 +282,7 @@ public sealed class MasterSkillAliasConfiguration : IEntityTypeConfiguration<Mas
     {
         builder.ToTable("MasterSkillAliases");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedNever();
         builder.Property(x => x.AliasName).HasMaxLength(200).IsRequired();
 
         builder.HasIndex(x => new { x.MasterSkillId, x.AliasName }).IsUnique();

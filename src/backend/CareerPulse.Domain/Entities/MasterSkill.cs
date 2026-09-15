@@ -35,6 +35,21 @@ public sealed class MasterSkill
         };
     }
 
+    public void Update(string name, SkillCategory category, List<string> aliases)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new DomainException("MasterSkill name is required.");
+
+        Name = name.Trim();
+        Category = category;
+        _aliases.Clear();
+
+        foreach(var alias in aliases)
+        {
+            AddAlias(alias);
+        }
+    }
+
     /// <summary>
     /// ADR 006: New aliases require explicit user decision — never created automatically.
     /// </summary>

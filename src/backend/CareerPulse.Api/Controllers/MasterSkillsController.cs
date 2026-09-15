@@ -2,6 +2,7 @@ using CareerPulse.Application.DTOs.MasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Commands.ActivateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Commands.CreateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Commands.DeactivateMasterSkill;
+using CareerPulse.Application.Features.MasterSkills.Commands.UpdateMasterSkill;
 using CareerPulse.Application.Features.MasterSkills.Queries.GetMasterSkills;
 using CareerPulse.Application.Features.MasterSkills.Queries.ResolveSkills;
 using CareerPulse.Domain.Enums;
@@ -117,5 +118,23 @@ public class MasterSkillsController : ControllerBase
         var command = new DeactivateMasterSkillCommand(id);
         await _mediator.Send(command, ct);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Update an existing MasterSkill in the catalog.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(MasterSkillDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<MasterSkillDto>> Update(
+        Guid id,
+        [FromBody] UpdateMasterSkillDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateMasterSkillCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }
