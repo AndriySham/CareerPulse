@@ -1,4 +1,3 @@
-using CareerPulse.Domain.Enums;
 using FluentValidation;
 
 namespace CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;

@@ -13,6 +13,7 @@ public interface IApplicationDbContext
     DbSet<Resume> Resumes { get; }
     DbSet<ResumeRevision> ResumeRevisions { get; }
     DbSet<ResumeRevisionSkill> ResumeRevisionSkills { get; }
+    DbSet<Education> Educations { get; }
     DbSet<Company> Companies { get; }
     DbSet<Vacancy> Vacancies { get; }
     DbSet<Interview> Interviews { get; }
