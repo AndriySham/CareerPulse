@@ -36,6 +36,21 @@ public sealed class Education
         };
     }
 
+    public void Update(
+        string institutionName,
+        string? description = null,
+        int? startYear = null,
+        int? endYear = null)
+    {
+        if (string.IsNullOrWhiteSpace(institutionName))
+            throw new DomainException("InstitutionName is required.");
+
+        InstitutionName = institutionName.Trim();
+        Description = description?.Trim();
+        StartYear = startYear;
+        EndYear = endYear;
+    }
+
     internal Education DeepCopy(Guid newRevisionId)
     {
         return new Education

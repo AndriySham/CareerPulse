@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Educations;
 using CareerPulse.Application.Features.Educations.Commands.CreateEducation;
+using CareerPulse.Application.Features.Educations.Commands.UpdateEducation;
 using CareerPulse.Application.Features.Educations.Queries.GetEducationById;
 using CareerPulse.Application.Features.Educations.Queries.GetEducations;
 using MediatR;
@@ -22,6 +23,20 @@ public class EducationsController : ControllerBase
     }
 
     /// <summary>
+    /// Get all educations for a specific resume revision.
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<EducationDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<EducationDto>>> GetAll(
+        [FromQuery] Guid resumeRevisionId,
+        CancellationToken ct)
+    {
+        var query = new GetEducationsQuery(resumeRevisionId);
+        var result = await _mediator.Send(query, ct);
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Gets a single Education by ID.
     /// </summary>
     [HttpGet("{id:guid}")]
@@ -41,20 +56,6 @@ public class EducationsController : ControllerBase
     }
 
     /// <summary>
-    /// Get all educations for a specific resume revision.
-    /// </summary>
-    [HttpGet]
-    [ProducesResponseType(typeof(List<EducationDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<EducationDto>>> GetAll(
-        [FromQuery] Guid resumeRevisionId,
-        CancellationToken ct)
-    {
-        var query = new GetEducationsQuery(resumeRevisionId);
-        var result = await _mediator.Send(query, ct);
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Creates a new Education entity.
     /// </summary>
     [HttpPost]
@@ -68,5 +69,22 @@ public class EducationsController : ControllerBase
         var command = new CreateEducationCommand(dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates an existing Education.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(EducationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<EducationDto>> Update(
+        Guid id,
+        [FromBody] UpdateEducationDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateEducationCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }
