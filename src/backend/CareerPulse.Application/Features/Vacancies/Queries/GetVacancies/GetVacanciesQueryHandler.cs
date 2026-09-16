@@ -1,6 +1,5 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
-using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
