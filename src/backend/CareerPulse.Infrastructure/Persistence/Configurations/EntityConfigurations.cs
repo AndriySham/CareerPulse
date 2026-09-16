@@ -149,8 +149,7 @@ public sealed class EducationConfiguration : IEntityTypeConfiguration<Education>
         builder.ToTable("Educations");
         builder.HasKey(x => x.Id);
         builder.Property(x => x.InstitutionName).HasMaxLength(300).IsRequired();
-        builder.Property(x => x.Degree).HasMaxLength(200);
-        builder.Property(x => x.FieldOfStudy).HasMaxLength(200);
+        builder.Property(x => x.Description).HasMaxLength(200);
 
         builder.HasIndex(x => x.ResumeRevisionId);
     }

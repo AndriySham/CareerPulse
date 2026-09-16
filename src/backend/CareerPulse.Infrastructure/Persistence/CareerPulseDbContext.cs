@@ -21,6 +21,7 @@ public sealed class CareerPulseDbContext : DbContext, IApplicationDbContext
     public DbSet<Resume> Resumes => Set<Resume>();
     public DbSet<ResumeRevision> ResumeRevisions => Set<ResumeRevision>();
     public DbSet<ResumeRevisionSkill> ResumeRevisionSkills => Set<ResumeRevisionSkill>();
+    public DbSet<Education> Educations => Set<Education>();
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<Vacancy> Vacancies => Set<Vacancy>();
     public DbSet<Interview> Interviews => Set<Interview>();
