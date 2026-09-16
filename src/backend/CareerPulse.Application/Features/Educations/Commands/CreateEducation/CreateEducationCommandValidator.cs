@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CareerPulse.Application.Features.Educations.CreateEducation;
+namespace CareerPulse.Application.Features.Educations.Commands.CreateEducation;
 
 /// <summary>
 /// FluentValidation validator for CreateEducationCommand.

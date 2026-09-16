@@ -1,6 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Educations;
 using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Educations.CreateEducation;
+using CareerPulse.Application.Features.Educations.Commands.CreateEducation;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Enums;

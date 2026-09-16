@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace CareerPulse.Application.Features.Educations.CreateEducation;
+namespace CareerPulse.Application.Features.Educations.Commands.CreateEducation;
 
 /// <summary>
 /// Command handler for creating a Education entity.

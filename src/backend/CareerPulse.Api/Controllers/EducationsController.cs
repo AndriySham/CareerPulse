@@ -1,9 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Educations;
-using CareerPulse.Application.DTOs.Vacancies;
-using CareerPulse.Application.Features.Educations.CreateEducation;
-using CareerPulse.Application.Features.Vacancies.Queries.GetVacancyById;
+using CareerPulse.Application.Features.Educations.Commands.CreateEducation;
+using CareerPulse.Application.Features.Educations.Queries.GetEducationById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CareerPulse.Api.Controllers
@@ -32,7 +30,7 @@ namespace CareerPulse.Api.Controllers
             Guid id,
             CancellationToken ct)
         {
-            var query = new GetVacancyByIdQuery(id);
+            var query = new GetEducationByIdQuery(id);
             var result = await _mediator.Send(query, ct);
             if (result == null)
             {

@@ -1,7 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Educations;
 using MediatR;
 
-namespace CareerPulse.Application.Features.Educations.CreateEducation;
+namespace CareerPulse.Application.Features.Educations.Commands.CreateEducation;
 
 /// <summary>
 /// Command to create a new Education.
