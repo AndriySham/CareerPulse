@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Educations;
 using CareerPulse.Application.Features.Educations.Commands.CreateEducation;
+using CareerPulse.Application.Features.Educations.Commands.DeleteEducation;
 using CareerPulse.Application.Features.Educations.Commands.UpdateEducation;
 using CareerPulse.Application.Features.Educations.Queries.GetEducationById;
 using CareerPulse.Application.Features.Educations.Queries.GetEducations;
@@ -86,5 +87,21 @@ public class EducationsController : ControllerBase
         var command = new UpdateEducationCommand(id, dto);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete an existing Education.
+    /// </summary>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new DeleteEducationCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }
