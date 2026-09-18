@@ -16,7 +16,9 @@ import {
   Lock,
   Calendar,
   CheckCircle,
+  GraduationCap,
 } from 'lucide-react';
+import { useEducations } from '@/api/educations';
 
 interface ResumeDetailModalProps {
   isOpen: boolean;
@@ -35,6 +37,8 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
   onSpawn,
   isSpawning = false,
 }) => {
+  const { data: educations = [], isLoading: isLoadingEducations } = useEducations(revision?.id);
+
   if (!revision) return null;
 
   const isDraft = revision.status === 'Draft';
@@ -212,7 +216,58 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
           )}
         </div>
 
-        {/* Section 5: Revision Metadata & Lineage */}
+        {/* Section 5: Academic Credentials & Education */}
+        <div className="space-y-2 rounded-lg border border-border/40 bg-card p-4">
+          <div className="flex items-center justify-between border-b border-border/40 pb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+              <GraduationCap className="h-4 w-4 text-primary" />
+              <span>Education History (ADR 010)</span>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {educations.length} credential(s)
+            </span>
+          </div>
+
+          {isLoadingEducations ? (
+            <div className="py-3 text-center text-xs text-muted-foreground animate-pulse">
+              Loading education history...
+            </div>
+          ) : educations.length > 0 ? (
+            <div className="space-y-2 pt-1">
+              {educations.map((edu) => (
+                <div
+                  key={edu.id}
+                  className="flex flex-col gap-1 rounded-lg bg-accent/30 border border-border/40 p-3 text-xs"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-semibold text-foreground">{edu.institutionName}</span>
+                    {(edu.startYear || edu.endYear) && (
+                      <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-1">
+                        <Calendar className="h-3 w-3 text-primary" />
+                        {edu.startYear && edu.endYear
+                          ? `${edu.startYear} — ${edu.endYear}`
+                          : edu.startYear
+                          ? `Since ${edu.startYear}`
+                          : `Completed ${edu.endYear}`}
+                      </span>
+                    )}
+                  </div>
+                  {edu.description && (
+                    <p className="text-muted-foreground text-xs whitespace-pre-line">
+                      {edu.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground italic text-center py-2">
+              No education history attached to this revision.
+            </p>
+          )}
+        </div>
+
+        {/* Section 6: Revision Metadata & Lineage */}
         <div className="rounded-lg border border-border/40 bg-accent/10 p-3 text-[11px] text-muted-foreground space-y-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">

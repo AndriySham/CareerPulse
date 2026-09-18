@@ -6,12 +6,6 @@ import { useCompanies } from '@/api/companies';
 import CustomSelect from '@/components/ui/CustomSelect';
 import type { VacancyDto, WorkMode, EmploymentType, SalaryCurrency } from '@/types';
 
-const EMPLOYMENT_TYPE_OPTIONS = [
-  { value: '', label: 'Unspecified' },
-  { value: 'FullTime', label: 'Full-time' },
-  { value: 'PartTime', label: 'Part-time' },
-  { value: 'Internship', label: 'Internship' },
-];
 
 interface VacancyFormModalProps {
   isOpen: boolean;
