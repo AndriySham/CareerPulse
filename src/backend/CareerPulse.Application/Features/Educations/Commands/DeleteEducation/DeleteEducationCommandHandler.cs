@@ -30,6 +30,14 @@ public sealed class DeleteEducationCommandHandler
             throw new ResourceNotFoundException($"Education with ID '{request.Id}' was not found.");
         }
 
+        var isRevisionUsed = await _context.Applications
+            .AnyAsync(x => x.ResumeRevisionId == education.ResumeRevisionId, cancellationToken);
+
+        if (isRevisionUsed)
+        {
+            throw new ConflictException("Education cannot be deleted because ins resume revision is already used in an application.");
+        }
+
         _context.Educations.Remove(education);
         await _context.SaveChangesAsync(cancellationToken);
     }
