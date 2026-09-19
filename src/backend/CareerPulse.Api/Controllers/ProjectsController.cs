@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Projects;
 using CareerPulse.Application.Features.Projects.Commands.CreateProject;
+using CareerPulse.Application.Features.Projects.Commands.DeleteProject;
 using CareerPulse.Application.Features.Projects.Queries.GetProjectById;
 using CareerPulse.Application.Features.Projects.Queries.GetProjects;
 using MediatR;
@@ -69,5 +70,21 @@ public class ProjectsController : ControllerBase
         var command = new CreateProjectCommand(dto);
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Delete an existing Project.
+    /// </summary>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new DeleteProjectCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

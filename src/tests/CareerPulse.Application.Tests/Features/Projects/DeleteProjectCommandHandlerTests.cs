@@ -1,5 +1,5 @@
 ﻿using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Educations.Commands.DeleteEducation;
+using CareerPulse.Application.Features.Projects.Commands.DeleteProject;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Enums;
@@ -8,39 +8,40 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace CareerPulse.Application.Tests.Features.Education;
+namespace CareerPulse.Application.Tests.Features.Projects;
 
-public class DeleteEducationCommandHandlerTests
+public class DeleteProjectCommandHandlerTests
 {
     [Fact]
-    public async Task Handle_WhenDataValid_ShouldDeleteEducation()
+    public async Task Handle_WhenDataValid_ShouldDeleteProject()
     {
-        // Arrange
+        // Arrange 
         using var context = TestDbContext.CreateInMemory();
 
         var personalInfo = PersonalInfo.Create("Alice Smith", "alice@example.com");
         var resume = Resume.Create("Alice's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Dotnet Dev");
         var revision = resume.CreateFirstRevision("Dotnet Dev", personalInfo);
-        var education = Domain.Entities.Education.Create(revision.Id, "Dnipro University", "Master’s Degree in Engineering", 2010, 2015);
+        var project = Project.Create(revision.Id, "Healthcare platform", "Description Healthcare platform",
+            ".NET Developer", "https://healthcare/repository.com", "https://helthcare/demo.com", ".NET, EF Core");
 
         context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
-        context.Educations.Add(education);
+        context.Projects.Add(project);
         await context.SaveChangesAsync(CancellationToken.None);
 
-        var command = new DeleteEducationCommand(education.Id);
-        var handler = new DeleteEducationCommandHandler(context);
+        var command = new DeleteProjectCommand(project.Id);
+        var handler = new DeleteProjectCommandHandler(context);
 
         // Act
         await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        var dbEducation = await context.Educations.AnyAsync(x => x.Id == education.Id);
-        dbEducation.Should().BeFalse();
+        var dbProject = await context.Projects.AnyAsync(x => x.Id == project.Id, CancellationToken.None);
+        dbProject.Should().BeFalse();
     }
 
     [Fact]
-    public async Task Handle_WhenEducationDoesNotExist_ShouldThrowResourceNotFoundException()
+    public async Task Handle_WhenProjectDoesNotExist_ShouldThrowResourсeNotFoundException()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -48,32 +49,37 @@ public class DeleteEducationCommandHandlerTests
         var personalInfo = PersonalInfo.Create("Alice Smith", "alice@example.com");
         var resume = Resume.Create("Alice's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Dotnet Dev");
         var revision = resume.CreateFirstRevision("Dotnet Dev", personalInfo);
+        var project = Project.Create(revision.Id, "Healthcare platform", "Description Healthcare platform",
+            ".NET Developer", "https://healthcare/repository.com", "https://helthcare/demo.com", ".NET, EF Core");
 
         context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
+        context.Projects.Add(project);
         await context.SaveChangesAsync(CancellationToken.None);
 
-        var nonExistentEducationId = Guid.NewGuid();
-        var command = new DeleteEducationCommand(nonExistentEducationId);
-        var handler = new DeleteEducationCommandHandler(context);
+        var nonExistentProject = Guid.NewGuid();
+        var command = new DeleteProjectCommand(nonExistentProject);
+        var handler = new DeleteProjectCommandHandler(context);
 
         // Act
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<ResourceNotFoundException>()
-            .WithMessage($"Education with ID '{nonExistentEducationId}' was not found.");
+            .WithMessage($"Project with ID '{nonExistentProject}' was not found.");
     }
 
     [Fact]
     public async Task Handle_WhenResumeRevisionIsUsedByApplication_ShouldThrowConflictException()
     {
+        // Arrange
         using var context = TestDbContext.CreateInMemory();
 
         var personalInfo = PersonalInfo.Create("Alice Smith", "alice@example.com");
         var resume = Resume.Create("Alice's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Dotnet Dev");
         var revision = resume.CreateFirstRevision("Dotnet Dev", personalInfo);
-        var education = Domain.Entities.Education.Create(revision.Id, "Dnipro University", "Master’s Degree in Engineering", 2010, 2015);
+        var project = Project.Create(revision.Id, "Healthcare platform", "Description Healthcare platform",
+            ".NET Developer", "https://healthcare/repository.com", "https://helthcare/demo.com", ".NET, EF Core");
 
         var company = Company.Create("Tech Corp", "https://techcorp.com");
         var vacancy = Vacancy.Create(company.Id, "Senior C# Developer", "https://techcorp.com/jobs/1");
@@ -82,20 +88,24 @@ public class DeleteEducationCommandHandlerTests
 
         context.Resumes.Add(resume);
         context.ResumeRevisions.Add(revision);
-        context.Educations.Add(education);
+        context.Projects.Add(project);
         context.Companies.Add(company);
         context.Vacancies.Add(vacancy);
         context.Applications.Add(application);
         await context.SaveChangesAsync(CancellationToken.None);
 
-        var command = new DeleteEducationCommand(education.Id);
-        var handler = new DeleteEducationCommandHandler(context);
+        var command = new DeleteProjectCommand(project.Id);
+        var handler = new DeleteProjectCommandHandler(context);
 
         // Act
         var act = () => handler.Handle(command, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<ConflictException>()
-            .WithMessage("Education cannot be deleted because ins resume revision is already used in an application.");
+            .WithMessage("Project cannot be deleted because its resume revision is already used in an application.");
+
+        var projectExists = await context.Projects
+            .AnyAsync(x => x.Id == project.Id, CancellationToken.None);
+        projectExists.Should().BeTrue();
     }
 }
