@@ -1,6 +1,5 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
-using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

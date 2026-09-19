@@ -1,6 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Projects;
 using CareerPulse.Application.Features.Projects.Commands.CreateProject;
 using CareerPulse.Application.Features.Projects.Queries.GetProjectById;
+using CareerPulse.Application.Features.Projects.Queries.GetProjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,20 @@ public class ProjectsController : ControllerBase
     public ProjectsController(ISender mediator)
     {
         _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Get all projects for a specific resume revision.
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<ProjectDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<ProjectDto>>> GetAll(
+        [FromQuery] Guid resumeRevisionId,
+        CancellationToken ct)
+    {
+        var query = new GetProjectsQuery(resumeRevisionId);
+        var result = await _mediator.Send(query, ct);
+        return Ok(result);
     }
 
     /// <summary>

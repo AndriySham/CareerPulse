@@ -47,7 +47,7 @@ public class GetEducationsQueryHandlerTests
     }
 
     [Fact]
-    public async Task Hadnle_WhenEducationDoesNotExcist_ShouldReturnCountZero()
+    public async Task Hadnle_WhenEducationDoesNotExcist_ShouldReturnEmptyList()
     {
         // Arrange
         using var context = TestDbContext.CreateInMemory();
@@ -67,7 +67,6 @@ public class GetEducationsQueryHandlerTests
         var result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count.Should().Be(0);
+        result.Should().BeEmpty();
     }
 }

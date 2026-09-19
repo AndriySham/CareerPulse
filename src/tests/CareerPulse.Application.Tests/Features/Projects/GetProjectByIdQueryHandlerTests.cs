@@ -4,7 +4,6 @@ using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.ValueObjects;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace CareerPulse.Application.Tests.Features.Projects;
