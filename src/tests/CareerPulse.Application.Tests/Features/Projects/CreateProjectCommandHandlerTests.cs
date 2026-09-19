@@ -180,4 +180,6 @@ public class CreateProjectCommandHandlerTests
         await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"ResumeRevision with ID '{nonExistentRevisionId}' was not found");
     }
+
+    //Handle_WhenProjectNameIsWhitespace_ShouldThrowDomainException
 }

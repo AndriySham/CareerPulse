@@ -17,7 +17,7 @@ public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProj
         {
             RuleFor(x => x.Dto.ResumeRevisionId)
                 .NotEmpty()
-                .WithMessage("ResumeResivion ID is requered.");
+                .WithMessage("ResumeResivion ID is required.");
 
             RuleFor(x => x.Dto.Role)
                 .MaximumLength(200)
@@ -35,7 +35,7 @@ public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProj
 
             RuleFor(x => x.Dto.RepositoryUrl)
                 .MaximumLength(1000)
-                .WithMessage("RepositotyUrl must not exceed 1000 characters.");
+                .WithMessage("RepositoryUrl must not exceed 1000 characters.");
 
             RuleFor(x => x.Dto.LiveDemoUrl)
                 .MaximumLength(1000)
