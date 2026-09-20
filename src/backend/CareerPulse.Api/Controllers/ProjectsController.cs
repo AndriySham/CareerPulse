@@ -1,4 +1,5 @@
 ﻿using CareerPulse.Application.DTOs.Projects;
+using CareerPulse.Application.Features.Projects;
 using CareerPulse.Application.Features.Projects.Commands.CreateProject;
 using CareerPulse.Application.Features.Projects.Commands.DeleteProject;
 using CareerPulse.Application.Features.Projects.Queries.GetProjectById;
@@ -70,6 +71,24 @@ public class ProjectsController : ControllerBase
         var command = new CreateProjectCommand(dto);
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates an existing Project entity.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(ProjectDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ProjectDto>> Update(
+        Guid id,
+        [FromBody] UpdateProjectDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateProjectCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 
     /// <summary>

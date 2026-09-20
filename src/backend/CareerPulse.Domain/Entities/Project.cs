@@ -33,13 +33,32 @@ public sealed class Project
             Id = Guid.NewGuid(),
             ResumeRevisionId = resumeRevisionId,
             ProjectName = projectName.Trim(),
-            Description = description,
-            Role = role,
-            RepositoryUrl = repositoryUrl,
-            LiveDemoUrl = liveDemoUrl,
-            TechStack = techStack,
+            Description = description?.Trim(),
+            Role = role?.Trim(),
+            RepositoryUrl = repositoryUrl?.Trim(),
+            LiveDemoUrl = liveDemoUrl?.Trim(),
+            TechStack = techStack?.Trim(),
             CreatedAt = DateTime.UtcNow
         };
+    }
+
+    public void Update(
+        string projectName,
+        string? description,
+        string? role,
+        string? repositoryUrl,
+        string? leveDemoUrl,
+        string? techStack)
+    {
+        if (string.IsNullOrWhiteSpace(projectName))
+            throw new DomainException("ProjectName is required.");
+
+        ProjectName = projectName.Trim();
+        Description = description?.Trim();
+        Role = role?.Trim();
+        RepositoryUrl = repositoryUrl?.Trim();
+        LiveDemoUrl = leveDemoUrl?.Trim();
+        TechStack = techStack?.Trim();
     }
 
     internal Project DeepCopy(Guid newRevisionId)
