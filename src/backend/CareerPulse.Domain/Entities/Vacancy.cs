@@ -22,6 +22,8 @@ public sealed class Vacancy
     public string? Responsibilities { get; private set; }
     public string? Requirements { get; private set; }
     public string? NiceToHave { get; private set; }
+    public ICollection<VacancyLanguageRequirement> LanguageRequirements { get; private set; }
+        = new List<VacancyLanguageRequirement>();
     public string? Benefits { get; private set; }
     public string? Url { get; private set; }
     public DateTime? PostedAt { get; private set; }
@@ -118,5 +120,11 @@ public sealed class Vacancy
         NiceToHave = niceToHave;
         Url = url?.Trim();
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void AddLanguageRequirement(
+        VacancyLanguageRequirement requirement)
+    {
+        LanguageRequirements.Add(requirement);
     }
 }

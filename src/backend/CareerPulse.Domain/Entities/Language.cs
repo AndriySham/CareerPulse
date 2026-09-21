@@ -1,3 +1,4 @@
+using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 
 namespace CareerPulse.Domain.Entities;
@@ -7,7 +8,7 @@ public sealed class Language
     public Guid Id { get; private set; }
     public Guid ResumeRevisionId { get; private set; }
     public string LanguageName { get; private set; } = string.Empty;
-    public string? Proficiency { get; private set; }
+    public LanguageProficiency Proficiency { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
     private Language() { }
@@ -15,7 +16,7 @@ public sealed class Language
     public static Language Create(
         Guid resumeRevisionId,
         string languageName,
-        string? proficiency = null)
+        LanguageProficiency proficiency)
     {
         if (string.IsNullOrWhiteSpace(languageName))
             throw new DomainException("LanguageName is required.");

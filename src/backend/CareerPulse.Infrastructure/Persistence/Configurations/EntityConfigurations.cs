@@ -3,6 +3,7 @@ using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CareerPulse.Infrastructure.Persistence.Configurations;
 
@@ -120,7 +121,7 @@ public sealed class ResumeRevisionConfiguration : IEntityTypeConfiguration<Resum
             .HasForeignKey(x => x.ResumeRevisionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(x => x.ResumeId);
+        builder.HasIndex(x => x.ResumeId); // найімовірніше, дублює індекс, який EF Core і так створить автоматично через HasForeignKey(x => x.ResumeId) в ResumeConfiguration.
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.ParentRevisionId);
     }
@@ -179,7 +180,7 @@ public sealed class LanguageConfiguration : IEntityTypeConfiguration<Language>
         builder.ToTable("Languages");
         builder.HasKey(x => x.Id);
         builder.Property(x => x.LanguageName).HasMaxLength(100).IsRequired();
-        builder.Property(x => x.Proficiency).HasMaxLength(100);
+        builder.Property(x => x.Proficiency).HasConversion<string>().HasMaxLength(6).IsRequired();
 
         builder.HasIndex(x => x.ResumeRevisionId);
     }
@@ -238,7 +239,26 @@ public sealed class VacancyConfiguration : IEntityTypeConfiguration<Vacancy>
         builder.Property(x => x.NiceToHave).HasColumnType("text");
         builder.Property(x => x.Benefits).HasColumnType("text");
 
+        builder.HasMany(x => x.LanguageRequirements)
+            .WithOne()
+            .HasForeignKey(x => x.VacancyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasIndex(x => x.CompanyId);
+    }
+}
+
+public sealed class VacancyLanguageRequirementConfiguration : IEntityTypeConfiguration<VacancyLanguageRequirement>
+{
+    public void Configure(EntityTypeBuilder<VacancyLanguageRequirement> builder)
+    {
+        builder.ToTable("VacancyLanguageRequirements");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.LanguageName).HasMaxLength(100).IsRequired();
+        builder.Property(x => x.Proficiency).HasConversion<string>().HasMaxLength(6);
+        builder.Property(x => x.ProficiencyDescription).HasMaxLength(100);
+
+        builder.HasIndex(x => x.VacancyId);
     }
 }
 

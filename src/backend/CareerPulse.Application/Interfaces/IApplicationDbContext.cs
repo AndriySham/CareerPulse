@@ -15,8 +15,10 @@ public interface IApplicationDbContext
     DbSet<ResumeRevisionSkill> ResumeRevisionSkills { get; }
     DbSet<Education> Educations { get; }
     DbSet<Project> Projects { get; }
+    DbSet<Language> Languages { get; }
     DbSet<Company> Companies { get; }
     DbSet<Vacancy> Vacancies { get; }
+    DbSet<VacancyLanguageRequirement> VacancyLanguageRequirements { get; }
     DbSet<Interview> Interviews { get; }
     DbSet<MasterSkill> MasterSkills { get; }
     DbSet<MasterSkillAlias> MasterSkillAliases { get; }
