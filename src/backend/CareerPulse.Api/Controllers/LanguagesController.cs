@@ -1,4 +1,5 @@
 ﻿using CareerPulse.Application.DTOs.Languages;
+using CareerPulse.Application.Features.Languages.Commands.CreateLanguage;
 using CareerPulse.Application.Features.Languages.Queries.GetLanguageById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,22 @@ namespace CareerPulse.Api.Controllers
                 return NotFound();
             }
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Creates a new Language entity.
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(typeof(LanguageDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<LanguageDto>> Create(
+            [FromBody] CreateLanguageDto dto,
+            CancellationToken ct)
+        {
+            var command = new CreateLanguageCommand(dto);
+            var result = await _mediator.Send(command, ct);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
     }
 }

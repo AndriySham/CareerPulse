@@ -6,11 +6,10 @@ using CareerPulse.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace CareerPulse.Application.Features.Educations.Commands.CreateEducation;
 
 /// <summary>
-/// Command handler for creating a Education entity.
+/// Command handler for creating an Education entity.
 /// </summary>
 public sealed class CreateEducationCommandHandler
     : IRequestHandler<CreateEducationCommand, EducationDto>

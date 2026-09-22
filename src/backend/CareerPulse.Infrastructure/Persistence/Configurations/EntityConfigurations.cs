@@ -3,7 +3,6 @@ using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Security.Cryptography.X509Certificates;
 
 namespace CareerPulse.Infrastructure.Persistence.Configurations;
 
