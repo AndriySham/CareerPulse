@@ -1,6 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Languages;
 using CareerPulse.Application.Features.Languages.Commands.CreateLanguage;
 using CareerPulse.Application.Features.Languages.Queries.GetLanguageById;
+using CareerPulse.Application.Features.Languages.Queries.GetLanguages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,20 @@ namespace CareerPulse.Api.Controllers
         public LanguagesController(ISender mediator)
         {
             _mediator = mediator;
+        }
+
+        /// <summary>
+        /// Get all languages for a specific resume revision.
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(typeof(List<LanguageDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<LanguageDto>>> GetAll(
+            [FromQuery] Guid resumeRevisionId,
+            CancellationToken ct)
+        {
+            var query = new GetLanguagesQuery(resumeRevisionId);
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
         }
 
         /// <summary>
