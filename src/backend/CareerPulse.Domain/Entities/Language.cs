@@ -31,6 +31,17 @@ public sealed class Language
         };
     }
 
+    public void Update(
+        string languageName,
+        LanguageProficiency proficiency)
+    {
+        if (string.IsNullOrWhiteSpace(languageName))
+            throw new DomainException("Language Name is requered.");
+
+        LanguageName = languageName.Trim();
+        Proficiency = proficiency;
+    }
+
     internal Language DeepCopy(Guid newRevisionId)
     {
         return new Language

@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Languages;
 using CareerPulse.Application.Features.Languages.Commands.CreateLanguage;
+using CareerPulse.Application.Features.Languages.Commands.UpdateLanguage;
 using CareerPulse.Application.Features.Languages.Queries.GetLanguageById;
 using CareerPulse.Application.Features.Languages.Queries.GetLanguages;
 using MediatR;
@@ -68,6 +69,24 @@ namespace CareerPulse.Api.Controllers
             var command = new CreateLanguageCommand(dto);
             var result = await _mediator.Send(command, ct);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+
+        /// <summary>
+        /// Updates an existing Language entity.
+        /// </summary>
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(LanguageDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<LanguageDto>> Update(
+            Guid id,
+            [FromBody] UpdateLanguageDto dto,
+            CancellationToken ct)
+        {
+            var command = new UpdateLanguageCommand(id, dto);
+            var result = await _mediator.Send(command, ct);
+            return Ok(result);
         }
     }
 }
