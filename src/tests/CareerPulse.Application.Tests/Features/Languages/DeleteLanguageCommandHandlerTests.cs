@@ -96,7 +96,9 @@ public class DeleteLanguageCommandHandlerTests
 
         // Assert
         await act.Should().ThrowAsync<ConflictException>()
-            .WithMessage("Language cannot be deleted because ins resume revision is already used in an application.");
+            .WithMessage("Language cannot be deleted because its resume revision is already used in an application.");
+        
+        var languageExists = await context.Languages.AnyAsync(x => x.Id == language.Id);
+        languageExists.Should().BeTrue();
     }
-
 }

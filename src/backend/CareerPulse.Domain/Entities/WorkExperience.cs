@@ -8,7 +8,7 @@ public sealed class WorkExperience
     public Guid ResumeRevisionId { get; private set; }
     public string CompanyName { get; private set; } = string.Empty;
     public string PositionTitle { get; private set; } = string.Empty;
-    public int StartMonth { get; private set; }
+    public int StartMonth { get; private set; } 
     public int StartYear { get; private set; }
     public int? EndMonth { get; private set; }
     public int? EndYear { get; private set; }
@@ -33,14 +33,8 @@ public sealed class WorkExperience
         string? achievements = null,
         string? techStack = null)
     {
-        if (string.IsNullOrWhiteSpace(companyName))
-            throw new DomainException("CompanyName is required.");
-
-        if (string.IsNullOrWhiteSpace(positionTitle))
-            throw new DomainException("PositionTitle is required.");
-
-        if (startMonth < 1 || startMonth > 12)
-            throw new DomainException("StartMonth must be between 1 and 12.");
+        ValidateRequiredFields(companyName, positionTitle);
+        ValidateDates(startMonth, startYear, endMonth, endYear, isCurrentJob);
 
         return new WorkExperience
         {
@@ -76,7 +70,52 @@ public sealed class WorkExperience
             Description = Description,
             Achievements = Achievements,
             TechStack = TechStack,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
         };
+    }
+
+    private static void ValidateRequiredFields(string companyName, string positionTitle)
+    {
+        if (string.IsNullOrWhiteSpace(companyName))
+            throw new DomainException("CompanyName is required.");
+
+        if (string.IsNullOrWhiteSpace(positionTitle))
+            throw new DomainException("PositionTitle is required.");
+    }
+
+    private static void ValidateDates(
+        int startMonth,
+        int startYear,
+        int? endMonth,
+        int? endYear,
+        bool isCurrentJob)
+    {
+        if (startMonth < 1 || startMonth > 12)
+            throw new DomainException("StartMonth must be between 1 and 12.");
+
+        if (startYear < 1)
+            throw new DomainException("StartYear must be greater than 0.");
+
+        if (endMonth is < 1 || endMonth > 12)
+            throw new DomainException("EndMonth must be between 1 and 12.");
+
+        if (endYear is < 1)
+            throw new DomainException("EndYear must be greater than 0.");
+
+        if (isCurrentJob)
+        {
+            if (endMonth.HasValue || endYear.HasValue)
+            throw new DomainException("Current job must not have an end date.");
+            return;
+        }
+
+        if (!endMonth.HasValue || !endYear.HasValue)
+            throw new DomainException("End date is required when the job is not current.");
+
+        if (endYear.Value < startYear ||
+            (endYear.Value == startYear && endMonth.Value < startMonth))
+        {
+            throw new DomainException("End date must not be earlier than Start date.");
+        }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CareerPulse.Application.Features.Languages.Commands.DeleteLanguage;
 
 /// <summary>
-/// Command handlere to delete a Language entity.
+/// Command handler to delete a Language entity.
 /// </summary>
 public sealed class DeleteLanguageCommandHandler
     : IRequestHandler<DeleteLanguageCommand>
@@ -34,7 +34,7 @@ public sealed class DeleteLanguageCommandHandler
             .AnyAsync(x => x.ResumeRevisionId == language.ResumeRevisionId, cancellationToken);
         if (isRevisionUsed)
         {
-            throw new ConflictException("Language cannot be deleted because ins resume revision is already used in an application.");
+            throw new ConflictException("Language cannot be deleted because its resume revision is already used in an application.");
         }
 
         _context.Languages.Remove(language);
