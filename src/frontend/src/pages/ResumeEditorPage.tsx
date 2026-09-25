@@ -14,6 +14,7 @@ import PersonalInfoSection from '@/components/resumes/PersonalInfoSection';
 import ProfessionalSummarySection from '@/components/resumes/ProfessionalSummarySection';
 import SkillsSection from '@/components/resumes/SkillsSection';
 import EducationSection from '@/components/resumes/EducationSection';
+import ProjectSection from '@/components/resumes/ProjectSection';
 import ResumeRevisionWorkflowCard from '@/components/resumes/ResumeRevisionWorkflowCard';
 import ResumeVersionHistoryModal from '@/components/resumes/ResumeVersionHistoryModal';
 import type {
@@ -64,7 +65,7 @@ const EDITOR_NAV_ITEMS: NavSectionItem[] = [
   { id: 'general', label: 'General', icon: User, isImplemented: true },
   { id: 'experience', label: 'Experience', icon: Briefcase, isImplemented: false },
   { id: 'education', label: 'Education', icon: GraduationCap, isImplemented: true },
-  { id: 'projects', label: 'Projects', icon: FolderGit2, isImplemented: false },
+  { id: 'projects', label: 'Projects', icon: FolderGit2, isImplemented: true },
   { id: 'skills', label: 'Skills', icon: Award, isImplemented: true },
   { id: 'languages', label: 'Languages', icon: Languages, isImplemented: false },
 ];
@@ -523,8 +524,17 @@ export const ResumeEditorPage: React.FC = () => {
           />
         )}
 
+        {/* PROJECTS SECTION */}
+        {(activeSection === 'all' || activeSection === 'projects') && (
+          <ProjectSection
+            resumeRevisionId={existingRevision?.id}
+            isReadOnly={isAppliedReadOnly}
+            isNewMode={isNewMode}
+          />
+        )}
+
         {/* NON-INTERACTIVE / FUTURE SECTIONS PLACEHOLDER */}
-        {!['all', 'general', 'education', 'skills'].includes(activeSection) && (
+        {!['all', 'general', 'education', 'projects', 'skills'].includes(activeSection) && (
           <div className="rounded-xl border border-dashed border-border/80 bg-card p-12 text-center shadow-sm">
             <div className="mx-auto w-12 h-12 rounded-full bg-accent/50 flex items-center justify-center text-muted-foreground mb-3">
               <Lock className="h-6 w-6" />
@@ -533,7 +543,7 @@ export const ResumeEditorPage: React.FC = () => {
               {activeSection} Section
             </h3>
             <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">
-              This section is scheduled for future release (Phase 2). Work experiences, portfolio projects, and spoken languages will be enabled in upcoming versions.
+              This section is scheduled for future release (Phase 2). Work experiences and spoken languages will be enabled in upcoming versions.
             </p>
             <div className="mt-4">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">

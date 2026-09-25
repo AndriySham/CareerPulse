@@ -17,8 +17,13 @@ import {
   Calendar,
   CheckCircle,
   GraduationCap,
+  FolderGit2,
+  Globe,
+  ExternalLink,
+  Code2,
 } from 'lucide-react';
 import { useEducations } from '@/api/educations';
+import { useProjects } from '@/api/projects';
 
 interface ResumeDetailModalProps {
   isOpen: boolean;
@@ -38,6 +43,7 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
   isSpawning = false,
 }) => {
   const { data: educations = [], isLoading: isLoadingEducations } = useEducations(revision?.id);
+  const { data: projects = [], isLoading: isLoadingProjects } = useProjects(revision?.id);
 
   if (!revision) return null;
 
@@ -266,8 +272,109 @@ export const ResumeDetailModal: React.FC<ResumeDetailModalProps> = ({
             </p>
           )}
         </div>
+ 
+        {/* Section 6: Projects & Portfolio */}
+        <div className="space-y-2 rounded-lg border border-border/40 bg-card p-4">
+          <div className="flex items-center justify-between border-b border-border/40 pb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+              <FolderGit2 className="h-4 w-4 text-primary" />
+              <span>Projects & Portfolio (ADR 010)</span>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {projects.length} project(s)
+            </span>
+          </div>
 
-        {/* Section 6: Revision Metadata & Lineage */}
+          {isLoadingProjects ? (
+            <div className="py-3 text-center text-xs text-muted-foreground animate-pulse">
+              Loading projects...
+            </div>
+          ) : projects.length > 0 ? (
+            <div className="space-y-2 pt-1">
+              {projects.map((proj) => {
+                const techStackList = proj.techStack
+                  ? proj.techStack
+                      .split(',')
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                  : [];
+
+                return (
+                  <div
+                    key={proj.id}
+                    className="flex flex-col gap-1.5 rounded-lg bg-accent/30 border border-border/40 p-3 text-xs"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-foreground">{proj.projectName}</span>
+                        {proj.role && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-secondary text-secondary-foreground border border-border/50">
+                            {proj.role}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {proj.description && (
+                      <p className="text-muted-foreground text-xs whitespace-pre-line leading-relaxed">
+                        {proj.description}
+                      </p>
+                    )}
+
+                    {techStackList.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                        {techStackList.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent/60 text-accent-foreground border border-border/40"
+                          >
+                            <Code2 className="h-2.5 w-2.5 text-primary" />
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {(proj.repositoryUrl || proj.liveDemoUrl) && (
+                      <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px]">
+                        {proj.repositoryUrl && (
+                          <a
+                            href={proj.repositoryUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-medium"
+                          >
+                            <Github className="h-3 w-3" />
+                            <span>Repository</span>
+                            <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                          </a>
+                        )}
+                        {proj.liveDemoUrl && (
+                          <a
+                            href={proj.liveDemoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-medium"
+                          >
+                            <Globe className="h-3 w-3" />
+                            <span>Live Demo</span>
+                            <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground italic text-center py-2">
+              No portfolio projects attached to this revision.
+            </p>
+          )}
+        </div>
+
+        {/* Section 7: Revision Metadata & Lineage */}
         <div className="rounded-lg border border-border/40 bg-accent/10 p-3 text-[11px] text-muted-foreground space-y-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">

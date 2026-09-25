@@ -5,3 +5,4 @@ export * from './resume';
 export * from './masterSkill';
 export * from './ai';
 export * from './education';
+export * from './project';
