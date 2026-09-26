@@ -36,30 +36,30 @@ public class GetWorkExperiencesQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result[0].Id.Should().Be(workExperience1.Id);
-        result[0].ResumeRevisionId.Should().Be(workExperience1.ResumeRevisionId);
-        result[0].CompanyName.Should().Be("Epum");
-        result[0].PositionTitle.Should().Be(".NET Developer");
+        result[0].Id.Should().Be(workExperience2.Id);
+        result[0].ResumeRevisionId.Should().Be(workExperience2.ResumeRevisionId);
+        result[0].CompanyName.Should().Be("SoftServe");
+        result[0].PositionTitle.Should().Be(".NET Developer2");
         result[0].StartMonth.Should().Be(1);
-        result[0].StartYear.Should().Be(2024);
+        result[0].StartYear.Should().Be(2025);
         result[0].EndMonth.Should().Be(1);
-        result[0].EndYear.Should().Be(2025);
+        result[0].EndYear.Should().Be(2026);
         result[0].IsCurrentJob.Should().BeFalse();
-        result[0].Description.Should().Be("Description1");
-        result[0].Achievements.Should().Be("Achievements1");
-        result[0].TechStack.Should().Be("C#");
-        result[1].Id.Should().Be(workExperience2.Id);
-        result[1].ResumeRevisionId.Should().Be(workExperience2.ResumeRevisionId);
-        result[1].CompanyName.Should().Be("SoftServe");
-        result[1].PositionTitle.Should().Be(".NET Developer2");
+        result[0].Description.Should().Be("Description2");
+        result[0].Achievements.Should().Be("Achievements2");
+        result[0].TechStack.Should().Be("TypeScript");
+        result[1].Id.Should().Be(workExperience1.Id);
+        result[1].ResumeRevisionId.Should().Be(workExperience1.ResumeRevisionId);
+        result[1].CompanyName.Should().Be("Epum");
+        result[1].PositionTitle.Should().Be(".NET Developer");
         result[1].StartMonth.Should().Be(1);
-        result[1].StartYear.Should().Be(2025);
+        result[1].StartYear.Should().Be(2024);
         result[1].EndMonth.Should().Be(1);
-        result[1].EndYear.Should().Be(2026);
+        result[1].EndYear.Should().Be(2025);
         result[1].IsCurrentJob.Should().BeFalse();
-        result[1].Description.Should().Be("Description2");
-        result[1].Achievements.Should().Be("Achievements2");
-        result[1].TechStack.Should().Be("TypeScript");
+        result[1].Description.Should().Be("Description1");
+        result[1].Achievements.Should().Be("Achievements1");
+        result[1].TechStack.Should().Be("C#");
     }
 
     [Fact]

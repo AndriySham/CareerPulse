@@ -1,4 +1,5 @@
 ﻿using CareerPulse.Application.DTOs.WorkExperiences;
+using CareerPulse.Application.Features.WorkExperience.Commands.CreateWorkExperience;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperiences;
 using MediatR;
@@ -46,5 +47,20 @@ public class WorkExperiencesController : ControllerBase
         var query = new GetWorkExperienceByIdQuery(id);
         var result = await _mediator.Send(query, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates a new WorkExperience entity.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(WorkExperienceDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<WorkExperienceDto>> Create(
+        CreateWorkExperienceDto dto,
+        CancellationToken ct)
+    {
+        var command = new CreateWorkExperienceCommand(dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { Id = result.Id }, result);
     }
 }
