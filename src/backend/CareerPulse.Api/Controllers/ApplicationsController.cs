@@ -29,6 +29,7 @@ public class ApplicationsController : ControllerBase
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(List<ApplicationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<List<ApplicationDto>>> GetAll(
         [FromQuery] ApplicationStatus? status,
         [FromQuery] Guid? vacancyId,
@@ -37,6 +38,10 @@ public class ApplicationsController : ControllerBase
     {
         var query = new GetApplicationsQuery(status, vacancyId, companyId);
         var result = await _mediator.Send(query, ct);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok(result);
     }
 
