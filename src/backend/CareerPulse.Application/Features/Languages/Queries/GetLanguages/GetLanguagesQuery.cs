@@ -3,7 +3,6 @@ using MediatR;
 
 namespace CareerPulse.Application.Features.Languages.Queries.GetLanguages;
 
-
 /// <summary>
 /// Query to retrieve languages for a specific resume revision.
 /// </summary>

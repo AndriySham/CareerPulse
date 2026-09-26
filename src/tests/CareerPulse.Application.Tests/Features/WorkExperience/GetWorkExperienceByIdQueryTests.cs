@@ -20,7 +20,6 @@ public class GetWorkExperienceByIdQueryTests
         var personalInfo = PersonalInfo.Create("Alice Smith", "alice@example.com");
         var resume = Resume.Create("Alice's Resume", ResumeTrack.FullStack, CareerLevel.Senior, "Dotnet Dev");
         var revision = resume.CreateFirstRevision("Dotnet Dev", personalInfo);
-
         var workExperience = Domain.Entities.WorkExperience.Create(revision.Id, "Epum", ".NET Developer", 1, 2025, 1, 2026, false, "Description", "Achievements", "C#");
 
         context.Resumes.Add(resume);

@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.WorkExperiences;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
+using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperiences;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,21 @@ public class WorkExperiencesController : ControllerBase
     }
 
     /// <summary>
-    /// Query for retrieving WorkExperience entity.
+    /// Gets all WorkExperience for a specific resime revision.
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<WorkExperienceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<WorkExperienceDto>>> GetAll(
+        Guid resumeRevisionId,
+        CancellationToken ct)
+    {
+        var query = new GetWorkExperiencesQuery(resumeRevisionId);
+        var result = await _mediator.Send(query, ct);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Gets a single WorkExperience by ID.
     /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
