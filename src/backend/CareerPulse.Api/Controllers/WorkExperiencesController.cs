@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.WorkExperiences;
 using CareerPulse.Application.Features.WorkExperience.Commands.CreateWorkExperience;
+using CareerPulse.Application.Features.WorkExperience.Commands.UpdateWorkExperience;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperiences;
 using MediatR;
@@ -56,11 +57,29 @@ public class WorkExperiencesController : ControllerBase
     [ProducesResponseType(typeof(WorkExperienceDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WorkExperienceDto>> Create(
-        CreateWorkExperienceDto dto,
+        [FromBody] CreateWorkExperienceDto dto,
         CancellationToken ct)
     {
         var command = new CreateWorkExperienceCommand(dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { Id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates an existing WorkExperience entity.
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(WorkExperienceDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<WorkExperienceDto>> Update(
+        Guid id,
+        [FromBody] UpdateWorkExperienceDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateWorkExperienceCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }

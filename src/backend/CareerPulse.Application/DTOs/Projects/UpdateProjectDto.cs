@@ -1,7 +1,7 @@
 ﻿namespace CareerPulse.Application.DTOs.Projects;
 
 /// <summary>
-/// Input DTO for uptading a new Project.
+/// Input DTO for uptading a Project.
 /// </summary>
 public sealed class UpdateProjectDto
 {

@@ -1,5 +1,4 @@
-﻿using CareerPulse.Application.Features.Languages.Queries.GetLanguageById;
-using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
+﻿using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Enums;

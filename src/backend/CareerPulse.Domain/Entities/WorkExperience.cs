@@ -54,6 +54,33 @@ public sealed class WorkExperience
         };
     }
 
+    public void Update(
+        string companyName,
+        string positionTitle,
+        int startMonth,
+        int startYear,
+        int? endMonth,
+        int? endYear,
+        bool isCurrentJob,
+        string? description,
+        string? achievments,
+        string? techStach)
+    {
+        ValidateRequiredFields(companyName, positionTitle);
+        ValidateDates(startMonth, startYear, endMonth, endYear, isCurrentJob);
+
+        CompanyName = companyName.Trim();
+        PositionTitle = positionTitle.Trim();
+        StartYear = startYear;
+        StartMonth = startMonth;
+        EndYear = endYear;
+        EndMonth = endMonth;
+        IsCurrentJob = isCurrentJob;
+        Description = description?.Trim();
+        Achievements = achievments?.Trim();
+        TechStack = techStach?.Trim();
+    }
+
     internal WorkExperience DeepCopy(Guid newRevisionId)
     {
         return new WorkExperience

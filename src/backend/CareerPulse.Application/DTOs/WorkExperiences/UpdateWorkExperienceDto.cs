@@ -1,11 +1,10 @@
 ﻿namespace CareerPulse.Application.DTOs.WorkExperiences;
 
 /// <summary>
-/// Input DTO for creating a new WorkExperience.
+/// Input DTO for updating a WorkExperience. 
 /// </summary>
-public sealed class CreateWorkExperienceDto
+public sealed class UpdateWorkExperienceDto
 {
-    public Guid ResumeRevisionId { get; init; }
     public string CompanyName { get; init; } = string.Empty;
     public string PositionTitle { get; init; } = string.Empty;
     public int StartMonth { get; init; }

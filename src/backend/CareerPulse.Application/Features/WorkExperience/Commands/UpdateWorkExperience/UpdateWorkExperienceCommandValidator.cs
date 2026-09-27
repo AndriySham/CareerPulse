@@ -1,24 +1,24 @@
 ﻿using FluentValidation;
 
-namespace CareerPulse.Application.Features.WorkExperience.Commands.CreateWorkExperience;
+namespace CareerPulse.Application.Features.WorkExperience.Commands.UpdateWorkExperience;
 
 /// <summary>
-/// FluentValidation validator for CreateWorkExperience command.
+/// FluentValidation validator for WorkExperienceCommand.
 /// </summary>
-public sealed class CreateWorkExperienceCommandValidator : AbstractValidator<CreateWorkExperienceCommand>
+public sealed class UpdateWorkExperienceCommandValidator : AbstractValidator<UpdateWorkExperienceCommand>
 {
-    public CreateWorkExperienceCommandValidator()
+    public UpdateWorkExperienceCommandValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("WorkExperience ID is required.");
+
         RuleFor(x => x.Dto)
             .NotEmpty()
             .WithMessage("Request body cannot be null.");
 
         When(x => x.Dto != null, () =>
         {
-            RuleFor(x => x.Dto.ResumeRevisionId)
-                .NotEmpty()
-                .WithMessage("ResumeRevision ID is required.");
-
             RuleFor(x => x.Dto.CompanyName)
                 .NotEmpty()
                 .WithMessage("Company Name is required.")

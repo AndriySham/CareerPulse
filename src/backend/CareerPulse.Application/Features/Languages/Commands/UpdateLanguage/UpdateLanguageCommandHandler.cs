@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CareerPulse.Application.Features.Languages.Commands.UpdateLanguage;
 
 /// <summary>
-/// Command handler for an existing Language Entity.
+/// Command handler for updating an existing Language Entity.
 /// </summary>
 public sealed class UpdateLanguageCommandHandler
     : IRequestHandler<UpdateLanguageCommand, LanguageDto>
