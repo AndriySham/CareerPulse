@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.WorkExperiences;
 using CareerPulse.Application.Features.WorkExperience.Commands.CreateWorkExperience;
+using CareerPulse.Application.Features.WorkExperience.Commands.DeleteWorkExperience;
 using CareerPulse.Application.Features.WorkExperience.Commands.UpdateWorkExperience;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperienceById;
 using CareerPulse.Application.Features.WorkExperience.Queries.GetWorkExperiences;
@@ -81,5 +82,22 @@ public class WorkExperiencesController : ControllerBase
         var command = new UpdateWorkExperienceCommand(id, dto);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete an existing WorkExperience by ID.
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken ct)
+    {
+        var command = new DeleteWorkExperienceCommand(id);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }
