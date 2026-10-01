@@ -126,7 +126,7 @@ public sealed class ResumeRevision
     public void MarkAsApplied()
     {
         if (Status == RevisionStatus.Applied)
-            throw new DomainException("ResumeRevision is already in Applied (Read-Only) state.");
+            return;
 
         Status = RevisionStatus.Applied;
         UpdatedAt = DateTime.UtcNow;

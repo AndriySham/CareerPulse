@@ -61,18 +61,17 @@ public class ResumeRevisionTests
     }
 
     [Fact]
-    public void MarkAsApplied_WhenStatusIsAlreadyApplied_ShouldThrowDomainException()
+    public void MarkAsApplied_WhenStatusIsAlreadyApplied_ShouldRemainApplied()
     {
         // Arrange
         var revision = ResumeRevision.CreateDraft(Guid.NewGuid(), CreateValidPersonalInfo(), "Summary");
         revision.MarkAsApplied();
 
         // Act
-        var act = () => revision.MarkAsApplied();
+        revision.MarkAsApplied();
 
         // Assert
-        act.Should().Throw<DomainException>()
-           .WithMessage("ResumeRevision is already in Applied (Read-Only) state.");
+        revision.Status.Should().Be(RevisionStatus.Applied);
     }
 
     [Fact]

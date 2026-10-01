@@ -1,7 +1,6 @@
 using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Enums;
 using MediatR;
@@ -45,7 +44,7 @@ public sealed class ChangeApplicationStatusCommandHandler : IRequestHandler<Chan
             application.UpdateNotes(request.Dto.Notes);
         }
 
-        // ADR 005: When transitioning to Applied, lock the linked ResumeRevision
+        //ADR 005: When transitioning to Applied, lock the linked ResumeRevision
         if (newStatus == ApplicationStatus.Applied && application.ResumeRevision != null)
         {
             if (application.ResumeRevision.Status == RevisionStatus.Draft)

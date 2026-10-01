@@ -33,7 +33,7 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
             throw new ResourceNotFoundException($"Company with ID {dto.CompanyId} was not found.");
         }
 
-        var resumeRevision = await _context.ResumeRevisions
+        var resumeRevision = await _context.ResumeRevisions 
             .FirstOrDefaultAsync(r => r.Id == dto.ResumeRevisionId, cancellationToken);
         if (resumeRevision == null)
         {
@@ -80,7 +80,7 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
         var created = await _context.Applications
             .Include(a => a.Company)
             .Include(a => a.Vacancy)
-            .Include(a => a.ResumeRevision)
+            //.Include(a => a.ResumeRevision)
             .AsNoTracking()
             .FirstAsync(a => a.Id == application.Id, cancellationToken);
 

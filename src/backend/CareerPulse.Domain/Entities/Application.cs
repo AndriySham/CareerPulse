@@ -51,7 +51,7 @@ public sealed class Application
             Status = ApplicationStatus.Draft,
             JobSource = jobSource.Trim(),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow // ???
         };
     }
 

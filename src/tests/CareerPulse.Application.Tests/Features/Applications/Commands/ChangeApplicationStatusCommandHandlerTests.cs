@@ -142,4 +142,39 @@ public class ChangeApplicationStatusCommandHandlerTests
         await act.Should().ThrowAsync<ResourceNotFoundException>()
             .WithMessage($"Application with ID {nonExistentId} was not found.");
     }
+
+
+    [Fact]
+    public async Task Handle_ValidTransition_DraftToApplied_WhenResumeRevisionIsAlreadyApplied_ShouldUpdateStatus()
+    {
+        // Arrange
+        using var context = TestDbContext.CreateInMemory();
+        var (company, revision, _) = SeedApplication(context, ApplicationStatus.Applied);
+
+        var secondApplication = AppEntity.Create(company.Id, revision.Id, "LinkedIn");
+        context.Applications.Add(secondApplication);
+        await context.SaveChangesAsync();
+
+        var dto = new ChangeApplicationStatusDto()
+        {
+            NewStatus = ApplicationStatus.Applied,
+        };
+
+        var handler = new ChangeApplicationStatusCommandHandler(context);
+        var command = new ChangeApplicationStatusCommand(secondApplication.Id, dto);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ApplicationStatus.Applied);
+
+        var dbApplication = await context.Applications
+            .FirstAsync(a => a.Id == secondApplication.Id);
+        dbApplication.Status.Should().Be(ApplicationStatus.Applied);
+
+        var dbRevision = await context.ResumeRevisions
+            .FirstAsync(r => r.Id == revision.Id);
+        dbRevision.Status.Should().Be(RevisionStatus.Applied);
+    }
 }
