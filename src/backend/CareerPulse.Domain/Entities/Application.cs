@@ -1,6 +1,7 @@
 using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using CareerPulse.Domain.StateMachines;
+using System.Runtime.InteropServices;
 
 namespace CareerPulse.Domain.Entities;
 
@@ -14,6 +15,7 @@ public sealed class Application
     public Guid Id { get; private set; }
     public Guid CompanyId { get; private set; }
     public Guid? VacancyId { get; private set; }
+    public Guid? RecruiterId { get; private set; }
     public Guid ResumeRevisionId { get; private set; }
     public ApplicationStatus Status { get; private set; }
     public DateTime? SubmissionDate { get; private set; }
@@ -25,10 +27,13 @@ public sealed class Application
     // Navigation properties — EF Core only, private setters preserve encapsulation
     public Company Company { get; private set; } = null!;
     public Vacancy? Vacancy { get; private set; }
+    public Recruiter? Recruiter { get; private set; }
     public ResumeRevision ResumeRevision { get; private set; } = null!;
 
     private readonly List<Interview> _interviews = new();
     public IReadOnlyCollection<Interview> Interviews => _interviews.AsReadOnly();
+    private readonly List<ApplicationCommunication> _applicationCommunications = new();
+    public IReadOnlyCollection<ApplicationCommunication> ApplicationCommunications => _applicationCommunications.AsReadOnly();
 
     // Required for EF Core
     private Application() { }
@@ -51,14 +56,13 @@ public sealed class Application
             Status = ApplicationStatus.Draft,
             JobSource = jobSource.Trim(),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow // ???
+            UpdatedAt = DateTime.UtcNow 
         };
     }
 
     /// <summary>
     /// Transitions this Application to a new status.
     /// ADR 005: Transitioning to Applied locks the linked ResumeRevision.
-    /// The ApplicationService layer is responsible for calling ResumeRevision.MarkAsApplied().
     /// </summary>
     public void TransitionTo(ApplicationStatus newStatus)
     {

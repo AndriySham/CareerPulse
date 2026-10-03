@@ -18,6 +18,7 @@ public sealed class CareerPulseDbContext : DbContext, IApplicationDbContext
     public CareerPulseDbContext(DbContextOptions<CareerPulseDbContext> options) : base(options) { }
 
     public DbSet<Domain.Entities.Application> Applications => Set<Domain.Entities.Application>();
+    public DbSet<ApplicationCommunication> ApplicationCommunications => Set<ApplicationCommunication>();
     public DbSet<Resume> Resumes => Set<Resume>();
     public DbSet<ResumeRevision> ResumeRevisions => Set<ResumeRevision>();
     public DbSet<ResumeRevisionSkill> ResumeRevisionSkills => Set<ResumeRevisionSkill>();
@@ -29,6 +30,7 @@ public sealed class CareerPulseDbContext : DbContext, IApplicationDbContext
     public DbSet<Vacancy> Vacancies => Set<Vacancy>();
     public DbSet<VacancyLanguageRequirement> VacancyLanguageRequirements => Set<VacancyLanguageRequirement>();
     public DbSet<Interview> Interviews => Set<Interview>();
+    public DbSet<Recruiter> Recruiters => Set<Recruiter>();
     public DbSet<MasterSkill> MasterSkills => Set<MasterSkill>();
     public DbSet<MasterSkillAlias> MasterSkillAliases => Set<MasterSkillAlias>();
 

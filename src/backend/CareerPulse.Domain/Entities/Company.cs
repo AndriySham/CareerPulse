@@ -20,6 +20,8 @@ public sealed class Company
 
     private readonly List<Vacancy> _vacancies = new();
     public IReadOnlyCollection<Vacancy> Vacancies => _vacancies.AsReadOnly();
+    private readonly List<Recruiter> _recruiters = new();
+    public IReadOnlyCollection<Recruiter> Recruiters => _recruiters.AsReadOnly();
 
     private Company() { }
 

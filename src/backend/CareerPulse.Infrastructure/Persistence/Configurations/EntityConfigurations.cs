@@ -37,13 +37,55 @@ public sealed class ApplicationConfiguration : IEntityTypeConfiguration<Domain.E
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(x => x.Interviews)
+            .WithOne(x => x.Application)
+            .HasForeignKey(x => x.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.ApplicationCommunications)
             .WithOne()
             .HasForeignKey(x => x.ApplicationId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasOne(x => x.Recruiter)
+            .WithMany()
+            .HasForeignKey(x => x.RecruiterId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.CompanyId);
         builder.HasIndex(x => x.SubmissionDate);
+        builder.HasIndex(x => x.RecruiterId);
+    }
+}
+
+public sealed class ApplicationCommunicationConfiguration : IEntityTypeConfiguration<ApplicationCommunication>
+{
+    public void Configure(EntityTypeBuilder<ApplicationCommunication> builder)
+    {
+        builder.ToTable("ApplicationCommunications");
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Notes).HasMaxLength(4000).IsRequired();
+
+        builder.HasIndex(x => x.ApplicationId);
+    }
+}
+
+public sealed class RecruiterConfiguration : IEntityTypeConfiguration<Recruiter>
+{
+    public void Configure(EntityTypeBuilder<Recruiter> builder)
+    {
+        builder.ToTable("Recruiters");
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
+        builder.Property(x => x.Phone).HasMaxLength(20);
+        builder.Property(x => x.Email).HasMaxLength(100);
+        builder.Property(x => x.TelegramUrl).HasMaxLength(500);
+        builder.Property(x => x.LinkedInUrl).HasMaxLength(500);
+        builder.Property(x => x.Notes).HasMaxLength(4000);
+
+        builder.HasIndex(x => x.CompanyId);
     }
 }
 
@@ -120,7 +162,7 @@ public sealed class ResumeRevisionConfiguration : IEntityTypeConfiguration<Resum
             .HasForeignKey(x => x.ResumeRevisionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(x => x.ResumeId); // найімовірніше, дублює індекс, який EF Core і так створить автоматично через HasForeignKey(x => x.ResumeId) в ResumeConfiguration.
+        builder.HasIndex(x => x.ResumeId);
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.ParentRevisionId);
     }
@@ -214,6 +256,11 @@ public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.HasMany(x => x.Vacancies)
             .WithOne(v => v.Company)
             .HasForeignKey(v => v.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Recruiters)
+            .WithOne(x => x.Company)
+            .HasForeignKey(x => x.CompanyId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(x => x.Name);
