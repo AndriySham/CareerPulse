@@ -49,9 +49,9 @@ public class ApplicationsController : ControllerBase
     /// Gets a single application by ID.
     /// </summary>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApplicationDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApplicationDto>> GetById(
+    public async Task<ActionResult<ApplicationDetailsDto>> GetById(
         Guid id,
         CancellationToken ct)
     {

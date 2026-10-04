@@ -6,4 +6,4 @@ namespace CareerPulse.Application.Features.Applications.Queries.GetApplicationBy
 /// <summary>
 /// Query to retrieve a single application by ID.
 /// </summary>
-public sealed record GetApplicationByIdQuery(Guid Id) : IRequest<ApplicationDto?>;
+public sealed record GetApplicationByIdQuery(Guid Id) : IRequest<ApplicationDetailsDto?>;

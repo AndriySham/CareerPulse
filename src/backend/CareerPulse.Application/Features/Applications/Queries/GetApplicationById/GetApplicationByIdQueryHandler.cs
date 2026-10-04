@@ -9,7 +9,7 @@ namespace CareerPulse.Application.Features.Applications.Queries.GetApplicationBy
 /// <summary>
 /// Query handler for retrieving a single Application by ID.
 /// </summary>
-public sealed class GetApplicationByIdQueryHandler : IRequestHandler<GetApplicationByIdQuery, ApplicationDto?>
+public sealed class GetApplicationByIdQueryHandler : IRequestHandler<GetApplicationByIdQuery, ApplicationDetailsDto?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -18,15 +18,17 @@ public sealed class GetApplicationByIdQueryHandler : IRequestHandler<GetApplicat
         _context = context;
     }
 
-    public async Task<ApplicationDto?> Handle(GetApplicationByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ApplicationDetailsDto?> Handle(GetApplicationByIdQuery request, CancellationToken cancellationToken)
     {
         var application = await _context.Applications
             .Include(a => a.Company)
             .Include(a => a.Vacancy)
-            .Include(a => a.ResumeRevision)
+            .Include(a => a.ApplicationCommunications)
+            .Include(a => a.Interviews)
+            .Include(a => a.Recruiter)
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
 
-        return application == null ? null : ApplicationMapping.MapToDto(application);
+        return application == null ? null : ApplicationDetailsMapping.MapToDto(application);
     }
 }
