@@ -68,6 +68,11 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
         if (dto.SubmitImmediately)
         {
             application.TransitionTo(ApplicationStatus.Applied);
+
+            if (resumeRevision.Status == RevisionStatus.Draft)
+            {
+                resumeRevision.MarkAsApplied();
+            }
         }
 
         _context.Applications.Add(application);

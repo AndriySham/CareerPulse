@@ -10,7 +10,7 @@ namespace CareerPulse.Application.Features.Vacancies.Queries.GetVacancyById;
 /// Query handler for retrieving a single Vacancy by ID with AsNoTracking().
 /// </summary>
 public sealed class GetVacancyByIdQueryHandler
-    : IRequestHandler<GetVacancyByIdQuery, VacancyDto?>
+    : IRequestHandler<GetVacancyByIdQuery, VacancyDetailsDto?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -19,14 +19,15 @@ public sealed class GetVacancyByIdQueryHandler
         _context = context;
     }
 
-    public async Task<VacancyDto?> Handle(
+    public async Task<VacancyDetailsDto?> Handle(
         GetVacancyByIdQuery request,
         CancellationToken cancellationToken)
     {
         var vacancy = await _context.Vacancies
+            .Include(x => x.LanguageRequirements)
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.Id == request.Id, cancellationToken);
 
-        return vacancy == null ? null : VacancyMapping.MapToDto(vacancy);
+        return vacancy == null ? null : VacancyDetailsMapping.MapToDto(vacancy);
     }
 }

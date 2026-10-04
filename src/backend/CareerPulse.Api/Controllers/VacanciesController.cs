@@ -41,9 +41,9 @@ public class VacanciesController : ControllerBase
     /// Gets a single Vacancy by ID.
     /// </summary>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(VacancyDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<VacancyDto>> GetById(
+    public async Task<ActionResult<VacancyDetailsDto>> GetById(
         Guid id,
         CancellationToken ct)
     {
