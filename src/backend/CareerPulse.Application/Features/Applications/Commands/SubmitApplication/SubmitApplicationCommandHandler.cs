@@ -68,10 +68,6 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
         if (dto.SubmitImmediately)
         {
             application.TransitionTo(ApplicationStatus.Applied);
-            if (resumeRevision.Status == RevisionStatus.Draft)
-            {
-                resumeRevision.MarkAsApplied();
-            }
         }
 
         _context.Applications.Add(application);
@@ -80,7 +76,6 @@ public sealed class SubmitApplicationCommandHandler : IRequestHandler<SubmitAppl
         var created = await _context.Applications
             .Include(a => a.Company)
             .Include(a => a.Vacancy)
-            //.Include(a => a.ResumeRevision)
             .AsNoTracking()
             .FirstAsync(a => a.Id == application.Id, cancellationToken);
 

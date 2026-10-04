@@ -34,23 +34,11 @@ public sealed class ChangeApplicationStatusCommandHandler : IRequestHandler<Chan
             throw new ResourceNotFoundException($"Application with ID {request.Id} was not found.");
         }
 
-        var newStatus = request.Dto.NewStatus;
-
-        // Transition status (ApplicationStatusMachine validates allowed transitions)
-        application.TransitionTo(newStatus);
+        application.TransitionTo(request.Dto.NewStatus);
 
         if (!string.IsNullOrWhiteSpace(request.Dto.Notes))
         {
             application.UpdateNotes(request.Dto.Notes);
-        }
-
-        //ADR 005: When transitioning to Applied, lock the linked ResumeRevision
-        if (newStatus == ApplicationStatus.Applied && application.ResumeRevision != null)
-        {
-            if (application.ResumeRevision.Status == RevisionStatus.Draft)
-            {
-                application.ResumeRevision.MarkAsApplied();
-            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);

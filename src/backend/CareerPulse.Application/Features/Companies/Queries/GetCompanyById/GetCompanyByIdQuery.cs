@@ -6,4 +6,4 @@ namespace CareerPulse.Application.Features.Companies.Queries.GetCompanyById;
 /// <summary>
 /// Query to retrieve a single Company by ID with AsNoTracking().
 /// </summary>
-public sealed record GetCompanyByIdQuery(Guid Id) : IRequest<CompanyDto?>;
+public sealed record GetCompanyByIdQuery(Guid Id) : IRequest<CompanyDetailsDto?>;

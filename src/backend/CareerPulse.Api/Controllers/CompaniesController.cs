@@ -42,9 +42,9 @@ public class CompaniesController : ControllerBase
     /// Gets a single Company by ID.
     /// </summary>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CompanyDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<CompanyDto>> GetById(
+    public async Task<ActionResult<CompanyDetailsDto>> GetById(
         Guid id,
         CancellationToken ct)
     {

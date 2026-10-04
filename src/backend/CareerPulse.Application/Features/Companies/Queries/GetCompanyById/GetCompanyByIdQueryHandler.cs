@@ -10,7 +10,7 @@ namespace CareerPulse.Application.Features.Companies.Queries.GetCompanyById;
 /// Query handler for retrieving a single Company by ID with AsNoTracking().
 /// </summary>
 public sealed class GetCompanyByIdQueryHandler
-    : IRequestHandler<GetCompanyByIdQuery, CompanyDto?>
+    : IRequestHandler<GetCompanyByIdQuery, CompanyDetailsDto?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -19,14 +19,15 @@ public sealed class GetCompanyByIdQueryHandler
         _context = context;
     }
 
-    public async Task<CompanyDto?> Handle(
+    public async Task<CompanyDetailsDto?> Handle(
         GetCompanyByIdQuery request,
         CancellationToken cancellationToken)
     {
         var company = await _context.Companies
+            .Include(x => x.Recruiters)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
-        return company == null ? null : CompanyMapping.MapToDto(company);
+        return company == null ? null : CompanyDetailsMapping.MapToDto(company);
     }
 }
