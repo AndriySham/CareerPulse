@@ -29,7 +29,6 @@ public sealed class VacancyDetailsMapping
 
         LanguageRequirements = vacancy.LanguageRequirements.Select(x => new VacancyLanguageRequirementDto
         {
-            Id = x.Id,
             LanguageName = x.LanguageName,
             Proficiency = x.Proficiency,
             ProficiencyDescription = x.ProficiencyDescription

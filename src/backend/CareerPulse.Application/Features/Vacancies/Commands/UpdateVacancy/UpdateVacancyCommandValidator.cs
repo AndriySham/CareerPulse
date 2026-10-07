@@ -1,4 +1,6 @@
+using CareerPulse.Application.DTOs.VacancyLanguageRequirement;
 using FluentValidation;
+using System.Linq;
 
 namespace CareerPulse.Application.Features.Vacancies.Commands.UpdateVacancy;
 
@@ -48,6 +50,8 @@ public sealed class UpdateVacancyCommandValidator : AbstractValidator<UpdateVaca
             .WithMessage("Minimum salary must not exceed maximum salary.");
 
             RuleFor(x => x.Dto.SalaryMax)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Maximum salary must not be negative.")
                 .LessThanOrEqualTo(1_000_000)
                 .WithMessage("Max salary must not exceed 1 000 000");
 
@@ -58,6 +62,30 @@ public sealed class UpdateVacancyCommandValidator : AbstractValidator<UpdateVaca
             RuleFor(x => x.Dto.EmploymentType)
                 .IsInEnum()
                 .WithMessage("Invalid EmploymentType");
+
+            RuleFor(x => x.Dto.LanguageRequirements)
+                .NotNull()
+                .WithMessage("Language requirements cannot be null.");
+
+            RuleForEach(x => x.Dto.LanguageRequirements)
+                .NotNull()
+                .WithMessage("Language requirement item cannot be null.")
+                .ChildRules(language =>
+                {
+                    language.RuleFor(x => x.LanguageName)
+                        .NotEmpty()
+                        .WithMessage("Language name is required.")
+                        .MaximumLength(100)
+                        .WithMessage("Language name must not exceed 100 characters.");
+
+                    language.RuleFor(x => x.Proficiency)
+                        .IsInEnum()
+                        .WithMessage("Invalid language proficiency.");
+
+                     language.RuleFor(x => x.ProficiencyDescription)
+                        .MaximumLength(100)
+                        .WithMessage("Proficiency description must not exceed 100 characters.");
+                });
         });
     }
 }

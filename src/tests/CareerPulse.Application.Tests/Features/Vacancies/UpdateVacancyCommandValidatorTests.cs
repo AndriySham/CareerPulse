@@ -17,7 +17,8 @@ public class UpdateVacancyCommandValidatorTests
         {
             Title = "Principal Architect",
             Description = "Updated description",
-            Url = "https://company.com/vacancy"
+            Url = "https://company.com/vacancy",
+            LanguageRequirements = []
         };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
@@ -32,7 +33,7 @@ public class UpdateVacancyCommandValidatorTests
     public void Validate_WhenIdIsEmpty_ShouldHaveValidationError()
     {
         // Arrange
-        var dto = new UpdateVacancyDto { Title = "Valid Title" };
+        var dto = new UpdateVacancyDto { Title = "Valid Title" , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.Empty, dto);
 
         // Act
@@ -64,7 +65,7 @@ public class UpdateVacancyCommandValidatorTests
     public void Validate_WhenTitleIsEmptyOrNullOrWhitespace_ShouldHaveValidationError(string? invalidTitle)
     {
         // Arrange
-        var dto = new UpdateVacancyDto { Title = invalidTitle! };
+        var dto = new UpdateVacancyDto { Title = invalidTitle! , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
         // Act
@@ -80,7 +81,7 @@ public class UpdateVacancyCommandValidatorTests
     {
         // Arrange
         var longTitle = new string('T', 301);
-        var dto = new UpdateVacancyDto { Title = longTitle };
+        var dto = new UpdateVacancyDto { Title = longTitle , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
         // Act
@@ -96,7 +97,7 @@ public class UpdateVacancyCommandValidatorTests
     {
         // Arrange
         var exactTitle = new string('T', 300);
-        var dto = new UpdateVacancyDto { Title = exactTitle };
+        var dto = new UpdateVacancyDto { Title = exactTitle , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
         // Act
@@ -111,7 +112,7 @@ public class UpdateVacancyCommandValidatorTests
     {
         // Arrange
         var longUrl = "https://" + new string('u', 1000);
-        var dto = new UpdateVacancyDto { Title = "Valid Title", Url = longUrl };
+        var dto = new UpdateVacancyDto { Title = "Valid Title", Url = longUrl , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
         // Act
@@ -127,7 +128,7 @@ public class UpdateVacancyCommandValidatorTests
     {
         // Arrange
         var exactUrl = new string('u', 1000);
-        var dto = new UpdateVacancyDto { Title = "Valid Title", Url = exactUrl };
+        var dto = new UpdateVacancyDto { Title = "Valid Title", Url = exactUrl , LanguageRequirements = [] };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 
         // Act
@@ -145,7 +146,8 @@ public class UpdateVacancyCommandValidatorTests
         {
             Title = "Valid Title",
             Description = null,
-            Url = null
+            Url = null,
+            LanguageRequirements = []
         };
         var command = new UpdateVacancyCommand(Guid.NewGuid(), dto);
 

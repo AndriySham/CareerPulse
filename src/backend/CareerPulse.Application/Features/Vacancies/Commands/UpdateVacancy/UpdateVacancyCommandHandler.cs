@@ -2,6 +2,7 @@ using CareerPulse.Application.Common.Mappings;
 using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
+using CareerPulse.Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ namespace CareerPulse.Application.Features.Vacancies.Commands.UpdateVacancy;
 /// Command handler for updating an existing Vacancy entity.
 /// </summary>
 public sealed class UpdateVacancyCommandHandler
-    : IRequestHandler<UpdateVacancyCommand, VacancyDto>
+    : IRequestHandler<UpdateVacancyCommand, VacancyDetailsDto>
 {
     private readonly IApplicationDbContext _context;
 
@@ -20,11 +21,12 @@ public sealed class UpdateVacancyCommandHandler
         _context = context;
     }
 
-    public async Task<VacancyDto> Handle(
+    public async Task<VacancyDetailsDto> Handle(
         UpdateVacancyCommand request,
         CancellationToken cancellationToken)
     {
         var vacancy = await _context.Vacancies
+            .Include(x => x.LanguageRequirements)
             .FirstOrDefaultAsync(v => v.Id == request.Id, cancellationToken);
 
         if (vacancy == null)
@@ -33,10 +35,9 @@ public sealed class UpdateVacancyCommandHandler
         }
 
         var dto = request.Dto;
-        var trimmedTitle = dto.Title?.Trim() ?? string.Empty;
 
         vacancy.Update(
-            trimmedTitle,
+            dto.Title,
             dto.Location,
             dto.WorkMode,
             dto.EmploymentType,
@@ -50,8 +51,14 @@ public sealed class UpdateVacancyCommandHandler
             dto.Benefits,
             dto.Url);
 
+        vacancy.ReplaceLanguageRequirements(
+            dto.LanguageRequirements.Select(x => new LanguageRequirementInput(
+                x.LanguageName,
+                x.Proficiency,
+            x.ProficiencyDescription)));
+
         await _context.SaveChangesAsync(cancellationToken);
 
-        return VacancyMapping.MapToDto(vacancy);
+        return VacancyDetailsMapping.MapToDto(vacancy);
     }
 }

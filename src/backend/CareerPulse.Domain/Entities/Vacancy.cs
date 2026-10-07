@@ -1,5 +1,6 @@
 using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
+using CareerPulse.Domain.Models;
 
 namespace CareerPulse.Domain.Entities;
 
@@ -9,6 +10,8 @@ namespace CareerPulse.Domain.Entities;
 /// </summary>
 public sealed class Vacancy
 {
+    private readonly List<VacancyLanguageRequirement> _languageRequirements = new();
+
     public Guid Id { get; private set; }
     public Guid CompanyId { get; private set; }
     public string Title { get; private set; } = string.Empty;
@@ -22,8 +25,8 @@ public sealed class Vacancy
     public string? Responsibilities { get; private set; }
     public string? Requirements { get; private set; }
     public string? NiceToHave { get; private set; }
-    public ICollection<VacancyLanguageRequirement> LanguageRequirements { get; private set; }
-        = new List<VacancyLanguageRequirement>();
+    public IReadOnlyCollection<VacancyLanguageRequirement> LanguageRequirements 
+        => _languageRequirements.AsReadOnly();
     public string? Benefits { get; private set; }
     public string? Url { get; private set; }
     public DateTime? PostedAt { get; private set; }
@@ -55,12 +58,7 @@ public sealed class Vacancy
         if (companyId == Guid.Empty)
             throw new DomainException("Company ID is required.");
 
-
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Vacancy title is required.");
-
-        if (salaryMin.HasValue && salaryMax.HasValue && salaryMin > salaryMax)
-            throw new DomainException("Minimum salary cannot be greater than maximum salary.");
+        ValidateCore(title, salaryMin, salaryMax);
 
         return new Vacancy
         {
@@ -100,11 +98,7 @@ public sealed class Vacancy
         string? benefits = null,
         string? url = null)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Vacancy title is required.");
-
-        if (salaryMin.HasValue && salaryMax.HasValue && salaryMin > salaryMax)
-            throw new DomainException("Minimum salary cannot be greater than maximum salary.");
+        ValidateCore(title, salaryMin, salaryMax);
 
         Title = title.Trim();
         Location = location?.Trim();
@@ -123,8 +117,57 @@ public sealed class Vacancy
     }
 
     public void AddLanguageRequirement(
-        VacancyLanguageRequirement requirement)
+        string languageName,
+        VacancyLanguageProficiency? proficiency,
+        string? proficiencyDescription)
     {
-        LanguageRequirements.Add(requirement);
+        var requirement = VacancyLanguageRequirement.Create(
+            Id,
+            languageName,
+            proficiency,
+            proficiencyDescription);
+
+        _languageRequirements.Add(requirement);
+    }
+
+    public void ReplaceLanguageRequirements(IEnumerable<LanguageRequirementInput> requirements)
+    {
+        var incoming = requirements
+            .Select(x => new
+            {
+                LanguageName = x.LanguageName?.Trim() ?? string.Empty,
+                x.Proficiency,
+                ProficiencyDescription = x.ProficiencyDescription?.Trim()
+            }).ToList();
+
+        if (incoming.Any(x => string.IsNullOrWhiteSpace(x.LanguageName)))
+            throw new DomainException("LanguageName is required.");
+
+        if (incoming.GroupBy(x => x.LanguageName, StringComparer.OrdinalIgnoreCase)
+            .Any(g => g.Count() > 1))
+        {
+            throw new DomainException("Duplicate language requirements are not allowed.");
+        }
+
+        _languageRequirements.Clear();
+
+        foreach (var item in incoming)
+        {
+            AddLanguageRequirement(
+                item.LanguageName,
+                item.Proficiency,
+                item.ProficiencyDescription);
+        }
+
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    private static void ValidateCore(string title, int? salaryMin, int? salaryMax)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new DomainException("Vacancy title is required.");
+
+        if (salaryMin.HasValue && salaryMax.HasValue && salaryMin > salaryMax)
+            throw new DomainException("Minimum salary cannot be greater than maximum salary.");
     }
 }

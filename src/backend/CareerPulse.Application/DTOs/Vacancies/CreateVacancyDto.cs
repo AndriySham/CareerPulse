@@ -1,3 +1,4 @@
+using CareerPulse.Application.DTOs.VacancyLanguageRequirement;
 using CareerPulse.Domain.Enums;
 
 namespace CareerPulse.Application.DTOs.Vacancies;
@@ -22,4 +23,7 @@ public sealed class CreateVacancyDto
     public string? Benefits { get; init; }
     public string? Url { get; init; }
     public DateTime? PostedAt { get; init; }
+
+    public IReadOnlyCollection<CreateVacancyLanguageRequirementDto> LanguageRequirements { get; init; }
+        = Array.Empty<CreateVacancyLanguageRequirementDto>();
 }

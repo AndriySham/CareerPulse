@@ -37,7 +37,7 @@ public sealed class CreateVacancyCommandHandler
         }
 
         var vacancy = Vacancy.Create(
-            dto.CompanyId, 
+            dto.CompanyId,
             trimmedTitle,
             dto.Location,
             dto.WorkMode,
@@ -52,6 +52,14 @@ public sealed class CreateVacancyCommandHandler
             dto.Benefits,
             dto.Url,
             dto.PostedAt);
+
+        foreach (var languageRequirement in dto.LanguageRequirements)
+        {
+            vacancy.AddLanguageRequirement(
+                languageRequirement.LanguageName,
+                languageRequirement.Proficiency,
+                languageRequirement.ProficiencyDescription);
+        };
 
         _context.Vacancies.Add(vacancy);
         await _context.SaveChangesAsync(cancellationToken);

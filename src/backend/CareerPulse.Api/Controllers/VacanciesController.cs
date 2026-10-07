@@ -76,11 +76,11 @@ public class VacanciesController : ControllerBase
     /// Updates an existing Vacancy entity by ID.
     /// </summary>
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(VacancyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(VacancyDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<VacancyDto>> Update(
+    public async Task<ActionResult<VacancyDetailsDto>> Update(
         Guid id,
         [FromBody] UpdateVacancyDto dto,
         CancellationToken ct)

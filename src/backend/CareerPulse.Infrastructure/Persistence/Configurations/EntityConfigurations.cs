@@ -273,6 +273,7 @@ public sealed class VacancyConfiguration : IEntityTypeConfiguration<Vacancy>
     {
         builder.ToTable("Vacancies");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedNever();
         builder.Property(x => x.Title).HasMaxLength(300).IsRequired();
         builder.Property(x => x.Description).HasColumnType("text");
         builder.Property(x => x.Url).HasMaxLength(1000);
@@ -300,6 +301,7 @@ public sealed class VacancyLanguageRequirementConfiguration : IEntityTypeConfigu
     {
         builder.ToTable("VacancyLanguageRequirements");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedNever();
         builder.Property(x => x.LanguageName).HasMaxLength(100).IsRequired();
         builder.Property(x => x.Proficiency).HasConversion<string>().HasMaxLength(6);
         builder.Property(x => x.ProficiencyDescription).HasMaxLength(100);

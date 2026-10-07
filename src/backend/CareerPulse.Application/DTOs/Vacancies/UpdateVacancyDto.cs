@@ -1,3 +1,4 @@
+using CareerPulse.Application.DTOs.VacancyLanguageRequirement;
 using CareerPulse.Domain.Enums;
 
 namespace CareerPulse.Application.DTOs.Vacancies;
@@ -20,4 +21,6 @@ public sealed class UpdateVacancyDto
     public string? NiceToHave { get; init; }
     public string? Benefits { get; init; }
     public string? Url { get; init; }
+
+    public required IReadOnlyCollection<UpdateVacancyLanguageRequirementDto> LanguageRequirements { get; init; }
 }
