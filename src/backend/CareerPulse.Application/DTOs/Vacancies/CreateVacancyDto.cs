@@ -24,6 +24,5 @@ public sealed class CreateVacancyDto
     public string? Url { get; init; }
     public DateTime? PostedAt { get; init; }
 
-    public IReadOnlyCollection<CreateVacancyLanguageRequirementDto> LanguageRequirements { get; init; }
-        = Array.Empty<CreateVacancyLanguageRequirementDto>();
+    public required IReadOnlyCollection<CreateVacancyLanguageRequirementDto> LanguageRequirements { get; init; }
 }

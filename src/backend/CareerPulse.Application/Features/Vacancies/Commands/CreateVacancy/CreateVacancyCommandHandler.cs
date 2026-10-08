@@ -3,6 +3,7 @@ using CareerPulse.Application.DTOs.Vacancies;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Interfaces;
 using CareerPulse.Domain.Entities;
+using CareerPulse.Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,6 @@ public sealed class CreateVacancyCommandHandler
         CancellationToken cancellationToken)
     {
         var dto = request.Dto;
-        var trimmedTitle = dto.Title?.Trim() ?? string.Empty;
 
         var companyExists = await _context.Companies
             .AnyAsync(c => c.Id == dto.CompanyId, cancellationToken);
@@ -38,7 +38,7 @@ public sealed class CreateVacancyCommandHandler
 
         var vacancy = Vacancy.Create(
             dto.CompanyId,
-            trimmedTitle,
+            dto.Title,
             dto.Location,
             dto.WorkMode,
             dto.EmploymentType,
@@ -53,13 +53,12 @@ public sealed class CreateVacancyCommandHandler
             dto.Url,
             dto.PostedAt);
 
-        foreach (var languageRequirement in dto.LanguageRequirements)
-        {
-            vacancy.AddLanguageRequirement(
-                languageRequirement.LanguageName,
-                languageRequirement.Proficiency,
-                languageRequirement.ProficiencyDescription);
-        };
+        vacancy.ReplaceLanguageRequirements(
+            dto.LanguageRequirements.Select(x => new LanguageRequirementInput(
+                x.LanguageName,
+                x.Proficiency,
+                x.ProficiencyDescription
+            )));
 
         _context.Vacancies.Add(vacancy);
         await _context.SaveChangesAsync(cancellationToken);

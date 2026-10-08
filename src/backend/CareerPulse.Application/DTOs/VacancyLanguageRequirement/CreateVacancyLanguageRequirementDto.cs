@@ -5,7 +5,6 @@ namespace CareerPulse.Application.DTOs.VacancyLanguageRequirement;
 /// <summary>
 /// Input DTO for creating a new VacancyLanguageRequirement.
 /// </summary>
-
 public sealed class CreateVacancyLanguageRequirementDto
 {
     public string LanguageName { get; init; } = string.Empty;

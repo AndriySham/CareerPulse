@@ -20,8 +20,8 @@ public class CreateVacancyCommandValidatorTests
                 Title = "Software Architect",
                 Description = "Designing scalable systems",
                 Url = "https://company.com/architect",
-                PostedAt = DateTime.UtcNow
-
+                PostedAt = DateTime.UtcNow,
+                LanguageRequirements = []
             }
         );
 
@@ -53,7 +53,8 @@ public class CreateVacancyCommandValidatorTests
         var dto = new CreateVacancyDto
         {
             CompanyId = Guid.Empty,
-            Title = "Backend Engineer"
+            Title = "Backend Engineer",
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -75,7 +76,8 @@ public class CreateVacancyCommandValidatorTests
         var dto = new CreateVacancyDto
         {
             CompanyId = Guid.NewGuid(),
-            Title = invalidTitle!
+            Title = invalidTitle!,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -95,7 +97,8 @@ public class CreateVacancyCommandValidatorTests
         var dto = new CreateVacancyDto
         {
             CompanyId = Guid.NewGuid(),
-            Title = longTitle
+            Title = longTitle,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -115,7 +118,8 @@ public class CreateVacancyCommandValidatorTests
         var dto = new CreateVacancyDto
         {
             CompanyId = Guid.NewGuid(),
-            Title = exactTitle
+            Title = exactTitle,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -135,7 +139,8 @@ public class CreateVacancyCommandValidatorTests
         {
             CompanyId = Guid.NewGuid(),
             Title = "Valid Title",
-            Url = longUrl
+            Url = longUrl,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -156,7 +161,8 @@ public class CreateVacancyCommandValidatorTests
         {
             CompanyId = Guid.NewGuid(),
             Title = "Valid Title",
-            Url = exactUrl
+            Url = exactUrl,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -177,7 +183,8 @@ public class CreateVacancyCommandValidatorTests
             Title = "Valid Title",
             Description = null,
             Url = null,
-            PostedAt = null
+            PostedAt = null,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 

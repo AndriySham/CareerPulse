@@ -1,11 +1,14 @@
 using CareerPulse.Application.DTOs.Vacancies;
+using CareerPulse.Application.DTOs.VacancyLanguageRequirement;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.Vacancies.Commands.CreateVacancy;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
+using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 using Xunit;
 
 namespace CareerPulse.Application.Tests.Features.Vacancies;
@@ -29,7 +32,8 @@ public class CreateVacancyCommandHandlerTests
             Title = "Senior C# Developer",
             Description = "Exciting opportunity in .NET",
             Url = "https://techinc.com/careers/123",
-            PostedAt = postedAt
+            PostedAt = postedAt,
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -71,7 +75,8 @@ public class CreateVacancyCommandHandlerTests
             CompanyId = company.Id,
             Title = "  QA Lead Engineer  ",
             Description = "Untrimmed description",
-            Url = "  https://softcorp.com/qa  "
+            Url = "  https://softcorp.com/qa  ",
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -98,7 +103,8 @@ public class CreateVacancyCommandHandlerTests
         var dto = new CreateVacancyDto
         {
             CompanyId = nonExistentCompanyId,
-            Title = "Orphan Vacancy"
+            Title = "Orphan Vacancy",
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -123,7 +129,8 @@ public class CreateVacancyCommandHandlerTests
         var dto = new CreateVacancyDto
         {
             CompanyId = company.Id,
-            Title = "   "
+            Title = "   ",
+            LanguageRequirements = []
         };
         var command = new CreateVacancyCommand(dto);
 
@@ -148,7 +155,8 @@ public class CreateVacancyCommandHandlerTests
         var dto = new CreateVacancyDto
         {
             CompanyId = company.Id,
-            Title = "Simple Developer"
+            Title = "Simple Developer",
+            LanguageRequirements = []
         };
 
         var handler = new CreateVacancyCommandHandler(context);
@@ -193,5 +201,165 @@ public class CreateVacancyCommandHandlerTests
         dbVacancy.Benefits.Should().BeNull();
         dbVacancy.Url.Should().BeNull();
         dbVacancy.PostedAt.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Handle_WithLanguageRequirements_ShouldCreateVacancyWithLanguageRequirements()
+    {
+        // Arrange
+        using var context = TestDbContext.CreateInMemory();
+
+        var company = Company.Create("Tech Inc");
+        context.Companies.Add(company);
+        await context.SaveChangesAsync();
+
+        var handler = new CreateVacancyCommandHandler(context);
+
+        var dto = new CreateVacancyDto
+        {
+            CompanyId = company.Id,
+            Title = "C# Developer",
+            LanguageRequirements =
+            [
+                new CreateVacancyLanguageRequirementDto
+                {
+                    LanguageName = "English",
+                    Proficiency = VacancyLanguageProficiency.C1,
+                    ProficiencyDescription = "Advanced English"
+                },
+                new CreateVacancyLanguageRequirementDto {
+                    LanguageName = "German",
+                    Proficiency = VacancyLanguageProficiency.B2,
+                    ProficiencyDescription = null
+                }
+            ]
+        };
+
+        var command = new CreateVacancyCommand(dto);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+
+        var dbVacancy = await context.Vacancies
+            .Include(x => x.LanguageRequirements)
+            .SingleOrDefaultAsync();
+
+        dbVacancy.LanguageRequirements.Select(x => new
+        {
+            x.LanguageName,
+            x.Proficiency,
+            x.ProficiencyDescription
+        })
+        .Should()
+        .BeEquivalentTo(
+        [
+            new
+            {
+                LanguageName = "English",
+                Proficiency = VacancyLanguageProficiency.C1,
+                ProficiencyDescription = "Advanced English"
+            },
+            new
+            {
+                LanguageName = "German",
+                Proficiency = VacancyLanguageProficiency.B2,
+                ProficiencyDescription = (string?)null
+            }
+        ]);
+    }
+
+    [Fact]
+    public async Task Handle_WhenLanguageRequirementsContainDuplicates_ShouldThrowDomainException()
+    {
+        // Arrange
+        using var context = TestDbContext.CreateInMemory();
+
+        var company = Company.Create("Tech Inc");
+        context.Companies.Add(company);
+        await context.SaveChangesAsync();
+
+        var handler = new CreateVacancyCommandHandler(context);
+
+        var dto = new CreateVacancyDto
+        {
+            CompanyId = company.Id,
+            Title = "C# Developer",
+            LanguageRequirements =
+            [
+                new CreateVacancyLanguageRequirementDto
+                {
+                    LanguageName = "German",
+                    Proficiency = VacancyLanguageProficiency.B1
+                },
+                new CreateVacancyLanguageRequirementDto
+                {
+                    LanguageName = "german",
+                    Proficiency = VacancyLanguageProficiency.B2
+                }
+            ]
+        };
+
+        var command = new CreateVacancyCommand(dto);
+
+        // Act
+        var act = () => handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<DomainException>()
+            .WithMessage("Duplicate language requirements are not allowed.");
+
+        context.Vacancies.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Handle_WithWhitespaceInLanguageFields_ShouldTrimValues()
+    {
+        // Arrange
+        using var context = TestDbContext.CreateInMemory();
+
+        var company = Company.Create("Tech Inc");
+        context.Companies.Add(company);
+        await context.SaveChangesAsync();
+
+        var handler = new CreateVacancyCommandHandler(context);
+
+        var dto = new CreateVacancyDto
+        {
+            CompanyId = company.Id,
+            Title = "C# Developer",
+            LanguageRequirements =
+            [
+                new CreateVacancyLanguageRequirementDto
+            {
+                LanguageName = "  German  ",
+                Proficiency = VacancyLanguageProficiency.B1,
+                ProficiencyDescription = "  Conversational  "
+            }
+            ]
+        };
+
+        var command = new CreateVacancyCommand(dto);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().NotBeEmpty();
+
+        var dbVacancy = await context.Vacancies
+            .Include(x => x.LanguageRequirements)
+            .SingleAsync(x => x.Id == result.Id);
+
+        var savedRequirement = dbVacancy.LanguageRequirements
+            .Should()
+            .ContainSingle()
+            .Subject;
+
+        savedRequirement.LanguageName.Should().Be("German");
+        savedRequirement.ProficiencyDescription.Should().Be("Conversational");
     }
 }
