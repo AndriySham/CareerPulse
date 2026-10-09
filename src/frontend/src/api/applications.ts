@@ -48,14 +48,18 @@ export async function changeApplicationStatus(
 
 // React Query Hooks
 
-export function useApplications(filters?: {
-  status?: ApplicationStatus;
-  vacancyId?: string;
-  companyId?: string;
-}) {
+export function useApplications(
+  filters?: {
+    status?: ApplicationStatus;
+    vacancyId?: string;
+    companyId?: string;
+  },
+  enabled = true
+) {
   return useQuery({
     queryKey: applicationsKeys.list(filters),
     queryFn: () => getApplications(filters),
+    enabled,
   });
 }
 

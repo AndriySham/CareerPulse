@@ -7,6 +7,7 @@ import { useResumeRevisions } from '@/api/resumes';
 import { useSubmitApplication } from '@/api/applications';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ResumeRevisionSelect from '@/components/resumes/ResumeRevisionSelect';
+import PreviousApplicationNotice from '@/components/applications/PreviousApplicationNotice';
 import type { SubmitApplicationDto } from '@/types';
 import { Building2, Briefcase, FileText, Globe, Send, AlertCircle } from 'lucide-react';
 
@@ -155,6 +156,11 @@ export const ApplicationFormModal: React.FC<ApplicationFormModalProps> = ({
             className="w-full"
           />
         </div>
+
+        {/* Previous Application Notice for selected vacancy */}
+        {vacancyId && (
+          <PreviousApplicationNotice vacancyId={vacancyId} />
+        )}
 
         {/* Resume Revision Select */}
         <div>

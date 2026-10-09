@@ -5,10 +5,12 @@ import { useCompany, useCompanies } from '@/api/companies';
 import { useResumeRevisions } from '@/api/resumes';
 import { useSubmitApplication } from '@/api/applications';
 import ResumeRevisionSelect from '@/components/resumes/ResumeRevisionSelect';
+import PreviousApplicationNotice from '@/components/applications/PreviousApplicationNotice';
+import ApplicationDetailModal from '@/components/applications/ApplicationDetailModal';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ErrorAlert from '@/components/ui/ErrorAlert';
 import { formatSalary, formatWorkMode } from '@/types';
-import type { SubmitApplicationDto } from '@/types';
+import type { SubmitApplicationDto, ApplicationDto } from '@/types';
 import {
   ArrowLeft,
   Briefcase,
@@ -65,8 +67,15 @@ export const CreateApplicationPage: React.FC = () => {
   const [notes, setNotes] = useState('');
   const [submitImmediately, setSubmitImmediately] = useState(true);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [viewingPreviousApp, setViewingPreviousApp] = useState<ApplicationDto | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const submitMutation = useSubmitApplication();
+
+  const handleViewPreviousApplication = (app: ApplicationDto) => {
+    setViewingPreviousApp(app);
+    setIsDetailModalOpen(true);
+  };
 
   // Synchronize companyId from vacancy if loaded
   useEffect(() => {
@@ -217,6 +226,14 @@ export const CreateApplicationPage: React.FC = () => {
             </div>
           )}
         </div>
+      )}
+
+      {/* Previous Application Notice (when applying for a specific vacancy) */}
+      {effectiveVacancyId && (
+        <PreviousApplicationNotice
+          vacancyId={effectiveVacancyId}
+          onViewApplication={handleViewPreviousApplication}
+        />
       )}
 
       <form onSubmit={handleSubmit} autoComplete="off" className="space-y-6">
@@ -407,6 +424,18 @@ export const CreateApplicationPage: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Previous Application Detail Modal */}
+      {viewingPreviousApp && (
+        <ApplicationDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => {
+            setIsDetailModalOpen(false);
+            setViewingPreviousApp(null);
+          }}
+          application={viewingPreviousApp}
+        />
+      )}
     </div>
   );
 };
