@@ -3,12 +3,10 @@
 namespace CareerPulse.Application.DTOs.Interviews;
 
 /// <summary>
-/// DTO representing Interview entity.
+/// Input DTO for creating a new Interview.
 /// </summary>
-public sealed class InterviewDto
+public sealed class CreateInterviewDto
 {
-    public Guid Id { get; init; }
-    public Guid ApplicationId { get; init; }
     public InterviewType Type { get; init; }
     public DateTime? ScheduledAt { get; init; }
     public DateTime? ConductedAt { get; init; }

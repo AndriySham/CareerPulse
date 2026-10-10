@@ -8,7 +8,6 @@ using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using System.Dynamic;
 using Xunit;
 
 namespace CareerPulse.Application.Tests.Features.Vacancies;

@@ -1,7 +1,6 @@
 using CareerPulse.Domain.Enums;
 using CareerPulse.Domain.Exceptions;
 using CareerPulse.Domain.StateMachines;
-using System.Runtime.InteropServices;
 
 namespace CareerPulse.Domain.Entities;
 

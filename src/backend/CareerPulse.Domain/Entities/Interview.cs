@@ -5,7 +5,7 @@ namespace CareerPulse.Domain.Entities;
 
 /// <summary>
 /// Represents a single interview round associated with an Application.
-/// Child entity of the Application aggregate.
+/// References its Application by ApplicationId.
 /// </summary>
 public sealed class Interview
 {
@@ -27,18 +27,25 @@ public sealed class Interview
         Guid applicationId, 
         InterviewType type, 
         DateTime? scheduledAt, 
-        DateTime? conductedAt)
+        DateTime? conductedAt,
+        string notes,
+        string feedback)
     {
+        if (applicationId == Guid.Empty)
+            throw new DomainException("Application ID is required.");
+
         if (scheduledAt is null && conductedAt is null)
             throw new DomainException("Interview must have either a scheduled or conducted date.");
 
-        return new()
+        return new Interview()
         {
             Id = Guid.NewGuid(),
             ApplicationId = applicationId,
             Type = type,
             ScheduledAt = scheduledAt,
             ConductedAt = conductedAt,
+            Notes = notes?.Trim(),
+            Feedback = feedback?.Trim(),
             CreatedAt = DateTime.UtcNow,
         };
     }
