@@ -26,6 +26,17 @@ public sealed class CreateInterviewCommandValidator : AbstractValidator<CreateIn
             RuleFor(x => x.Dto)
                 .Must(x => x.ScheduledAt.HasValue || x.ConductedAt.HasValue)
                 .WithMessage("Interview must have either a scheduled or conducted date.");
+
+            RuleFor(x => x.Dto.ScheduledAt)
+                .Must(BeUtc)
+                .WithMessage("ScheduledAt must be int UTC, e.g. 2026-10-10T10:00:00Z.");
+
+            RuleFor(x => x.Dto.ConductedAt)
+                .Must(BeUtc)
+                .WithMessage("ConductedAt must be in UTC, e.g. 2026-10-10T10:00:00Z.");
         });
     }
+
+    private static bool BeUtc(DateTime? value)
+        => value is null || value.Value.Kind == DateTimeKind.Utc;
 }

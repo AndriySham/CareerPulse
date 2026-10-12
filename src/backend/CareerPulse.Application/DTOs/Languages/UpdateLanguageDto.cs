@@ -3,7 +3,7 @@
 namespace CareerPulse.Application.DTOs.Languages;
 
 /// <summary>
-///  Input DTO for updatinf an existing Language.
+///  Input DTO for updating an existing Language.
 /// </summary>
 public sealed class UpdateLanguageDto
 {

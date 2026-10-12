@@ -1,6 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Interviews;
 using CareerPulse.Application.Features.Applications.Queries.GetApplicationById;
 using CareerPulse.Application.Features.Interviews.Commands.CreateInterview;
+using CareerPulse.Application.Features.Interviews.Commands.UpdateInterview;
 using CareerPulse.Application.Features.Interviews.Queries.GetInterviewById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -56,5 +57,24 @@ public class InterviewsController : ControllerBase
         var command = new CreateInterviewCommand(applicationId, dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { applicationId, interviewId = result.Id}, result );
+    }
+
+    /// <summary>
+    /// Updates an existing Interview entity.
+    /// </summary>
+    [HttpPut("{interviewId:guid}")]
+    [ProducesResponseType(typeof(InterviewDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<InterviewDto>> Update(
+        Guid applicationId,
+        Guid interviewId,
+        [FromBody] UpdateInterviewDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateInterviewCommand(applicationId, interviewId, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }

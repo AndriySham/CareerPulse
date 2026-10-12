@@ -50,15 +50,21 @@ public sealed class Interview
         };
     }
 
-    public void RecordFeedback(string feedback)
+    public void Update(
+        InterviewType type,
+        DateTime? scheduledAt,
+        DateTime? conductedAt,
+        string? notes,
+        string? feedback)
     {
-        Feedback = feedback;
-        UpdatedAt = DateTime.UtcNow;
-    }
+        if (scheduledAt is null && conductedAt is null)
+            throw new DomainException("Interview must have either a scheduled or conducted date.");
 
-    public void UpdateNotes(string? notes)
-    {
-        Notes = notes;
+        Type = type;
+        ScheduledAt = scheduledAt;
+        ConductedAt = conductedAt;
+        Notes = notes?.Trim();
+        Feedback = feedback?.Trim();
         UpdatedAt = DateTime.UtcNow;
     }
 }
