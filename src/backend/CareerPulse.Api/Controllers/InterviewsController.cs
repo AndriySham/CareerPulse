@@ -1,6 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Interviews;
 using CareerPulse.Application.Features.Applications.Queries.GetApplicationById;
 using CareerPulse.Application.Features.Interviews.Commands.CreateInterview;
+using CareerPulse.Application.Features.Interviews.Queries.GetInterviewById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +22,23 @@ public class InterviewsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an Interview by ID. Not implemented yet.
+    /// Gets an Interview by ID.
     /// </summary>
     [HttpGet("{interviewId:guid}")]
     [ProducesResponseType(typeof(InterviewDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status501NotImplemented)]
-    public ActionResult<InterviewDto> GetById(
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<InterviewDto>> GetById(
         Guid applicationId,
-        Guid interviewId)
+        Guid interviewId,
+        CancellationToken ct)
     {
-        return StatusCode(StatusCodes.Status501NotImplemented);
+        var query = new GetInterviewByIdQuery(applicationId, interviewId);
+        var result = await _mediator.Send(query, ct);
+        if (result is null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
     }
 
     /// <summary>
