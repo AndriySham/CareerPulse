@@ -8,6 +8,7 @@ namespace CareerPulse.Domain.Entities;
 /// Aggregate Root: Central domain anchor of CareerPulse.
 /// Links Company, Vacancy, and a specific ResumeRevision.
 /// Controls the ApplicationStatus state machine (ADR 005).
+/// Interviews are managed separately via their own handlers
 /// </summary>
 public sealed class Application
 {

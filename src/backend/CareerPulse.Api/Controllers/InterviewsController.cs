@@ -1,6 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Interviews;
-using CareerPulse.Application.Features.Applications.Queries.GetApplicationById;
 using CareerPulse.Application.Features.Interviews.Commands.CreateInterview;
+using CareerPulse.Application.Features.Interviews.Commands.DeleteInterview;
 using CareerPulse.Application.Features.Interviews.Commands.UpdateInterview;
 using CareerPulse.Application.Features.Interviews.Queries.GetInterviewById;
 using MediatR;
@@ -76,5 +76,22 @@ public class InterviewsController : ControllerBase
         var command = new UpdateInterviewCommand(applicationId, interviewId, dto);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete an existing Interview.
+    /// </summary>
+    [HttpDelete("{interviewId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid applicationId,
+        Guid interviewId,
+        CancellationToken ct)
+    {
+        var command = new DeleteInterviewCommand(applicationId, interviewId);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

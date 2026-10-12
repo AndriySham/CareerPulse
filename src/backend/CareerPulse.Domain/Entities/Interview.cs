@@ -28,8 +28,8 @@ public sealed class Interview
         InterviewType type, 
         DateTime? scheduledAt, 
         DateTime? conductedAt,
-        string notes,
-        string feedback)
+        string? notes,
+        string? feedback)
     {
         if (applicationId == Guid.Empty)
             throw new DomainException("Application ID is required.");
