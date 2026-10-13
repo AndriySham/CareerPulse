@@ -40,4 +40,11 @@ public sealed class ApplicationCommunication
             CreatedAt = DateTime.UtcNow
         };
     }
+
+    public void Update(DateTime occurredAt, string notes)
+    {
+        OccurredAt = occurredAt;
+        Notes = notes.Trim();
+        UpdatedAt = DateTime.UtcNow;
+    } 
 }

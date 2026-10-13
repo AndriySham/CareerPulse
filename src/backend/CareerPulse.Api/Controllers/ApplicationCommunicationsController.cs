@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
 using CareerPulse.Application.Features.ApplicationCommunications.Commands.CreateApplicationCommunication;
+using CareerPulse.Application.Features.ApplicationCommunications.Commands.UpdateApplicationCommunication;
 using CareerPulse.Application.Features.ApplicationCommunications.Queries.GetApplicationCommunicationById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -56,5 +57,23 @@ public class ApplicationCommunicationsController : ControllerBase
         var command = new CreateApplicationCommunicationCommand(applicationId, dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { applicationId, applicationCommunicationId = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates an existing ApplicationCommunication entity.
+    /// </summary>
+    [HttpPut("{applicationCommunicationId:guid}")]
+    [ProducesResponseType(typeof(ApplicationCommunicationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApplicationCommunicationDto>> Update(
+        Guid applicationId,
+        Guid applicationCommunicationId,
+        [FromBody] UpdateApplicationCommunicationDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateApplicationCommunicationCommand(applicationId, applicationCommunicationId, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 }

@@ -5,7 +5,7 @@ namespace CareerPulse.Application.DTOs.Interviews;
 /// <summary>
 /// Input DTO for updating an existing Interview.
 /// </summary>
-public sealed record UpdateInterviewDto
+public sealed class UpdateInterviewDto
 {
     public InterviewType Type { get; init; }
     public DateTime? ScheduledAt { get; init; }
