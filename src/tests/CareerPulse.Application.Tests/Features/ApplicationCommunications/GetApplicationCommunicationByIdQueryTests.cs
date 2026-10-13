@@ -8,7 +8,7 @@ using Xunit;
 using static CareerPulse.Application.Tests.TestHelpers.TestDataSeeder;
 using AppEntity = CareerPulse.Domain.Entities.Application;
 
-namespace CareerPulse.Application.Tests.Features;
+namespace CareerPulse.Application.Tests.Features.ApplicationCommunications;
 
 public class GetApplicationCommunicationByIdQueryTests
 {

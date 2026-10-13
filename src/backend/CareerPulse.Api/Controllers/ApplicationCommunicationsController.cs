@@ -1,4 +1,5 @@
 ﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
+using CareerPulse.Application.Features.ApplicationCommunications.Commands.CreateApplicationCommunication;
 using CareerPulse.Application.Features.ApplicationCommunications.Queries.GetApplicationCommunicationById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ public class ApplicationCommunicationsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an ApplicationCommunication by ID.
+    /// Gets an ApplicationCommunication by ID with AsNoTracking.
     /// </summary>
     [HttpGet("{applicationCommunicationId:guid}")]
     [ProducesResponseType(typeof(ApplicationCommunicationDto), StatusCodes.Status200OK)]
@@ -37,5 +38,23 @@ public class ApplicationCommunicationsController : ControllerBase
             return NotFound();
         }
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates a new ApplicationCommunication entity.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(ApplicationCommunicationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApplicationCommunicationDto>> Create(
+        Guid applicationId,
+        [FromBody] CreateApplicationCommunicationDto dto,
+        CancellationToken ct)
+    {
+        var command = new CreateApplicationCommunicationCommand(applicationId, dto);
+        var result = await _mediator.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { applicationId, applicationCommunicationId = result.Id }, result);
     }
 }
