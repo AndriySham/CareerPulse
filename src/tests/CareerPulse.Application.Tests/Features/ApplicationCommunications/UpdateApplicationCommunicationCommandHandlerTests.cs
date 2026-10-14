@@ -1,5 +1,4 @@
 ﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
-using CareerPulse.Application.DTOs.Interviews;
 using CareerPulse.Application.Exceptions;
 using CareerPulse.Application.Features.ApplicationCommunications.Commands.UpdateApplicationCommunication;
 using CareerPulse.Application.Tests.TestHelpers;

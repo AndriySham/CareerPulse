@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
 using CareerPulse.Application.Features.ApplicationCommunications.Commands.CreateApplicationCommunication;
+using CareerPulse.Application.Features.ApplicationCommunications.Commands.DeleteApplicationCommunication;
 using CareerPulse.Application.Features.ApplicationCommunications.Commands.UpdateApplicationCommunication;
 using CareerPulse.Application.Features.ApplicationCommunications.Queries.GetApplicationCommunicationById;
 using MediatR;
@@ -75,5 +76,22 @@ public class ApplicationCommunicationsController : ControllerBase
         var command = new UpdateApplicationCommunicationCommand(applicationId, applicationCommunicationId, dto);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete an existing ApplicationCommunication entity.
+    /// </summary>
+    [HttpDelete("{applicationCommunicationId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid applicationId,
+        Guid applicationCommunicationId,
+        CancellationToken ct)
+    {
+        var command = new DeleteApplicationCommunicationCommand(applicationId, applicationCommunicationId);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }
