@@ -22,7 +22,7 @@ public class GetRecruiteerByIdQueryHandlerTests
 
         context.ChangeTracker.Clear();
 
-        var handler = new GetRecruiterByIdQueryHandler(context);
+        var handler = new CreateRecruiterByIdQueryHandler(context);
         var query = new GetRecruiterByIdQuery(company.Id, recruiter.Id);
 
         // Act
@@ -48,7 +48,7 @@ public class GetRecruiteerByIdQueryHandlerTests
         // Arange
         using var context = TestDbContext.CreateInMemory();
 
-        var handler = new GetRecruiterByIdQueryHandler(context);
+        var handler = new CreateRecruiterByIdQueryHandler(context);
         var query = new GetRecruiterByIdQuery(Guid.NewGuid(), Guid.NewGuid());
 
         // Act
@@ -73,7 +73,7 @@ public class GetRecruiteerByIdQueryHandlerTests
 
         context.ChangeTracker.Clear();
 
-        var handler = new GetRecruiterByIdQueryHandler(context);
+        var handler = new CreateRecruiterByIdQueryHandler(context);
 
         // Act
         var withWrongCompany = await handler.Handle(
@@ -97,7 +97,7 @@ public class GetRecruiteerByIdQueryHandlerTests
 
         context.ChangeTracker.Clear();
 
-        var handler = new GetRecruiterByIdQueryHandler(context);
+        var handler = new CreateRecruiterByIdQueryHandler(context);
         var query = new GetRecruiterByIdQuery(company.Id, Guid.NewGuid());
 
         // Act

@@ -9,12 +9,12 @@ namespace CareerPulse.Application.Features.Recruiters.Queries.GetRecruiterById;
 /// <summary>
 /// Query handler for retrieving a single Recruiter by ID with AsNoTracking.
 /// </summary>
-public sealed class GetRecruiterByIdQueryHandler
+public sealed class CreateRecruiterByIdQueryHandler
     : IRequestHandler<GetRecruiterByIdQuery, RecruiterDto?>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetRecruiterByIdQueryHandler(IApplicationDbContext context)
+    public CreateRecruiterByIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }

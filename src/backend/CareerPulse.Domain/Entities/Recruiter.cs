@@ -42,7 +42,7 @@ public sealed class Recruiter
         {
             Id = Guid.NewGuid(),
             CompanyId = companyId,
-            Name = name,
+            Name = name.Trim(),
             Phone = NormalizeText(phone),
             Email = NormalizeText(email),
             LinkedInUrl = NormalizeText(linkedInUrl),
