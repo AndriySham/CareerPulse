@@ -6,7 +6,7 @@ using CareerPulse.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CareerPulse.Application.Features.Recruiters.Commands;
+namespace CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
 
 /// <summary>
 /// Command handler for creating a Recruiter entity.
@@ -18,7 +18,7 @@ public sealed class CreateRecruiterCommandHandler
 
     public CreateRecruiterCommandHandler(IApplicationDbContext context)
     {
-        _context = context;        
+        _context = context;
     }
 
     public async Task<RecruiterDto> Handle(
@@ -27,7 +27,7 @@ public sealed class CreateRecruiterCommandHandler
     {
         var companyExists = await _context.Companies
             .AnyAsync(x => x.Id == request.CompanyId, cancellationToken);
-        if (!companyExists) 
+        if (!companyExists)
         {
             throw new ResourceNotFoundException($"Company with ID '{request.CompanyId}' was not found.");
         }

@@ -506,7 +506,6 @@ namespace CareerPulse.Infrastructure.Migrations
             modelBuilder.Entity("CareerPulse.Domain.Entities.Vacancy", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Benefits")
@@ -577,7 +576,6 @@ namespace CareerPulse.Infrastructure.Migrations
             modelBuilder.Entity("CareerPulse.Domain.Entities.VacancyLanguageRequirement", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -671,7 +669,7 @@ namespace CareerPulse.Infrastructure.Migrations
                     b.HasOne("CareerPulse.Domain.Entities.Recruiter", "Recruiter")
                         .WithMany()
                         .HasForeignKey("RecruiterId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CareerPulse.Domain.Entities.ResumeRevision", "ResumeRevision")
                         .WithMany()

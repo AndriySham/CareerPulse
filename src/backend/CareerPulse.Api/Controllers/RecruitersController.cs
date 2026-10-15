@@ -1,5 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Recruiters;
-using CareerPulse.Application.Features.Recruiters.Commands;
+using CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
+using CareerPulse.Application.Features.Recruiters.Commands.DeleteRecruiter;
 using CareerPulse.Application.Features.Recruiters.Queries.GetRecruiterById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -56,5 +57,22 @@ public class RecruitersController : ControllerBase
         var command = new CreateRecruiterCommand(companyId, dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtRoute("GetRecruiterById", new { companyId, recruiterId = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Delete an existing Recruiter.
+    /// </summary>
+    [HttpDelete("{recruiterId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid companyId,
+        Guid recruiterId,
+        CancellationToken ct)
+    {
+        var command = new DeleteRecruiterCommand(companyId, recruiterId);
+        await _mediator.Send(command, ct);
+        return NoContent();
     }
 }

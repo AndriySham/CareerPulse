@@ -1,6 +1,6 @@
 ﻿using CareerPulse.Application.DTOs.Recruiters;
 using CareerPulse.Application.Exceptions;
-using CareerPulse.Application.Features.Recruiters.Commands;
+using CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
 using CareerPulse.Application.Tests.TestHelpers;
 using CareerPulse.Domain.Entities;
 using CareerPulse.Domain.Exceptions;

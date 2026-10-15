@@ -1,10 +1,10 @@
 ﻿using CareerPulse.Application.DTOs.Recruiters;
 using MediatR;
 
-namespace CareerPulse.Application.Features.Recruiters.Commands;
+namespace CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
 
 /// <summary>
 /// Command to create a new Recruiter.
 /// </summary>
-public sealed record CreateRecruiterCommand(Guid CompanyId, CreateRecruiterDto Dto) 
+public sealed record CreateRecruiterCommand(Guid CompanyId, CreateRecruiterDto Dto)
     : IRequest<RecruiterDto>;

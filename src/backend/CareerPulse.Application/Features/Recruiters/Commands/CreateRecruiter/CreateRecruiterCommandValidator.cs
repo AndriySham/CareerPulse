@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CareerPulse.Application.Features.Recruiters.Commands;
+namespace CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
 
 /// <summary>
 /// FluentValidation validator for CreateRecruiterCommand.

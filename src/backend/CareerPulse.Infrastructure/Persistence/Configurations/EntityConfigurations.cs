@@ -49,7 +49,7 @@ public sealed class ApplicationConfiguration : IEntityTypeConfiguration<Domain.E
         builder.HasOne(x => x.Recruiter)
             .WithMany()
             .HasForeignKey(x => x.RecruiterId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.CompanyId);
