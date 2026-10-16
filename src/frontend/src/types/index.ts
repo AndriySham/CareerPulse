@@ -6,3 +6,5 @@ export * from './masterSkill';
 export * from './ai';
 export * from './education';
 export * from './project';
+export * from './interview';
+export * from './applicationCommunication';

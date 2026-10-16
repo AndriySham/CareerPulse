@@ -1,3 +1,6 @@
+import type { InterviewDto } from './interview';
+import type { ApplicationCommunicationDto } from './applicationCommunication';
+
 export type ApplicationStatus =
   | 'Draft'
   | 'Applied'
@@ -24,6 +27,23 @@ export interface ApplicationDto {
   allowedTransitions: ApplicationStatus[];
 }
 
+export interface RecruiterDto {
+  id: string;
+  companyId: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  linkedInUrl?: string | null;
+  telegramUrl?: string | null;
+  notes?: string | null;
+}
+
+export interface ApplicationDetailsDto extends ApplicationDto {
+  communications: ApplicationCommunicationDto[];
+  interviews: InterviewDto[];
+  recruiter?: RecruiterDto | null;
+}
+
 export interface SubmitApplicationDto {
   companyId: string;
   resumeRevisionId: string;
@@ -37,3 +57,4 @@ export interface ChangeApplicationStatusDto {
   newStatus: ApplicationStatus;
   notes?: string | null;
 }
+

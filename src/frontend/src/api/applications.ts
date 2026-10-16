@@ -3,6 +3,7 @@ import { api } from '@/lib/api';
 import { resumesKeys } from './resumes';
 import type {
   ApplicationDto,
+  ApplicationDetailsDto,
   SubmitApplicationDto,
   ChangeApplicationStatusDto,
   ApplicationStatus,
@@ -28,10 +29,11 @@ export async function getApplications(filters?: {
   return data;
 }
 
-export async function getApplicationById(id: string): Promise<ApplicationDto> {
-  const { data } = await api.get<ApplicationDto>(`/api/applications/${id}`);
+export async function getApplicationById(id: string): Promise<ApplicationDetailsDto> {
+  const { data } = await api.get<ApplicationDetailsDto>(`/api/applications/${id}`);
   return data;
 }
+
 
 export async function submitApplication(dto: SubmitApplicationDto): Promise<ApplicationDto> {
   const { data } = await api.post<ApplicationDto>('/api/applications', dto);
