@@ -52,6 +52,26 @@ public sealed class Recruiter
         };
     }
 
+    public void Update(
+        string name,
+        string? phone = null,
+        string? email = null,
+        string? linkedInUrl = null,
+        string? telegramUrl = null,
+        string? notes = null)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new DomainException("Recruiter name is required.");
+
+        Name = name.Trim();
+        Phone = NormalizeText(phone);
+        Email = NormalizeText(email);
+        LinkedInUrl = NormalizeText(linkedInUrl);
+        TelegramUrl = NormalizeText(telegramUrl);
+        Notes = NormalizeText(notes);
+        UpdatedAt = DateTime.UtcNow;
+    }
+
     private static string? NormalizeText(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

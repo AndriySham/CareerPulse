@@ -1,6 +1,7 @@
 ﻿using CareerPulse.Application.DTOs.Recruiters;
 using CareerPulse.Application.Features.Recruiters.Commands.CreateRecruiter;
 using CareerPulse.Application.Features.Recruiters.Commands.DeleteRecruiter;
+using CareerPulse.Application.Features.Recruiters.Commands.UpdateRecruiter;
 using CareerPulse.Application.Features.Recruiters.Queries.GetRecruiterById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,24 @@ public class RecruitersController : ControllerBase
         var command = new CreateRecruiterCommand(companyId, dto);
         var result = await _mediator.Send(command, ct);
         return CreatedAtRoute("GetRecruiterById", new { companyId, recruiterId = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Updates a Recruiter entity.
+    /// </summary>
+    [HttpPut("{recruiterId:guid}")]
+    [ProducesResponseType(typeof(RecruiterDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RecruiterDto>> Update(
+        Guid companyId,
+        Guid recruiterId,
+        [FromBody] UpdateRecruiterDto dto,
+        CancellationToken ct)
+    {
+        var command = new UpdateRecruiterCommand(companyId, recruiterId, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
     }
 
     /// <summary>

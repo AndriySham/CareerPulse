@@ -34,7 +34,7 @@ public sealed class CreateRecruiterCommandValidator : AbstractValidator<CreateRe
                 .WithMessage("Email must not exceed 100 characters.")
                 .EmailAddress()
                 .WithMessage("Email is not a valid email address.")
-                .When(x => !string.IsNullOrWhiteSpace(x.Dto.Email)); ;
+                .When(x => !string.IsNullOrWhiteSpace(x.Dto.Email));
 
             RuleFor(x => x.Dto.LinkedInUrl)
                 .MaximumLength(500)
