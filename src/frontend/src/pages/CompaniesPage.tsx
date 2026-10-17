@@ -18,6 +18,7 @@ export const CompaniesPage: React.FC = () => {
 
   const [isCompanyDetailOpen, setIsCompanyDetailOpen] = useState(false);
   const [viewingCompany, setViewingCompany] = useState<CompanyDto | null>(null);
+  const [detailModalInitialTab, setDetailModalInitialTab] = useState<'vacancies' | 'recruiters'>('vacancies');
 
   // Queries
   const { data: companies = [], isLoading, isError, refetch } = useCompanies(includeArchived);
@@ -52,6 +53,13 @@ export const CompaniesPage: React.FC = () => {
 
   const handleViewCompany = (company: CompanyDto) => {
     setViewingCompany(company);
+    setDetailModalInitialTab('vacancies');
+    setIsCompanyDetailOpen(true);
+  };
+
+  const handleViewCompanyRecruiters = (company: CompanyDto) => {
+    setViewingCompany(company);
+    setDetailModalInitialTab('recruiters');
     setIsCompanyDetailOpen(true);
   };
 
@@ -197,6 +205,7 @@ export const CompaniesPage: React.FC = () => {
               onView={handleViewCompany}
               onEdit={handleEditCompany}
               onAddVacancy={handleAddVacancy}
+              onViewRecruiters={handleViewCompanyRecruiters}
             />
           ))}
         </div>
@@ -213,6 +222,7 @@ export const CompaniesPage: React.FC = () => {
         isOpen={isCompanyDetailOpen}
         onClose={() => setIsCompanyDetailOpen(false)}
         company={viewingCompany}
+        initialTab={detailModalInitialTab}
         onEditCompany={handleEditCompany}
         onAddVacancy={handleAddVacancy}
         onSelectVacancy={handleSelectVacancyFromDetail}

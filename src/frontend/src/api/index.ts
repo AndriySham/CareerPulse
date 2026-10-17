@@ -7,4 +7,5 @@ export * from './educations';
 export * from './projects';
 export * from './interviews';
 export * from './communications';
+export * from './recruiters';
 

@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { resumesKeys } from './resumes';
+import { companiesKeys } from './companies';
+import { recruitersKeys } from './recruiters';
 import type {
   ApplicationDto,
   ApplicationDetailsDto,
   SubmitApplicationDto,
   ChangeApplicationStatusDto,
+  AssignRecruiterDto,
   ApplicationStatus,
 } from '@/types';
 
@@ -45,6 +48,17 @@ export async function changeApplicationStatus(
   dto: ChangeApplicationStatusDto
 ): Promise<ApplicationDto> {
   const { data } = await api.put<ApplicationDto>(`/api/applications/${id}/status`, dto);
+  return data;
+}
+
+export async function assignRecruiter(
+  applicationId: string,
+  dto: AssignRecruiterDto
+): Promise<ApplicationDetailsDto> {
+  const { data } = await api.put<ApplicationDetailsDto>(
+    `/api/applications/${applicationId}/recruiter`,
+    dto
+  );
   return data;
 }
 
@@ -96,3 +110,24 @@ export function useChangeApplicationStatus() {
     },
   });
 }
+
+export function useAssignRecruiter() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      applicationId,
+      dto,
+    }: {
+      applicationId: string;
+      dto: AssignRecruiterDto;
+    }) => assignRecruiter(applicationId, dto),
+    onSuccess: (updatedApp, { applicationId }) => {
+      queryClient.invalidateQueries({ queryKey: applicationsKeys.all });
+      queryClient.invalidateQueries({ queryKey: applicationsKeys.detail(applicationId) });
+      queryClient.setQueryData(applicationsKeys.detail(applicationId), updatedApp);
+      queryClient.invalidateQueries({ queryKey: companiesKeys.all });
+      queryClient.invalidateQueries({ queryKey: recruitersKeys.all });
+    },
+  });
+}
+

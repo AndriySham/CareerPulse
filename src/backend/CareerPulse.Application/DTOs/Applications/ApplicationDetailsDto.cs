@@ -1,4 +1,4 @@
-﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
+using CareerPulse.Application.DTOs.ApplicationCommunications;
 using CareerPulse.Application.DTOs.Interviews;
 using CareerPulse.Application.DTOs.Recruiters;
 using CareerPulse.Domain.Enums;
@@ -15,6 +15,7 @@ public sealed class ApplicationDetailsDto
     public string CompanyName { get; init; } = string.Empty;
     public Guid? VacancyId { get; init; }
     public string? VacancyTitle { get; init; }
+    public Guid? RecruiterId { get; init; }
     public Guid ResumeRevisionId { get; init; }
     public ApplicationStatus Status { get; init; }
     public string JobSource { get; init; } = string.Empty;

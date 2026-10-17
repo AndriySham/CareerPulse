@@ -83,6 +83,22 @@ public sealed class Application
         UpdatedAt = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Assigns or unassigns a recruiter for this Application.
+    /// Recruiter must belong to the same Company as the Application.
+    /// </summary>
+    public void AssignRecruiter(Recruiter? recruiter)
+    {
+        if (recruiter is not null && recruiter.CompanyId != CompanyId)
+        {
+            throw new DomainException($"Recruiter does not belong to Company '{CompanyId}'.");
+        }
+
+        RecruiterId = recruiter?.Id;
+        Recruiter = recruiter;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
     public IReadOnlySet<ApplicationStatus> GetAllowedTransitions()
         => ApplicationStatusMachine.GetAllowedTransitions(Status);
 }

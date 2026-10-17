@@ -1,4 +1,5 @@
 using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.Features.Applications.Commands.AssignRecruiter;
 using CareerPulse.Application.Features.Applications.Commands.ChangeApplicationStatus;
 using CareerPulse.Application.Features.Applications.Commands.SubmitApplication;
 using CareerPulse.Application.Features.Applications.Queries.GetApplicationById;
@@ -95,6 +96,24 @@ public class ApplicationsController : ControllerBase
         CancellationToken ct)
     {
         var command = new ChangeApplicationStatusCommand(id, dto);
+        var result = await _mediator.Send(command, ct);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Assigns or unassigns a recruiter for an existing application.
+    /// Recruiter must belong to the same company as the application.
+    /// </summary>
+    [HttpPut("{id:guid}/recruiter")]
+    [ProducesResponseType(typeof(ApplicationDetailsDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApplicationDetailsDto>> AssignRecruiter(
+        Guid id,
+        [FromBody] AssignRecruiterDto dto,
+        CancellationToken ct)
+    {
+        var command = new AssignRecruiterCommand(id, dto.RecruiterId);
         var result = await _mediator.Send(command, ct);
         return Ok(result);
     }

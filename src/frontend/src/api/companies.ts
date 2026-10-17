@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { CompanyDto, CreateCompanyDto, UpdateCompanyDto } from '@/types';
+import type { CompanyDto, CompanyDetailsDto, CreateCompanyDto, UpdateCompanyDto } from '@/types';
 
 export const companiesKeys = {
   all: ['companies'] as const,
@@ -17,8 +17,8 @@ export async function getCompanies(includeArchived = false): Promise<CompanyDto[
   return data;
 }
 
-export async function getCompanyById(id: string): Promise<CompanyDto> {
-  const { data } = await api.get<CompanyDto>(`/api/companies/${id}`);
+export async function getCompanyById(id: string): Promise<CompanyDetailsDto> {
+  const { data } = await api.get<CompanyDetailsDto>(`/api/companies/${id}`);
   return data;
 }
 

@@ -1,13 +1,15 @@
 import React from 'react';
 import type { CompanyDto } from '@/types';
 import { useVacancies } from '@/api/vacancies';
-import { Building2, Globe, Tag, Edit3, Plus, ExternalLink, Briefcase, ChevronRight } from 'lucide-react';
+import { useCompany } from '@/api/companies';
+import { Building2, Globe, Tag, Edit3, Plus, ExternalLink, Briefcase, ChevronRight, UserCheck } from 'lucide-react';
 
 interface CompanyCardProps {
   company: CompanyDto;
   onView: (company: CompanyDto) => void;
   onEdit: (company: CompanyDto) => void;
   onAddVacancy: (companyId: string) => void;
+  onViewRecruiters?: (company: CompanyDto) => void;
 }
 
 export const CompanyCard: React.FC<CompanyCardProps> = ({
@@ -15,8 +17,11 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   onView,
   onEdit,
   onAddVacancy,
+  onViewRecruiters,
 }) => {
   const { data: vacancies = [] } = useVacancies(company.id);
+  const { data: companyDetails } = useCompany(company.id);
+  const recruiterCount = companyDetails?.recruiters?.length ?? 0;
 
   return (
     <div className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md">
@@ -81,9 +86,27 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
 
       {/* Footer bar */}
       <div className="mt-5 flex items-center justify-between border-t border-border/40 pt-3">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-          <Briefcase className="h-3.5 w-3.5 text-primary/80" />
-          <span>{vacancies.length} {vacancies.length === 1 ? 'vacancy' : 'vacancies'}</span>
+        <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
+          <div className="flex items-center gap-1.5" title={`${vacancies.length} vacancies`}>
+            <Briefcase className="h-3.5 w-3.5 text-primary/80" />
+            <span>{vacancies.length} {vacancies.length === 1 ? 'vacancy' : 'vacancies'}</span>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onViewRecruiters) {
+                onViewRecruiters(company);
+              } else {
+                onView(company);
+              }
+            }}
+            className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
+            title={`${recruiterCount} recruiters - click to manage`}
+          >
+            <UserCheck className="h-3.5 w-3.5 text-primary/80" />
+            <span>{recruiterCount} {recruiterCount === 1 ? 'recruiter' : 'recruiters'}</span>
+          </button>
         </div>
 
         <div className="flex items-center gap-1">

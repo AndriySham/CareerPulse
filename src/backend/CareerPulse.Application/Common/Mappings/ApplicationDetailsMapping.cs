@@ -1,4 +1,4 @@
-﻿using CareerPulse.Application.DTOs.ApplicationCommunications;
+using CareerPulse.Application.DTOs.ApplicationCommunications;
 using CareerPulse.Application.DTOs.Applications;
 using CareerPulse.Application.DTOs.Interviews;
 using CareerPulse.Application.DTOs.Recruiters;
@@ -14,6 +14,7 @@ public sealed class ApplicationDetailsMapping
         CompanyName = app.Company?.Name ?? string.Empty,
         VacancyId = app.VacancyId,
         VacancyTitle = app.Vacancy?.Title,
+        RecruiterId = app.RecruiterId,
         ResumeRevisionId = app.ResumeRevisionId,
         Status = app.Status,
         JobSource = app.JobSource,

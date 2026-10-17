@@ -8,3 +8,4 @@ export * from './education';
 export * from './project';
 export * from './interview';
 export * from './applicationCommunication';
+export * from './recruiter';

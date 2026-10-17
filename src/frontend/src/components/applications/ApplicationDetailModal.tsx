@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal } from '@/components/ui/Modal';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import ApplicationStatusBadge, { STATUS_CONFIG } from './ApplicationStatusBadge';
-import { useApplication, useChangeApplicationStatus } from '@/api/applications';
+import { useApplication, useChangeApplicationStatus, useAssignRecruiter } from '@/api/applications';
+import { useCompany } from '@/api/companies';
 import { useResumeRevision } from '@/api/resumes';
 import InterviewSection from './InterviewSection';
 import CommunicationSection from './CommunicationSection';
@@ -20,6 +21,13 @@ import {
   ExternalLink,
   MessageSquare,
   Info,
+  UserCheck,
+  UserPlus,
+  UserX,
+  Loader2,
+  Mail,
+  Phone,
+  Linkedin,
 } from 'lucide-react';
 
 interface ApplicationDetailModalProps {
@@ -38,19 +46,60 @@ export const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [selectedNextStatus, setSelectedNextStatus] = useState<ApplicationStatus | null>(null);
   const [transitionNotes, setTransitionNotes] = useState('');
+  const [isAssigningRecruiter, setIsAssigningRecruiter] = useState(false);
+  const [selectedRecruiterId, setSelectedRecruiterId] = useState<string>('');
+
+  useEffect(() => {
+    setIsAssigningRecruiter(false);
+  }, [application?.id]);
 
   // Fetch full details (includes interviews, communications, recruiter)
   const { data: detailedApp } = useApplication(application?.id);
   const activeApp = detailedApp ?? application;
 
-
   const changeStatusMutation = useChangeApplicationStatus();
+  const assignRecruiterMutation = useAssignRecruiter();
+  const { data: companyDetails, isLoading: isLoadingCompany } = useCompany(activeApp?.companyId);
   const { data: linkedRevision } = useResumeRevision(activeApp?.resumeRevisionId);
 
   if (!activeApp) return null;
 
   const interviews = detailedApp?.interviews ?? [];
   const communications = detailedApp?.communications ?? [];
+  const availableRecruiters = companyDetails?.recruiters ?? [];
+
+  const handleAssignRecruiter = () => {
+    if (!activeApp) return;
+    assignRecruiterMutation.mutate(
+      {
+        applicationId: activeApp.id,
+        dto: { recruiterId: selectedRecruiterId || null },
+      },
+      {
+        onSuccess: () => {
+          setIsAssigningRecruiter(false);
+        },
+      }
+    );
+  };
+
+  const handleUnassignRecruiter = () => {
+    if (!activeApp) return;
+    if (window.confirm('Are you sure you want to remove the recruiter from this application?')) {
+      assignRecruiterMutation.mutate(
+        {
+          applicationId: activeApp.id,
+          dto: { recruiterId: null },
+        },
+        {
+          onSuccess: () => {
+            setIsAssigningRecruiter(false);
+            setSelectedRecruiterId('');
+          },
+        }
+      );
+    }
+  };
 
   const handleStatusTransition = (newStatus: ApplicationStatus) => {
     changeStatusMutation.mutate(
@@ -300,6 +349,194 @@ export const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({
                 </div>
                 <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
+            </div>
+
+            {/* Recruiter Information & Assignment */}
+            <div className="rounded-xl border border-border/60 bg-card p-3.5 space-y-3">
+              <div className="font-bold text-xs text-foreground flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <UserCheck className="h-3.5 w-3.5 text-primary" /> Recruiter Contact
+                </span>
+                <div className="flex items-center gap-2">
+                  {detailedApp?.recruiter && !isAssigningRecruiter && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedRecruiterId(detailedApp.recruiter?.id ?? '');
+                          setIsAssigningRecruiter(true);
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                        title="Change assigned recruiter"
+                      >
+                        <UserPlus className="h-3 w-3" /> Change
+                      </button>
+                      <span className="text-border">|</span>
+                      <button
+                        type="button"
+                        onClick={handleUnassignRecruiter}
+                        disabled={assignRecruiterMutation.isPending}
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-destructive hover:underline cursor-pointer disabled:opacity-50"
+                        title="Unassign recruiter from application"
+                      >
+                        <UserX className="h-3 w-3" /> Remove
+                      </button>
+                    </>
+                  )}
+                  {!detailedApp?.recruiter && !isAssigningRecruiter && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedRecruiterId('');
+                        setIsAssigningRecruiter(true);
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
+                      title="Assign recruiter to application"
+                    >
+                      <UserPlus className="h-3.5 w-3.5" /> Assign Recruiter
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {assignRecruiterMutation.isError && (
+                <ErrorAlert error={assignRecruiterMutation.error} />
+              )}
+
+              {isAssigningRecruiter ? (
+                <div className="rounded-lg border border-border bg-accent/20 p-3 space-y-3 animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between text-xs font-semibold text-foreground">
+                    <span>Select recruiter from {activeApp.companyName}</span>
+                    <span className="text-[11px] text-muted-foreground font-normal">
+                      Company boundary enforced
+                    </span>
+                  </div>
+
+                  {isLoadingCompany ? (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                      <span>Loading company recruiters...</span>
+                    </div>
+                  ) : availableRecruiters.length === 0 ? (
+                    <div className="space-y-2 text-xs text-muted-foreground bg-accent/40 rounded-lg p-3">
+                      <p>No recruiters registered for {activeApp.companyName} yet.</p>
+                      <Link
+                        to="/companies"
+                        onClick={onClose}
+                        className="text-primary hover:underline font-semibold inline-flex items-center gap-1"
+                      >
+                        Manage recruiters in Companies <ExternalLink className="h-3 w-3" />
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <select
+                        value={selectedRecruiterId}
+                        onChange={(e) => setSelectedRecruiterId(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="">-- Select a recruiter --</option>
+                        {availableRecruiters.map((r) => (
+                          <option key={r.id} value={r.id}>
+                            {r.name} {r.email ? `(${r.email})` : r.phone ? `(${r.phone})` : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2 pt-1 border-t border-border/40">
+                    <button
+                      type="button"
+                      onClick={() => setIsAssigningRecruiter(false)}
+                      className="px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    {availableRecruiters.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleAssignRecruiter}
+                        disabled={assignRecruiterMutation.isPending || !selectedRecruiterId}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 cursor-pointer"
+                      >
+                        {assignRecruiterMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-3 w-3 animate-spin" /> Saving...
+                          </>
+                        ) : (
+                          'Save Assignment'
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : detailedApp?.recruiter ? (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+                  <div>
+                    <h5 className="text-xs font-bold text-foreground">{detailedApp.recruiter.name}</h5>
+                    {detailedApp.recruiter.notes && (
+                      <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
+                        {detailedApp.recruiter.notes}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {detailedApp.recruiter.email && (
+                      <a
+                        href={`mailto:${detailedApp.recruiter.email}`}
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-medium text-foreground hover:bg-accent/80 hover:text-primary transition-colors"
+                        title={detailedApp.recruiter.email}
+                      >
+                        <Mail className="h-3 w-3 text-primary" /> Email
+                      </a>
+                    )}
+                    {detailedApp.recruiter.phone && (
+                      <a
+                        href={`tel:${detailedApp.recruiter.phone}`}
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-medium text-foreground hover:bg-accent/80 hover:text-primary transition-colors"
+                        title={detailedApp.recruiter.phone}
+                      >
+                        <Phone className="h-3 w-3 text-primary" /> Call
+                      </a>
+                    )}
+                    {detailedApp.recruiter.telegramUrl && (
+                      <a
+                        href={
+                          detailedApp.recruiter.telegramUrl.startsWith('http')
+                            ? detailedApp.recruiter.telegramUrl
+                            : `https://t.me/${detailedApp.recruiter.telegramUrl.replace(/^@/, '')}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-medium text-foreground hover:bg-accent/80 hover:text-primary transition-colors"
+                        title="Telegram"
+                      >
+                        <Send className="h-3 w-3 text-sky-400" /> Telegram
+                      </a>
+                    )}
+                    {detailedApp.recruiter.linkedInUrl && (
+                      <a
+                        href={
+                          detailedApp.recruiter.linkedInUrl.startsWith('http')
+                            ? detailedApp.recruiter.linkedInUrl
+                            : `https://${detailedApp.recruiter.linkedInUrl}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-medium text-foreground hover:bg-accent/80 hover:text-primary transition-colors"
+                        title="LinkedIn"
+                      >
+                        <Linkedin className="h-3 w-3 text-[#0A66C2]" /> LinkedIn
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground/60 italic py-0.5">
+                  No recruiter assigned to this application yet.
+                </p>
+              )}
             </div>
 
             {/* Application Notes */}

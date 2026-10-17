@@ -1,3 +1,5 @@
+import type { RecruiterDto } from './recruiter';
+
 export interface CompanyDto {
   id: string;
   name: string;
@@ -7,6 +9,10 @@ export interface CompanyDto {
   isArchived: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CompanyDetailsDto extends CompanyDto {
+  recruiters: RecruiterDto[];
 }
 
 export interface CreateCompanyDto {

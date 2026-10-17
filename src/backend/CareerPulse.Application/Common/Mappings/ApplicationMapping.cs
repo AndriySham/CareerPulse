@@ -1,4 +1,4 @@
-﻿using CareerPulse.Application.DTOs.Applications;
+using CareerPulse.Application.DTOs.Applications;
 
 namespace CareerPulse.Application.Common.Mappings;
 
@@ -11,6 +11,7 @@ public class ApplicationMapping
         CompanyName = app.Company?.Name ?? string.Empty,
         VacancyId = app.VacancyId,
         VacancyTitle = app.Vacancy?.Title,
+        RecruiterId = app.RecruiterId,
         ResumeRevisionId = app.ResumeRevisionId,
         Status = app.Status,
         JobSource = app.JobSource,
