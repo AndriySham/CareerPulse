@@ -79,8 +79,7 @@ export const CompaniesPage: React.FC = () => {
           </p>
         </div>
 
-        {/* <div className="flex flex-col gap-2 sm:flex-row sm:items-center"> */}
-        <div className="flex flex-col gap-2 rounded-xl border border-border/60 bg-card p-2 shadow-sm sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-4 rounded-xl border border-border/60 bg-card p-2 shadow-sm sm:flex-row sm:items-center">
           <div className="relative sm:w-72">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -112,6 +111,8 @@ export const CompaniesPage: React.FC = () => {
 
         </div>
       </div>
+
+      <hr className="my-5 border-border/60" />
 
       {/* Content Section */}
       {

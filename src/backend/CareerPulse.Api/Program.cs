@@ -18,15 +18,15 @@ builder.Services.AddApplicationServices();
 // Infrastructure layer: EF Core (PostgreSQL) + IFileStorage
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-// CORS policy for frontend React client (flexible for any local dev port 5173/5174/5175...)
+// CORS: allow only for page with localhost (flexible for any local dev port 5173/5174/5175...)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.SetIsOriginAllowed(_ => true)
+        policy.SetIsOriginAllowed(origin =>
+                Uri.TryCreate(origin, UriKind.Absolute, out var uri) && uri.IsLoopback)
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
     });
 });
 
